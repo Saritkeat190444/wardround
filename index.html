@@ -525,8 +525,48 @@ function printAll(){
 
 function closeM(id){document.getElementById(id).classList.remove('open')}
 
+// ==================== REALTIME ====================
+function setupRealtime(){
+  // Listen to all changes on patients table
+  sb.channel('patients-changes')
+    .on('postgres_changes',{event:'*',schema:'public',table:'patients'},payload=>{
+      if(payload.eventType==='INSERT'){
+        const newPt=dbToLocal(payload.new);
+        if(!pts.find(x=>x.id===newPt.id))pts.push(newPt);
+        renderAll();
+      } else if(payload.eventType==='UPDATE'){
+        const idx=pts.findIndex(x=>x.id===payload.new.id);
+        if(idx>=0)pts[idx]=dbToLocal(payload.new);
+        renderAll();
+      } else if(payload.eventType==='DELETE'){
+        pts=pts.filter(x=>x.id!==payload.old.id);
+        renderAll();
+      }
+    })
+    .subscribe();
+
+  // Listen to wards changes
+  sb.channel('wards-changes')
+    .on('postgres_changes',{event:'*',schema:'public',table:'wards'},async ()=>{
+      const {data}=await sb.from('wards').select('*').order('id');
+      if(data)wards=data;
+      renderAll();
+    })
+    .subscribe();
+
+  // Listen to staff changes
+  sb.channel('staff-changes')
+    .on('postgres_changes',{event:'*',schema:'public',table:'staff'},async ()=>{
+      const {data}=await sb.from('staff').select('*').order('id');
+      if(data)staffList=data;
+      renderAll();
+    })
+    .subscribe();
+}
+// ===================================================
+
 // Start
-loadAll();
+loadAll().then(()=>setupRealtime());
 </script>
 </body>
 </html>
