@@ -560,7 +560,7 @@ function openStatusModal(pid){
   ];
   opts.forEach(o=>{
     const row=document.createElement('div');
-    row.style.cssText='padding:18px;display:flex;align-items:center;gap:10px;cursor:pointer;border-bottom:1px solid #f0f4f8;-webkit-tap-highlight-color:rgba(0,0,0,0.1)';
+    row.style.cssText='padding:18px;display:flex;align-items:center;gap:10px;cursor:pointer;border-bottom:1px solid #f0f4f8;-webkit-tap-highlight-color:rgba(0,0,0,0.1);touch-action:manipulation;user-select:none;-webkit-user-select:none';
     row.innerHTML=o.html;
     const handler=function(e){
       e.preventDefault();
@@ -588,18 +588,26 @@ function openStatusModal(pid){
 }
 function closeStatusModal(){const m=document.getElementById('status-modal');if(m)m.remove()}
 function doSetStatus(pid,s){closeStatusModal();const p=pts.find(x=>x.id==pid);if(p){p.status=s;upsertPt(p);}renderAll()}
-// Global status button handler - works on iOS and Android
+let _statusTouching=false;
 function handleStatusBtn(e){
   const btn=e.target.closest('.status-btn');
-  if(btn){
+  if(!btn)return;
+  if(e.type==='touchend'){
+    _statusTouching=true;
+    setTimeout(()=>_statusTouching=false,500);
+    e.preventDefault();
+    e.stopPropagation();
+    const pid=btn.getAttribute('data-pid');
+    openStatusModal(pid);
+  } else if(e.type==='click'&&!_statusTouching){
     e.preventDefault();
     e.stopPropagation();
     const pid=btn.getAttribute('data-pid');
     openStatusModal(pid);
   }
 }
-document.addEventListener('click',handleStatusBtn);
-document.addEventListener('touchend',handleStatusBtn,{passive:false});
+document.addEventListener('click',handleStatusBtn,true);
+document.addEventListener('touchend',handleStatusBtn,{passive:false,capture:true});
 function dcBadge(t){return{dc:'<span class="dcb dcc">D/C</span>',death:'<span class="dcb dcd">Death</span>',refer:'<span class="dcb dcr">Refer</span>'}[t]||''}
 function dcWorkH(p){if(!p.dcWork||!p.dcWork.length)return`<span style="font-size:12px;color:#cbd5e0">—</span>`;return`<div class="tl">${p.dcWork.map((it,i)=>`<div class="tr2${it.done?' done':''}" onclick="togDCW(${p.id},${i})"><input type="checkbox" ${it.done?'checked':''} onclick="event.stopPropagation();togDCW(${p.id},${i})"><span class="ttext">${it.t}</span></div>`).join('')}</div>`}
 function togDCW(pid,idx){const p=pts.find(x=>x.id===pid);if(p&&p.dcWork[idx]){p.dcWork[idx].done=!p.dcWork[idx].done;upsertPt(p);}renderAll()}
