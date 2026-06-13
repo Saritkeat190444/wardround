@@ -542,33 +542,34 @@ function todoH(items,pid,type){if(!items.length)return`<span style="font-size:12
 function sbadge(s,pid){
   const map={stable:{cls:'bs',icon:'✓',label:'Stable'},critical:{cls:'bc',icon:'⚠',label:'Critical'},notify:{cls:'bn',icon:'🔔',label:'Notify staff'}};
   const m=map[s]||map.stable;
-  return`<div class="sdrop" id="sdrop-${pid}">
-    <span class="bdg ${m.cls}" onclick="toggleSDrop('${pid}')" ontouchend="tsdrop(event,'${pid}')">${m.icon} ${m.label} ▾</span>
-    <div class="sdrop-menu" id="sdrop-menu-${pid}">
-      <div class="sdrop-opt" onclick="setStatus('${pid}','stable')" ontouchend="tstatus(event,'${pid}','stable')"><span class="bdg bs" style="cursor:default">✓ Stable</span></div>
-      <div class="sdrop-opt" onclick="setStatus('${pid}','critical')" ontouchend="tstatus(event,'${pid}','critical')"><span class="bdg bc" style="cursor:default">⚠ Critical</span></div>
-      <div class="sdrop-opt" onclick="setStatus('${pid}','notify')" ontouchend="tstatus(event,'${pid}','notify')"><span class="bdg bn" style="cursor:default">🔔 Notify staff</span></div>
-    </div>
+  return`<span class="bdg ${m.cls}" style="cursor:pointer" onclick="openStatusModal('${pid}')">${m.icon} ${m.label} ▾</span>`;
+}
+function openStatusModal(pid){
+  const existing=document.getElementById('status-modal');
+  if(existing)existing.remove();
+  const overlay=document.createElement('div');
+  overlay.id='status-modal';
+  overlay.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(10,15,25,.6);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px';
+  overlay.innerHTML=`<div style="background:#fff;border-radius:16px;width:100%;max-width:320px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,.2)">
+    <div style="padding:14px 18px;border-bottom:1px solid #f0f4f8;font-size:14px;font-weight:600;color:#1a202c">Change status</div>
+    <div onclick="doSetStatus('${pid}','stable')" style="padding:16px 18px;display:flex;align-items:center;gap:10px;cursor:pointer;border-bottom:1px solid #f0f4f8;font-size:14px"><span class="bdg bs" style="cursor:default">✓ Stable</span></div>
+    <div onclick="doSetStatus('${pid}','critical')" style="padding:16px 18px;display:flex;align-items:center;gap:10px;cursor:pointer;border-bottom:1px solid #f0f4f8;font-size:14px"><span class="bdg bc" style="cursor:default">⚠ Critical</span></div>
+    <div onclick="doSetStatus('${pid}','notify')" style="padding:16px 18px;display:flex;align-items:center;gap:10px;cursor:pointer;border-bottom:1px solid #f0f4f8;font-size:14px"><span class="bdg bn" style="cursor:default">🔔 Notify staff</span></div>
+    <div onclick="closeStatusModal()" style="padding:14px 18px;text-align:center;cursor:pointer;font-size:14px;color:#718096;font-weight:500">Cancel</div>
   </div>`;
+  overlay.addEventListener('click',function(e){if(e.target===overlay)closeStatusModal()});
+  document.body.appendChild(overlay);
 }
-function tsdrop(e,pid){e.preventDefault();e.stopPropagation();toggleSDrop(pid)}
-function tstatus(e,pid,s){e.preventDefault();e.stopPropagation();setStatus(pid,s)}
-function toggleSDrop(pid){
-  const m=document.getElementById('sdrop-menu-'+pid);
-  const was=m&&m.classList.contains('open');
-  document.querySelectorAll('.sdrop-menu').forEach(x=>x.classList.remove('open'));
-  if(!was&&m)m.classList.add('open');
-}
-function setStatus(pid,s){
+function closeStatusModal(){const m=document.getElementById('status-modal');if(m)m.remove()}
+function doSetStatus(pid,s){
+  closeStatusModal();
   const p=pts.find(x=>x.id==pid);
   if(p){p.status=s;upsertPt(p);}
-  document.querySelectorAll('.sdrop-menu').forEach(x=>x.classList.remove('open'));
   renderAll();
   const det=document.getElementById('detM');
-  if(det.classList.contains('open')&&p)openDet(p.id);
+  if(det&&det.classList.contains('open')&&p)openDet(p.id);
 }
 document.addEventListener('click',e=>{if(!e.target.closest('.sdrop'))document.querySelectorAll('.sdrop-menu').forEach(x=>x.classList.remove('open'))});
-document.addEventListener('touchstart',e=>{if(!e.target.closest('.sdrop'))document.querySelectorAll('.sdrop-menu').forEach(x=>x.classList.remove('open'))},{passive:true});
 function dcBadge(t){return{dc:'<span class="dcb dcc">D/C</span>',death:'<span class="dcb dcd">Death</span>',refer:'<span class="dcb dcr">Refer</span>'}[t]||''}
 function dcWorkH(p){if(!p.dcWork||!p.dcWork.length)return`<span style="font-size:12px;color:#cbd5e0">—</span>`;return`<div class="tl">${p.dcWork.map((it,i)=>`<div class="tr2${it.done?' done':''}" onclick="togDCW(${p.id},${i})"><input type="checkbox" ${it.done?'checked':''} onclick="event.stopPropagation();togDCW(${p.id},${i})"><span class="ttext">${it.t}</span></div>`).join('')}</div>`}
 function togDCW(pid,idx){const p=pts.find(x=>x.id===pid);if(p&&p.dcWork[idx]){p.dcWork[idx].done=!p.dcWork[idx].done;upsertPt(p);}renderAll()}
