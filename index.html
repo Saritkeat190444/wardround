@@ -167,11 +167,11 @@ tr:hover td{background:#fafbfd}
 .pt-todo-lbl{font-size:9px;font-weight:700;color:#a0aec0;text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px}
 .fab{position:fixed;bottom:80px;right:18px;width:52px;height:52px;background:#378ADD;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:24px;box-shadow:0 3px 10px rgba(55,138,221,.4);cursor:pointer;z-index:200;border:none;font-family:inherit}
 .fab:hover{background:#2b6cb0}
-.mobile-tabs{display:none;position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #e2e8f0;height:68px;z-index:100}
-.mobile-tabs-inner{display:flex;height:100%}
-.mb-tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:#a0aec0;cursor:pointer;border:none;background:none;font-family:inherit;padding:4px 0;min-width:0;position:relative;-webkit-tap-highlight-color:transparent}
-.mb-tab i{font-size:22px;line-height:1;flex-shrink:0}
-.mb-tab .mb-lbl{font-size:9px;white-space:nowrap;line-height:1;max-width:56px;overflow:hidden;text-overflow:ellipsis;text-align:center}
+.mobile-tabs{display:none;position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #e2e8f0;height:60px;z-index:100;padding-bottom:env(safe-area-inset-bottom)}
+.mobile-tabs-inner{display:grid;grid-template-columns:repeat(5,1fr);height:100%;width:100%}
+.mb-tab{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;color:#a0aec0;cursor:pointer;border:none;background:none;font-family:inherit;padding:0;position:relative;-webkit-tap-highlight-color:transparent;width:100%}
+.mb-tab i{font-size:20px;line-height:1}
+.mb-tab .mb-lbl{font-size:9px;line-height:1;text-align:center;display:block}
 .mb-tab.active{color:#378ADD}
 .mb-dot{position:absolute;top:6px;right:calc(50% - 14px);background:#FED7D7;color:#9B2C2C;border-radius:10px;padding:1px 4px;font-size:8px;font-weight:600;display:none}
 .mb-dot.g{background:#C6F6D5;color:#276749}
@@ -539,18 +539,27 @@ function clearFilters(){filterWard='';filterStaff='';document.getElementById('fw
 document.addEventListener('click',e=>{if(!e.target.closest('.fdrop'))document.querySelectorAll('.fdrop-menu').forEach(x=>x.classList.remove('open'))});
 
 function todoH(items,pid,type){if(!items.length)return`<span style="font-size:12px;color:#cbd5e0">—</span>`;return`<div class="tl">${[...items].reverse().map((it,ri)=>{const i=items.length-1-ri;return`<div class="tr2${it.done?' done':''}" onclick="tog(${pid},'${type}',${i})"><input type="checkbox" ${it.done?'checked':''} onclick="event.stopPropagation();tog(${pid},'${type}',${i})"><span class="ttext">${it.t}<span class="td2">(${it.d})</span></span></div>`}).join('')}</div>`}
-function sbadge(s,pid){const map={stable:{cls:'bs',icon:'✓',label:'Stable'},critical:{cls:'bc',icon:'⚠',label:'Critical'},notify:{cls:'bn',icon:'🔔',label:'Notify staff'}};const m=map[s]||map.stable;return`<div class="sdrop" id="sdrop-${pid}"><span class="bdg ${m.cls}" onclick="toggleSDrop('${pid}')">${m.icon} ${m.label} ▾</span><div class="sdrop-menu" id="sdrop-menu-${pid}"><div class="sdrop-opt" onclick="setStatus('${pid}','stable')"><span class="bdg bs" style="cursor:default">✓ Stable</span></div><div class="sdrop-opt" onclick="setStatus('${pid}','critical')"><span class="bdg bc" style="cursor:default">⚠ Critical</span></div><div class="sdrop-opt" onclick="setStatus('${pid}','notify')"><span class="bdg bn" style="cursor:default">🔔 Notify staff</span></div></div></div>`}
+function sbadge(s,pid){
+  const map={stable:{cls:'bs',icon:'✓',label:'Stable'},critical:{cls:'bc',icon:'⚠',label:'Critical'},notify:{cls:'bn',icon:'🔔',label:'Notify staff'}};
+  const m=map[s]||map.stable;
+  return`<div class="sdrop" id="sdrop-${pid}">
+    <span class="bdg ${m.cls}" onclick="toggleSDrop('${pid}')" ontouchend="tsdrop(event,'${pid}')">${m.icon} ${m.label} ▾</span>
+    <div class="sdrop-menu" id="sdrop-menu-${pid}">
+      <div class="sdrop-opt" onclick="setStatus('${pid}','stable')" ontouchend="tstatus(event,'${pid}','stable')"><span class="bdg bs" style="cursor:default">✓ Stable</span></div>
+      <div class="sdrop-opt" onclick="setStatus('${pid}','critical')" ontouchend="tstatus(event,'${pid}','critical')"><span class="bdg bc" style="cursor:default">⚠ Critical</span></div>
+      <div class="sdrop-opt" onclick="setStatus('${pid}','notify')" ontouchend="tstatus(event,'${pid}','notify')"><span class="bdg bn" style="cursor:default">🔔 Notify staff</span></div>
+    </div>
+  </div>`;
+}
+function tsdrop(e,pid){e.preventDefault();e.stopPropagation();toggleSDrop(pid)}
+function tstatus(e,pid,s){e.preventDefault();e.stopPropagation();setStatus(pid,s)}
 function toggleSDrop(pid){
-  event&&event.preventDefault&&event.preventDefault();
-  event&&event.stopPropagation&&event.stopPropagation();
   const m=document.getElementById('sdrop-menu-'+pid);
   const was=m&&m.classList.contains('open');
   document.querySelectorAll('.sdrop-menu').forEach(x=>x.classList.remove('open'));
   if(!was&&m)m.classList.add('open');
 }
 function setStatus(pid,s){
-  event&&event.preventDefault&&event.preventDefault();
-  event&&event.stopPropagation&&event.stopPropagation();
   const p=pts.find(x=>x.id==pid);
   if(p){p.status=s;upsertPt(p);}
   document.querySelectorAll('.sdrop-menu').forEach(x=>x.classList.remove('open'));
