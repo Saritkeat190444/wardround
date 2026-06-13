@@ -552,23 +552,28 @@ function openStatusModal(pid){
   overlay.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(10,15,25,.6);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px';
   overlay.innerHTML=`<div style="background:#fff;border-radius:16px;width:100%;max-width:320px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,.2)">
     <div style="padding:14px 18px;border-bottom:1px solid #f0f4f8;font-size:14px;font-weight:600;color:#1a202c">Change status</div>
-    <div onclick="doSetStatus('${pid}','stable')" style="padding:16px 18px;display:flex;align-items:center;gap:10px;cursor:pointer;border-bottom:1px solid #f0f4f8;font-size:14px"><span class="bdg bs" style="cursor:default">✓ Stable</span></div>
-    <div onclick="doSetStatus('${pid}','critical')" style="padding:16px 18px;display:flex;align-items:center;gap:10px;cursor:pointer;border-bottom:1px solid #f0f4f8;font-size:14px"><span class="bdg bc" style="cursor:default">⚠ Critical</span></div>
-    <div onclick="doSetStatus('${pid}','notify')" style="padding:16px 18px;display:flex;align-items:center;gap:10px;cursor:pointer;border-bottom:1px solid #f0f4f8;font-size:14px"><span class="bdg bn" style="cursor:default">🔔 Notify staff</span></div>
-    <div onclick="closeStatusModal()" style="padding:14px 18px;text-align:center;cursor:pointer;font-size:14px;color:#718096;font-weight:500">Cancel</div>
+    <div data-action="stable" style="padding:18px;display:flex;align-items:center;gap:10px;cursor:pointer;border-bottom:1px solid #f0f4f8"><span class="bdg bs">✓ Stable</span></div>
+    <div data-action="critical" style="padding:18px;display:flex;align-items:center;gap:10px;cursor:pointer;border-bottom:1px solid #f0f4f8"><span class="bdg bc">⚠ Critical</span></div>
+    <div data-action="notify" style="padding:18px;display:flex;align-items:center;gap:10px;cursor:pointer;border-bottom:1px solid #f0f4f8"><span class="bdg bn">🔔 Notify staff</span></div>
+    <div data-action="cancel" style="padding:16px 18px;text-align:center;cursor:pointer;font-size:14px;color:#718096;font-weight:500">Cancel</div>
   </div>`;
-  overlay.addEventListener('click',function(e){if(e.target===overlay)closeStatusModal()});
-  document.body.appendChild(overlay);
+  overlay.addEventListener('click',function(e){
+    const el=e.target.closest('[data-action]');
+    if(!el&&e.target===overlay){closeStatusModal();return}
+    if(!el)return;
+    const action=el.getAttribute('data-action');
+    if(action==='cancel'){closeStatusModal();return}
+    closeStatusModal();
+    const p=pts.find(x=>x.id==pid);
+    if(p){p.status=action;upsertPt(p);}
+    renderAll();
+    const det=document.getElementById('detM');
+    if(det&&det.classList.contains('open')&&p)openDet(p.id);
+  });
+  document.getElementById('app').appendChild(overlay);
 }
 function closeStatusModal(){const m=document.getElementById('status-modal');if(m)m.remove()}
-function doSetStatus(pid,s){
-  closeStatusModal();
-  const p=pts.find(x=>x.id==pid);
-  if(p){p.status=s;upsertPt(p);}
-  renderAll();
-  const det=document.getElementById('detM');
-  if(det&&det.classList.contains('open')&&p)openDet(p.id);
-}
+function doSetStatus(pid,s){closeStatusModal();const p=pts.find(x=>x.id==pid);if(p){p.status=s;upsertPt(p);}renderAll()}
 document.addEventListener('click',e=>{if(!e.target.closest('.sdrop'))document.querySelectorAll('.sdrop-menu').forEach(x=>x.classList.remove('open'))});
 function dcBadge(t){return{dc:'<span class="dcb dcc">D/C</span>',death:'<span class="dcb dcd">Death</span>',refer:'<span class="dcb dcr">Refer</span>'}[t]||''}
 function dcWorkH(p){if(!p.dcWork||!p.dcWork.length)return`<span style="font-size:12px;color:#cbd5e0">—</span>`;return`<div class="tl">${p.dcWork.map((it,i)=>`<div class="tr2${it.done?' done':''}" onclick="togDCW(${p.id},${i})"><input type="checkbox" ${it.done?'checked':''} onclick="event.stopPropagation();togDCW(${p.id},${i})"><span class="ttext">${it.t}</span></div>`).join('')}</div>`}
