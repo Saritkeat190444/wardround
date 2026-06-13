@@ -92,10 +92,10 @@ tr:hover td{background:#fafbfd}
 .wpill{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:12px;font-weight:500;color:#fff}
 /* ── STATUS DROPDOWN ── */
 .sdrop{position:relative;display:inline-block}
-.sdrop-menu{display:none;position:absolute;top:calc(100%+4px);left:0;background:#fff;border:1px solid #e2e8f0;border-radius:9px;box-shadow:0 6px 18px rgba(0,0,0,.1);z-index:100;min-width:130px}
+.sdrop-menu{display:none;position:absolute;top:calc(100%+4px);left:0;background:#fff;border:1px solid #e2e8f0;border-radius:9px;box-shadow:0 6px 18px rgba(0,0,0,.15);z-index:500;min-width:140px}
 .sdrop-menu.open{display:block}
-.sdrop-opt{padding:9px 13px;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:7px}
-.sdrop-opt:hover{background:#f7fafc}
+.sdrop-opt{padding:12px 14px;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:7px}
+.sdrop-opt:hover,.sdrop-opt:active{background:#f7fafc}
 /* ── MODAL ── */
 .moverlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(10,15,25,.65);z-index:300;align-items:flex-start;justify-content:center;padding:16px;overflow-y:auto}
 .moverlay.open{display:flex}
@@ -169,9 +169,9 @@ tr:hover td{background:#fafbfd}
 .fab:hover{background:#2b6cb0}
 .mobile-tabs{display:none;position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #e2e8f0;height:64px;z-index:100}
 .mobile-tabs-inner{display:flex;height:100%}
-.mb-tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;color:#a0aec0;cursor:pointer;border:none;background:none;font-family:inherit;padding:4px 0;min-width:0;position:relative}
-.mb-tab i{font-size:20px;line-height:1}
-.mb-tab .mb-lbl{font-size:8px;white-space:nowrap;line-height:1;margin-top:1px;letter-spacing:-0.2px}
+.mb-tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;color:#a0aec0;cursor:pointer;border:none;background:none;font-family:inherit;padding:4px 0;min-width:0;position:relative;overflow:hidden}
+.mb-tab i{font-size:20px;line-height:1;flex-shrink:0}
+.mb-tab .mb-lbl{font-size:7.5px;white-space:nowrap;line-height:1;margin-top:1px;letter-spacing:-0.3px;max-width:100%;overflow:hidden;text-overflow:ellipsis;padding:0 1px}
 .mb-tab.active{color:#378ADD}
 .mb-dot{position:absolute;top:6px;right:calc(50% - 14px);background:#FED7D7;color:#9B2C2C;border-radius:10px;padding:1px 4px;font-size:8px;font-weight:600;display:none}
 .mb-dot.g{background:#C6F6D5;color:#276749}
@@ -541,8 +541,9 @@ document.addEventListener('click',e=>{if(!e.target.closest('.fdrop'))document.qu
 function todoH(items,pid,type){if(!items.length)return`<span style="font-size:12px;color:#cbd5e0">—</span>`;return`<div class="tl">${[...items].reverse().map((it,ri)=>{const i=items.length-1-ri;return`<div class="tr2${it.done?' done':''}" onclick="tog(${pid},'${type}',${i})"><input type="checkbox" ${it.done?'checked':''} onclick="event.stopPropagation();tog(${pid},'${type}',${i})"><span class="ttext">${it.t}<span class="td2">(${it.d})</span></span></div>`}).join('')}</div>`}
 function sbadge(s,pid){const map={stable:{cls:'bs',icon:'✓',label:'Stable'},critical:{cls:'bc',icon:'⚠',label:'Critical'},notify:{cls:'bn',icon:'🔔',label:'Notify staff'}};const m=map[s]||map.stable;return`<div class="sdrop" id="sdrop-${pid}"><span class="bdg ${m.cls}" onclick="toggleSDrop('${pid}')">${m.icon} ${m.label} ▾</span><div class="sdrop-menu" id="sdrop-menu-${pid}"><div class="sdrop-opt" onclick="setStatus('${pid}','stable')"><span class="bdg bs" style="cursor:default">✓ Stable</span></div><div class="sdrop-opt" onclick="setStatus('${pid}','critical')"><span class="bdg bc" style="cursor:default">⚠ Critical</span></div><div class="sdrop-opt" onclick="setStatus('${pid}','notify')"><span class="bdg bn" style="cursor:default">🔔 Notify staff</span></div></div></div>`}
 function toggleSDrop(pid){const m=document.getElementById('sdrop-menu-'+pid);const was=m&&m.classList.contains('open');document.querySelectorAll('.sdrop-menu').forEach(x=>x.classList.remove('open'));if(!was&&m)m.classList.add('open')}
-function setStatus(pid,s){const p=pts.find(x=>x.id==pid);if(p){p.status=s;upsertPt(p);}document.querySelectorAll('.sdrop-menu').forEach(x=>x.classList.remove('open'));renderAll();const det=document.getElementById('detM');if(det.classList.contains('open')&&p)openDet(p.id)}
+function setStatus(pid,s){event&&event.stopPropagation();const p=pts.find(x=>x.id==pid);if(p){p.status=s;upsertPt(p);}document.querySelectorAll('.sdrop-menu').forEach(x=>x.classList.remove('open'));renderAll();const det=document.getElementById('detM');if(det.classList.contains('open')&&p)openDet(p.id)}
 document.addEventListener('click',e=>{if(!e.target.closest('.sdrop'))document.querySelectorAll('.sdrop-menu').forEach(x=>x.classList.remove('open'))});
+document.addEventListener('touchend',e=>{if(!e.target.closest('.sdrop')&&!e.target.closest('.sdrop-opt'))document.querySelectorAll('.sdrop-menu').forEach(x=>x.classList.remove('open'))},{passive:true});
 function dcBadge(t){return{dc:'<span class="dcb dcc">D/C</span>',death:'<span class="dcb dcd">Death</span>',refer:'<span class="dcb dcr">Refer</span>'}[t]||''}
 function dcWorkH(p){if(!p.dcWork||!p.dcWork.length)return`<span style="font-size:12px;color:#cbd5e0">—</span>`;return`<div class="tl">${p.dcWork.map((it,i)=>`<div class="tr2${it.done?' done':''}" onclick="togDCW(${p.id},${i})"><input type="checkbox" ${it.done?'checked':''} onclick="event.stopPropagation();togDCW(${p.id},${i})"><span class="ttext">${it.t}</span></div>`).join('')}</div>`}
 function togDCW(pid,idx){const p=pts.find(x=>x.id===pid);if(p&&p.dcWork[idx]){p.dcWork[idx].done=!p.dcWork[idx].done;upsertPt(p);}renderAll()}
