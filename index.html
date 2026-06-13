@@ -169,7 +169,8 @@ tr:hover td{background:#fafbfd}
 .fab:hover{background:#2b6cb0}
 .mobile-tabs{display:none;position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #e2e8f0;height:64px;z-index:100}
 .mobile-tabs-inner{display:flex;height:100%}
-.mb-tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:10px;color:#a0aec0;cursor:pointer;border:none;background:none;font-family:inherit}
+.mb-tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:9px;color:#a0aec0;cursor:pointer;border:none;background:none;font-family:inherit;padding:4px 2px;min-width:0}
+.mb-tab span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;text-align:center}
 .mb-tab.active{color:#378ADD}
 .mb-tab i{font-size:22px}
 
@@ -318,11 +319,11 @@ tr:hover td{background:#fafbfd}
 <!-- MOBILE BOTTOM TABS -->
 <div class="mobile-tabs">
   <div class="mobile-tabs-inner">
-    <button class="mb-tab active" data-tab="main" onclick="sw('main')"><i class="ti ti-layout-grid"></i>Main</button>
-    <button class="mb-tab" data-tab="ww" onclick="sw('ww')"><i class="ti ti-clipboard-list"></i>Work<span class="nb" id="wwb2" style="display:none"></span></button>
-    <button class="mb-tab" data-tab="dc" onclick="sw('dc')"><i class="ti ti-door-exit"></i>D/C<span class="nb g" id="dcb2" style="display:none"></span></button>
-    <button class="mb-tab" data-tab="hist" onclick="sw('hist')"><i class="ti ti-history"></i>Records</button>
-    <button class="mb-tab" data-tab="stats" onclick="sw('stats')"><i class="ti ti-chart-bar"></i>Stats</button>
+    <button class="mb-tab active" data-tab="main" onclick="sw('main')"><i class="ti ti-layout-grid"></i><span>Main</span></button>
+    <button class="mb-tab" data-tab="ww" onclick="sw('ww')"><i class="ti ti-clipboard-list"></i><span>Work<span class="nb" id="wwb2" style="display:none"></span></span></button>
+    <button class="mb-tab" data-tab="dc" onclick="sw('dc')"><i class="ti ti-door-exit"></i><span>D/C<span class="nb g" id="dcb2" style="display:none"></span></span></button>
+    <button class="mb-tab" data-tab="hist" onclick="sw('hist')"><i class="ti ti-history"></i><span>Records</span></button>
+    <button class="mb-tab" data-tab="stats" onclick="sw('stats')"><i class="ti ti-chart-bar"></i><span>Stats</span></button>
   </div>
 </div>
 
