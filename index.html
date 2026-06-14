@@ -543,7 +543,7 @@ function todoH(items,pid,type){if(!items.length)return`<span style="font-size:12
 function sbadge(s,pid){
   const map={stable:{cls:'bs',icon:'✓',label:'Stable'},critical:{cls:'bc',icon:'⚠',label:'Critical'},notify:{cls:'bn',icon:'🔔',label:'Notify staff'}};
   const m=map[s]||map.stable;
-  return`<span class="bdg ${m.cls} status-btn" data-pid="${pid}" style="cursor:pointer">${m.icon} ${m.label} ▾</span>`;
+  return`<button class="bdg ${m.cls} status-btn" data-pid="${pid}" type="button" style="cursor:pointer;border:none;font-family:inherit;font-size:12px">${m.icon} ${m.label} ▾</button>`;
 }
 function openStatusModal(pid){
   const existing=document.getElementById('status-modal');
@@ -560,11 +560,11 @@ function openStatusModal(pid){
     {s:'notify',html:'<span class="bdg bn">🔔 Notify staff</span>'}
   ];
   opts.forEach(o=>{
-    const row=document.createElement('div');
-    row.style.cssText='padding:18px;display:flex;align-items:center;gap:10px;cursor:pointer;border-bottom:1px solid #f0f4f8;touch-action:manipulation;user-select:none;-webkit-user-select:none';
+    const row=document.createElement('button');
+    row.type='button';
+    row.style.cssText='width:100%;padding:18px;display:flex;align-items:center;gap:10px;cursor:pointer;border:none;border-bottom:1px solid #f0f4f8;background:#fff;font-family:inherit;text-align:left;touch-action:manipulation';
     row.innerHTML=o.html;
-    const handler=function(e){
-      e.preventDefault();
+    row.addEventListener('click',function(e){
       e.stopPropagation();
       overlay.remove();
       const p=pts.find(x=>x.id==pid);
@@ -572,14 +572,14 @@ function openStatusModal(pid){
       renderAll();
       const det=document.getElementById('detM');
       if(det&&det.classList.contains('open')&&p)openDet(p.id);
-    };
-    row.addEventListener('pointerup',handler);
+    });
     box.appendChild(row);
   });
-  const cancel=document.createElement('div');
-  cancel.style.cssText='padding:16px 18px;text-align:center;cursor:pointer;font-size:14px;color:#718096;font-weight:500';
+  const cancel=document.createElement('button');
+  cancel.type='button';
+  cancel.style.cssText='width:100%;padding:16px 18px;text-align:center;cursor:pointer;font-size:14px;color:#718096;font-weight:500;border:none;background:#fff;font-family:inherit;touch-action:manipulation';
   cancel.textContent='Cancel';
-  cancel.addEventListener('pointerup',e=>{e.preventDefault();overlay.remove()});
+  cancel.addEventListener('click',e=>{e.stopPropagation();overlay.remove()});
   box.appendChild(cancel);
   overlay.appendChild(box);
   overlay.addEventListener('click',e=>{if(e.target===overlay)overlay.remove()});
@@ -587,7 +587,6 @@ function openStatusModal(pid){
 }
 function closeStatusModal(){const m=document.getElementById('status-modal');if(m)m.remove()}
 function doSetStatus(pid,s){closeStatusModal();const p=pts.find(x=>x.id==pid);if(p){p.status=s;upsertPt(p);}renderAll()}
-let _statusTouching=false;
 function handleStatusBtn(e){
   const btn=e.target.closest('.status-btn');
   if(!btn)return;
@@ -596,7 +595,7 @@ function handleStatusBtn(e){
   const pid=btn.getAttribute('data-pid');
   openStatusModal(pid);
 }
-document.addEventListener('pointerup',handleStatusBtn,{capture:true});
+document.addEventListener('click',handleStatusBtn,true);
 function dcBadge(t){return{dc:'<span class="dcb dcc">D/C</span>',death:'<span class="dcb dcd">Death</span>',refer:'<span class="dcb dcr">Refer</span>'}[t]||''}
 function dcWorkH(p){if(!p.dcWork||!p.dcWork.length)return`<span style="font-size:12px;color:#cbd5e0">—</span>`;return`<div class="tl">${p.dcWork.map((it,i)=>`<div class="tr2${it.done?' done':''}" onclick="togDCW(${p.id},${i})"><input type="checkbox" ${it.done?'checked':''} onclick="event.stopPropagation();togDCW(${p.id},${i})"><span class="ttext">${it.t}</span></div>`).join('')}</div>`}
 function togDCW(pid,idx){const p=pts.find(x=>x.id===pid);if(p&&p.dcWork[idx]){p.dcWork[idx].done=!p.dcWork[idx].done;upsertPt(p);}renderAll()}
