@@ -114,6 +114,7 @@ tr:hover td{background:#fafbfd}
 .fg input:focus,.fg select:focus,.fg textarea:focus{outline:none;border-color:#90CDF4;box-shadow:0 0 0 3px rgba(144,205,244,.15)}
 .fg textarea{resize:none;line-height:1.75;tab-size:4}
 .frow{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:768px){.frow{grid-template-columns:1fr}}
 .seclbl{font-size:11px;font-weight:700;color:#a0aec0;letter-spacing:.8px;text-transform:uppercase;margin:18px 0 8px;display:flex;align-items:center;gap:6px}
 .seclbl::after{content:'';flex:1;height:1px;background:#f0f4f8}
 .det-card{border:1px solid #e2e8f0;border-radius:10px;background:#fafbfd;padding:14px;margin-bottom:4px}
@@ -560,7 +561,7 @@ function openStatusModal(pid){
   ];
   opts.forEach(o=>{
     const row=document.createElement('div');
-    row.style.cssText='padding:18px;display:flex;align-items:center;gap:10px;cursor:pointer;border-bottom:1px solid #f0f4f8;-webkit-tap-highlight-color:rgba(0,0,0,0.1);touch-action:manipulation;user-select:none;-webkit-user-select:none';
+    row.style.cssText='padding:18px;display:flex;align-items:center;gap:10px;cursor:pointer;border-bottom:1px solid #f0f4f8;touch-action:manipulation;user-select:none;-webkit-user-select:none';
     row.innerHTML=o.html;
     const handler=function(e){
       e.preventDefault();
@@ -572,15 +573,13 @@ function openStatusModal(pid){
       const det=document.getElementById('detM');
       if(det&&det.classList.contains('open')&&p)openDet(p.id);
     };
-    row.addEventListener('click',handler);
-    row.addEventListener('touchend',handler,{passive:false});
+    row.addEventListener('pointerup',handler);
     box.appendChild(row);
   });
   const cancel=document.createElement('div');
   cancel.style.cssText='padding:16px 18px;text-align:center;cursor:pointer;font-size:14px;color:#718096;font-weight:500';
   cancel.textContent='Cancel';
-  cancel.addEventListener('click',()=>overlay.remove());
-  cancel.addEventListener('touchend',e=>{e.preventDefault();overlay.remove()},{passive:false});
+  cancel.addEventListener('pointerup',e=>{e.preventDefault();overlay.remove()});
   box.appendChild(cancel);
   overlay.appendChild(box);
   overlay.addEventListener('click',e=>{if(e.target===overlay)overlay.remove()});
@@ -592,22 +591,12 @@ let _statusTouching=false;
 function handleStatusBtn(e){
   const btn=e.target.closest('.status-btn');
   if(!btn)return;
-  if(e.type==='touchend'){
-    _statusTouching=true;
-    setTimeout(()=>_statusTouching=false,500);
-    e.preventDefault();
-    e.stopPropagation();
-    const pid=btn.getAttribute('data-pid');
-    openStatusModal(pid);
-  } else if(e.type==='click'&&!_statusTouching){
-    e.preventDefault();
-    e.stopPropagation();
-    const pid=btn.getAttribute('data-pid');
-    openStatusModal(pid);
-  }
+  e.preventDefault();
+  e.stopPropagation();
+  const pid=btn.getAttribute('data-pid');
+  openStatusModal(pid);
 }
-document.addEventListener('click',handleStatusBtn,true);
-document.addEventListener('touchend',handleStatusBtn,{passive:false,capture:true});
+document.addEventListener('pointerup',handleStatusBtn,{capture:true});
 function dcBadge(t){return{dc:'<span class="dcb dcc">D/C</span>',death:'<span class="dcb dcd">Death</span>',refer:'<span class="dcb dcr">Refer</span>'}[t]||''}
 function dcWorkH(p){if(!p.dcWork||!p.dcWork.length)return`<span style="font-size:12px;color:#cbd5e0">—</span>`;return`<div class="tl">${p.dcWork.map((it,i)=>`<div class="tr2${it.done?' done':''}" onclick="togDCW(${p.id},${i})"><input type="checkbox" ${it.done?'checked':''} onclick="event.stopPropagation();togDCW(${p.id},${i})"><span class="ttext">${it.t}</span></div>`).join('')}</div>`}
 function togDCW(pid,idx){const p=pts.find(x=>x.id===pid);if(p&&p.dcWork[idx]){p.dcWork[idx].done=!p.dcWork[idx].done;upsertPt(p);}renderAll()}
