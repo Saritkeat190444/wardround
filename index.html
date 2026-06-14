@@ -543,7 +543,7 @@ function todoH(items,pid,type){if(!items.length)return`<span style="font-size:12
 function sbadge(s,pid){
   const map={stable:{cls:'bs',icon:'✓',label:'Stable'},critical:{cls:'bc',icon:'⚠',label:'Critical'},notify:{cls:'bn',icon:'🔔',label:'Notify staff'}};
   const m=map[s]||map.stable;
-  return`<button class="bdg ${m.cls} status-btn" data-pid="${pid}" type="button" style="cursor:pointer;border:none;font-family:inherit;font-size:12px">${m.icon} ${m.label} ▾</button>`;
+  return`<button class="bdg ${m.cls} status-btn" data-pid="${pid}" type="button" onclick="event.stopPropagation();openStatusModal('${pid}')" style="cursor:pointer;border:none;font-family:inherit;font-size:12px">${m.icon} ${m.label} ▾</button>`;
 }
 function openStatusModal(pid){
   const existing=document.getElementById('status-modal');
@@ -587,15 +587,7 @@ function openStatusModal(pid){
 }
 function closeStatusModal(){const m=document.getElementById('status-modal');if(m)m.remove()}
 function doSetStatus(pid,s){closeStatusModal();const p=pts.find(x=>x.id==pid);if(p){p.status=s;upsertPt(p);}renderAll()}
-function handleStatusBtn(e){
-  const btn=e.target.closest('.status-btn');
-  if(!btn)return;
-  e.preventDefault();
-  e.stopPropagation();
-  const pid=btn.getAttribute('data-pid');
-  openStatusModal(pid);
-}
-document.addEventListener('click',handleStatusBtn,true);
+// Status handled via inline onclick with stopPropagation
 function dcBadge(t){return{dc:'<span class="dcb dcc">D/C</span>',death:'<span class="dcb dcd">Death</span>',refer:'<span class="dcb dcr">Refer</span>'}[t]||''}
 function dcWorkH(p){if(!p.dcWork||!p.dcWork.length)return`<span style="font-size:12px;color:#cbd5e0">—</span>`;return`<div class="tl">${p.dcWork.map((it,i)=>`<div class="tr2${it.done?' done':''}" onclick="togDCW(${p.id},${i})"><input type="checkbox" ${it.done?'checked':''} onclick="event.stopPropagation();togDCW(${p.id},${i})"><span class="ttext">${it.t}</span></div>`).join('')}</div>`}
 function togDCW(pid,idx){const p=pts.find(x=>x.id===pid);if(p&&p.dcWork[idx]){p.dcWork[idx].done=!p.dcWork[idx].done;upsertPt(p);}renderAll()}
@@ -621,7 +613,7 @@ function renderMain(){
           <div class="pt-card-name"><a class="nlink" onclick="openDet(${p.id})">${p.name}</a></div>
           <div class="pt-card-hn">${p.hn} · ${fmt(p.adm)}</div>
         </div>
-        ${sbadge(p.status,p.id+'m')}
+        ${sbadge(p.status,p.id)}
       </div>
       <div class="pt-card-chips">
         ${wardPill(p.ward)}
