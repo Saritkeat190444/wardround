@@ -947,6 +947,7 @@ function openEditConsult(id){
   document.getElementById('addM').dataset.editid=id;
   document.getElementById('addM').classList.add('open');
 }
+function openTransferConsult(id){
   transferConsultId=id;transferWardSel='';
   const list=document.getElementById('transfer-ward-list');
   list.innerHTML=wards.map(w=>`<div class="transfer-ward-opt" onclick="selTransferWard('${w.name.replace(/'/g,"\\'")}',this)" style="padding:12px 14px;border:1px solid #e2e8f0;border-radius:8px;cursor:pointer;display:flex;align-items:center;gap:8px"><span class="wpill" style="background:${w.color}">${w.emoji} ${w.name}</span></div>`).join('');
