@@ -276,10 +276,23 @@ tr:hover td{background:#fafbfd}
 
 <!-- WARD WORK PANE -->
 <div class="pane" id="pane-ww" style="display:none">
-  <div class="card"><div class="tbl-scroll">
+  <div class="filter-bar">
+    <span class="filter-lbl">Filter</span>
+    <div class="fdrop" id="wfw">
+      <button class="fchip" onclick="tfd('wfw')"><i class="ti ti-building-hospital" style="font-size:12px"></i> <span id="wfw-lbl">All wards</span> <i class="ti ti-chevron-down" style="font-size:11px"></i></button>
+      <div class="fdrop-menu" id="wfw-dd"></div>
+    </div>
+    <div class="fdrop" id="wfs">
+      <button class="fchip" onclick="tfd('wfs')"><i class="ti ti-user" style="font-size:12px"></i> <span id="wfs-lbl">All staff</span> <i class="ti ti-chevron-down" style="font-size:11px"></i></button>
+      <div class="fdrop-menu" id="wfs-dd"></div>
+    </div>
+    <button class="fchip" id="wfc-clear" onclick="clearWWFilters()" style="display:none;color:#C53030;border-color:#FEB2B2"><i class="ti ti-x" style="font-size:11px"></i> Clear</button>
+  </div>
+  <div class="card desktop-only"><div class="tbl-scroll">
     <table><thead><tr><th>Patient</th><th>HN</th><th>Bed</th><th>Ward</th><th>Pending tasks</th></tr></thead>
     <tbody id="ww-tb"></tbody></table>
   </div></div>
+  <div class="mobile-only" id="ww-mobile"></div>
 </div>
 
 <div class="pane" id="pane-consult" style="display:none">
@@ -317,10 +330,23 @@ tr:hover td{background:#fafbfd}
 
 <!-- DC TODAY PANE -->
 <div class="pane" id="pane-dc" style="display:none">
-  <div class="card"><div class="tbl-scroll">
+  <div class="filter-bar">
+    <span class="filter-lbl">Filter</span>
+    <div class="fdrop" id="dfw">
+      <button class="fchip" onclick="tfd('dfw')"><i class="ti ti-building-hospital" style="font-size:12px"></i> <span id="dfw-lbl">All wards</span> <i class="ti ti-chevron-down" style="font-size:11px"></i></button>
+      <div class="fdrop-menu" id="dfw-dd"></div>
+    </div>
+    <div class="fdrop" id="dfs">
+      <button class="fchip" onclick="tfd('dfs')"><i class="ti ti-user" style="font-size:12px"></i> <span id="dfs-lbl">All staff</span> <i class="ti ti-chevron-down" style="font-size:11px"></i></button>
+      <div class="fdrop-menu" id="dfs-dd"></div>
+    </div>
+    <button class="fchip" id="dfc-clear" onclick="clearDCFilters()" style="display:none;color:#C53030;border-color:#FEB2B2"><i class="ti ti-x" style="font-size:11px"></i> Clear</button>
+  </div>
+  <div class="card desktop-only"><div class="tbl-scroll">
     <table><thead><tr><th>Name</th><th>HN</th><th>Ward / Bed</th><th>Transfer</th><th>D/C checklist</th><th>Med cert</th></tr></thead>
     <tbody id="dc-tb"></tbody></table>
   </div></div>
+  <div class="mobile-only" id="dc-mobile"></div>
 </div>
 
 <!-- HISTORY PANE -->
@@ -501,6 +527,8 @@ const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 const COLORS=['#378ADD','#276749','#9B2C2C','#744210','#553C9A','#97266D','#2C7A7B','#2D3748','#E9982A'];
 let mgColor=COLORS[0],wards=[],staffList=[],pts=[],eid=null,trid=null,trSel='',mgType='',sk='ward',sd=1,deleteId=null;
 let filterWard='',filterStaff='';
+let wwFilterWard='',wwFilterStaff='';
+let dcFilterWard='',dcFilterStaff='';
 
 function showSaved(){const e=document.getElementById('sav');e.classList.add('show');setTimeout(()=>e.classList.remove('show'),2000)}
 async function loadAll(){
@@ -575,26 +603,54 @@ function tfd(id){
   if(!isOpen){buildFdd(id);dd.classList.add('open')}
 }
 function buildFdd(id){
-  const dd=document.getElementById(id+'-dd');
-  const isWard=id==='fw'||id==='cfw';
-  const isConsult=id==='cfw'||id==='cfs';
-  const srcPts=isConsult?consults:pts.filter(p=>!p.tr);
-  const list=isWard?[...new Set(srcPts.map(p=>p.ward))]:[...new Set(srcPts.map(p=>p.staff))];
-  const cur=id==='fw'?filterWard:id==='fs'?filterStaff:id==='cfw'?cFilterWard:cFilterStaff;
-  const allLabel=isWard?'All wards':'All staff';
+  const dd=document.getElementById(id+'-dd');if(!dd)return;
+  const isWard=['fw','cfw','wfw','dfw'].includes(id);
+  const isConsult=['cfw','cfs'].includes(id);
+  const isWW=['wfw','wfs'].includes(id);
+  const isDC=['dfw','dfs'].includes(id);
+  let srcPts;
+  if(isConsult)srcPts=consults;
+  else if(isWW)srcPts=pts.filter(p=>!p.tr);
+  else if(isDC)srcPts=pts.filter(p=>p.tr&&p.dcDate===toDay());
+  else srcPts=pts.filter(p=>!p.tr);
+  const list=isWard?[...new Set(srcPts.map(p=>p.ward))].filter(Boolean):[...new Set(srcPts.map(p=>p.staff))].filter(Boolean);
+  const curMap={fw:filterWard,fs:filterStaff,cfw:cFilterWard,cfs:cFilterStaff,wfw:wwFilterWard,wfs:wwFilterStaff,dfw:dcFilterWard,dfs:dcFilterStaff};
+  const cur=curMap[id]||'';
   dd.innerHTML=`<div class="fdrop-opt${!cur?' sel':''}" onclick="setFilter('${id}','')">All ${isWard?'wards':'staff'}</div>`+
   list.map(v=>`<div class="fdrop-opt${cur===v?' sel':''}" onclick="setFilter('${id}','${v.replace(/'/g,"\\'")}')">
     ${isWard?wardPill(v):staffPill(v)}
   </div>`).join('');
 }
 function setFilter(id,val){
-  if(id==='fw'){filterWard=val;document.getElementById('fw-lbl').textContent=val||'All wards';const a=filterWard||filterStaff;document.getElementById('fc-clear').style.display=a?'inline-flex':'none';renderMain();}
-  else if(id==='fs'){filterStaff=val;document.getElementById('fs-lbl').textContent=val||'All staff';const a=filterWard||filterStaff;document.getElementById('fc-clear').style.display=a?'inline-flex':'none';renderMain();}
-  else if(id==='cfw'){cFilterWard=val;document.getElementById('cfw-lbl').textContent=val||'All wards';const a=cFilterWard||cFilterStaff;const cl=document.getElementById('cfc-clear');if(cl)cl.style.display=a?'inline-flex':'none';renderConsult();}
-  else if(id==='cfs'){cFilterStaff=val;document.getElementById('cfs-lbl').textContent=val||'All staff';const a=cFilterWard||cFilterStaff;const cl=document.getElementById('cfc-clear');if(cl)cl.style.display=a?'inline-flex':'none';renderConsult();}
+  const lblMap={fw:'fw-lbl',fs:'fs-lbl',cfw:'cfw-lbl',cfs:'cfs-lbl',wfw:'wfw-lbl',wfs:'wfs-lbl',dfw:'dfw-lbl',dfs:'dfs-lbl'};
+  const clearMap={fw:'fc-clear',fs:'fc-clear',cfw:'cfc-clear',cfs:'cfc-clear',wfw:'wfc-clear',wfs:'wfc-clear',dfw:'dfc-clear',dfs:'dfc-clear'};
+  const el=document.getElementById(lblMap[id]);if(el)el.textContent=val||((['fw','cfw','wfw','dfw'].includes(id))?'All wards':'All staff');
+  if(id==='fw'){filterWard=val;}
+  else if(id==='fs'){filterStaff=val;}
+  else if(id==='cfw'){cFilterWard=val;}
+  else if(id==='cfs'){cFilterStaff=val;}
+  else if(id==='wfw'){wwFilterWard=val;}
+  else if(id==='wfs'){wwFilterStaff=val;}
+  else if(id==='dfw'){dcFilterWard=val;}
+  else if(id==='dfs'){dcFilterStaff=val;}
+  const cl=document.getElementById(clearMap[id]);
+  if(cl){
+    let show=false;
+    if(['fw','fs'].includes(id))show=!!(filterWard||filterStaff);
+    else if(['cfw','cfs'].includes(id))show=!!(cFilterWard||cFilterStaff);
+    else if(['wfw','wfs'].includes(id))show=!!(wwFilterWard||wwFilterStaff);
+    else if(['dfw','dfs'].includes(id))show=!!(dcFilterWard||dcFilterStaff);
+    cl.style.display=show?'inline-flex':'none';
+  }
   document.querySelectorAll('.fdrop-menu').forEach(x=>x.classList.remove('open'));
+  if(['fw','fs'].includes(id))renderMain();
+  else if(['cfw','cfs'].includes(id))renderConsult();
+  else if(['wfw','wfs'].includes(id))renderWW();
+  else if(['dfw','dfs'].includes(id))renderDC();
 }
 function clearFilters(){filterWard='';filterStaff='';document.getElementById('fw-lbl').textContent='All wards';document.getElementById('fs-lbl').textContent='All staff';document.getElementById('fc-clear').style.display='none';renderMain()}
+function clearWWFilters(){wwFilterWard='';wwFilterStaff='';document.getElementById('wfw-lbl').textContent='All wards';document.getElementById('wfs-lbl').textContent='All staff';document.getElementById('wfc-clear').style.display='none';renderWW()}
+function clearDCFilters(){dcFilterWard='';dcFilterStaff='';document.getElementById('dfw-lbl').textContent='All wards';document.getElementById('dfs-lbl').textContent='All staff';document.getElementById('dfc-clear').style.display='none';renderDC()}
 document.addEventListener('click',e=>{if(!e.target.closest('.fdrop'))document.querySelectorAll('.fdrop-menu').forEach(x=>x.classList.remove('open'))});
 
 function todoH(items,pid,type){if(!items.length)return`<span style="font-size:12px;color:#cbd5e0">—</span>`;return`<div class="tl">${[...items].reverse().map((it,ri)=>{const i=items.length-1-ri;return`<div class="tr2${it.done?' done':''}" onclick="tog(${pid},'${type}',${i})"><input type="checkbox" ${it.done?'checked':''} onclick="event.stopPropagation();tog(${pid},'${type}',${i})"><span class="ttext">${it.t}<span class="td2">(${it.d})</span></span></div>`}).join('')}</div>`}
@@ -690,17 +746,76 @@ function items_real_idx(arr,i){return i}
 
 function renderWW(){
   const tb=document.getElementById('ww-tb');
-  const rows=pts.filter(p=>!p.tr).map(p=>({p,pending:p.ww.filter(x=>!x.done)})).filter(r=>r.pending.length);
+  const allRows=pts.filter(p=>!p.tr).map(p=>({p,pending:p.ww.filter(x=>!x.done)})).filter(r=>r.pending.length);
+  const rows=allRows.filter(({p})=>{
+    if(wwFilterWard&&p.ward!==wwFilterWard)return false;
+    if(wwFilterStaff&&p.staff!==wwFilterStaff)return false;
+    return true;
+  });
   const tot=rows.reduce((s,r)=>s+r.pending.length,0);
-  ['wwb','wwb2'].forEach(id=>{const b=document.getElementById(id);if(b){b.style.display=tot?'inline':'none';if(tot)b.textContent=tot}});
-  if(!rows.length){tb.innerHTML=`<tr><td colspan="5"><div class="empty">All ward work completed</div></td></tr>`;return}
-  tb.innerHTML=rows.map(({p,pending})=>`<tr><td><a class="nlink" onclick="openDet(${p.id})">${p.name}</a></td><td class="hn">${p.hn}</td><td><b>${p.bed}</b></td><td>${wardPill(p.ward)}</td><td><div class="tl">${pending.map(it=>`<div class="tr2" onclick="togByT(${p.id},'${it.t.replace(/'/g,"\\'")}')"><input type="checkbox" onclick="event.stopPropagation();togByT(${p.id},'${it.t.replace(/'/g,"\\'")}')"><span class="ttext">${it.t}<span class="td2">(${it.d})</span></span></div>`).join('')}</div></td></tr>`).join('')}
+  ['wwb','wwb2'].forEach(id=>{const b=document.getElementById(id);if(b){b.style.display=allRows.reduce((s,r)=>s+r.pending.length,0)?'inline':'none';if(allRows.length)b.textContent=allRows.reduce((s,r)=>s+r.pending.length,0)}});
+  // Desktop table
+  if(tb){
+    if(!rows.length)tb.innerHTML=`<tr><td colspan="5"><div class="empty">All ward work completed</div></td></tr>`;
+    else tb.innerHTML=rows.map(({p,pending})=>`<tr><td><a class="nlink" onclick="openDet(${p.id})">${p.name}</a></td><td class="hn">${p.hn}</td><td><b>${p.bed}</b></td><td>${wardPill(p.ward)}</td><td><div class="tl">${pending.map(it=>`<div class="tr2" onclick="togByT(${p.id},'${it.t.replace(/'/g,"\\'")}')"><input type="checkbox" onclick="event.stopPropagation();togByT(${p.id},'${it.t.replace(/'/g,"\\'")}')"><span class="ttext">${it.t}<span class="td2">(${it.d})</span></span></div>`).join('')}</div></td></tr>`).join('');
+  }
+  // Mobile cards
+  const mc=document.getElementById('ww-mobile');
+  if(mc){
+    if(!rows.length)mc.innerHTML=`<div class="empty">All ward work completed</div>`;
+    else mc.innerHTML=rows.map(({p,pending})=>`
+      <div class="pt-card-mobile">
+        <div class="pt-card-top">
+          <div>
+            <div class="pt-card-name"><a class="nlink" onclick="openDet(${p.id})">${p.name}</a></div>
+            <div class="pt-card-hn">${p.hn}</div>
+          </div>
+          ${wardPill(p.ward)}
+        </div>
+        <div class="pt-card-chips"><span class="ichip">Bed ${p.bed}</span>${staffPill(p.staff)}</div>
+        <div class="pt-todo-box" style="margin-top:6px">
+          <div class="pt-todo-lbl">Pending ward work (${pending.length})</div>
+          ${pending.map(it=>`<div class="tr2" onclick="togByT(${p.id},'${it.t.replace(/'/g,"\\'")}')"><input type="checkbox" onclick="event.stopPropagation();togByT(${p.id},'${it.t.replace(/'/g,"\\'")}')"><span class="ttext">${it.t}<span class="td2">(${it.d})</span></span></div>`).join('')}
+        </div>
+      </div>`).join('');
+  }
+}
 function renderDC(){
   const tb=document.getElementById('dc-tb');
-  const ps=pts.filter(p=>p.tr&&p.dcDate===toDay());
-  ['dcb','dcb2'].forEach(id=>{const b=document.getElementById(id);if(b){b.style.display=ps.length?'inline':'none';if(ps.length)b.textContent=ps.length}});
-  if(!ps.length){tb.innerHTML=`<tr><td colspan="6"><div class="empty">No transfers today</div></td></tr>`;return}
-  tb.innerHTML=ps.map(p=>`<tr><td><a class="nlink" onclick="openDet(${p.id})">${p.name}</a></td><td class="hn">${p.hn}</td><td>${wardPill(p.ward)} / <b>${p.bed}</b></td><td>${dcBadge(p.trType)}</td><td>${dcWorkH(p)}</td><td>${p.mc?'<span class="bdg bn">Required</span>':'<span style="font-size:12px;color:#cbd5e0">—</span>'}</td></tr>`).join('')}
+  const allPs=pts.filter(p=>p.tr&&p.dcDate===toDay());
+  const ps=allPs.filter(p=>{
+    if(dcFilterWard&&p.ward!==dcFilterWard)return false;
+    if(dcFilterStaff&&p.staff!==dcFilterStaff)return false;
+    return true;
+  });
+  ['dcb','dcb2'].forEach(id=>{const b=document.getElementById(id);if(b){b.style.display=allPs.length?'inline':'none';if(allPs.length)b.textContent=allPs.length}});
+  // Desktop table
+  if(tb){
+    if(!ps.length)tb.innerHTML=`<tr><td colspan="6"><div class="empty">No transfers today</div></td></tr>`;
+    else tb.innerHTML=ps.map(p=>`<tr><td><a class="nlink" onclick="openDet(${p.id})">${p.name}</a></td><td class="hn">${p.hn}</td><td>${wardPill(p.ward)} / <b>${p.bed}</b></td><td>${dcBadge(p.trType)}</td><td>${dcWorkH(p)}</td><td>${p.mc?'<span class="bdg bn">Required</span>':'<span style="font-size:12px;color:#cbd5e0">—</span>'}</td></tr>`).join('');
+  }
+  // Mobile cards
+  const mc=document.getElementById('dc-mobile');
+  if(mc){
+    if(!ps.length)mc.innerHTML=`<div class="empty">No transfers today</div>`;
+    else mc.innerHTML=ps.map(p=>`
+      <div class="pt-card-mobile">
+        <div class="pt-card-top">
+          <div>
+            <div class="pt-card-name"><a class="nlink" onclick="openDet(${p.id})">${p.name}</a></div>
+            <div class="pt-card-hn">${p.hn}</div>
+          </div>
+          ${dcBadge(p.trType)}
+        </div>
+        <div class="pt-card-chips">${wardPill(p.ward)}<span class="ichip">Bed ${p.bed}</span>${staffPill(p.staff)}</div>
+        ${p.mc?'<div style="margin-top:4px"><span class="bdg bn">Med cert required</span></div>':''}
+        <div class="pt-todo-box" style="margin-top:8px">
+          <div class="pt-todo-lbl">D/C checklist</div>
+          ${dcWorkH(p)}
+        </div>
+      </div>`).join('');
+  }
+}
 function renderHist(){
   const tb=document.getElementById('hist-tb');
   const ps=pts.filter(p=>p.tr&&p.dcDate!==toDay()).sort((a,b)=>a.dcDate<b.dcDate?1:-1);
@@ -1013,7 +1128,20 @@ function copyCPt(pid){
   const p=consults.find(x=>x.id===pid);if(!p)return;saveCDetTA(pid);
   const sep='────────────';
   const probLines=p.probs.map((pr,i)=>{const title=(p.probTitles&&p.probTitles[i])||('Problem '+(i+1));return`${i+1}. ${title}\n${pr.trim()}`}).join('\n\n');
-  let o=`[CONSULT]\nWard: ${p.ward} · Bed: ${p.bed} · Staff: ${p.staff}\nHN: ${p.hn} · Name: ${p.name} · Age: ${p.age} · Sex: ${p.sex==='M'?'Male':'Female'}\nU/D: ${p.ud}${p.allergy?` · Allergy: ${p.allergy}`:''}\n\n${sep}\nProblems / Diagnosis\n${sep}\n${probLines||'—'}\n\n${sep}\nPlan\n${sep}\n${p.pl.length?p.pl.map(x=>`[${x.done?'✓':' '}] ${x.t} (${x.d})`).join('\n'):'—'}`;
+  let o=`[CONSULT]\n`;
+  o+=`Admission date  : ${fmt(p.adm)}\n`;
+  o+=`Ward            : ${p.ward}\n`;
+  o+=`Bed             : ${p.bed}\n`;
+  o+=`Attending staff : ${p.staff}\n`;
+  o+=`HN              : ${p.hn}\n`;
+  o+=`Name            : ${p.name}\n`;
+  o+=`Sex             : ${p.sex==='M'?'Male':'Female'}\n`;
+  o+=`Age             : ${p.age} years\n`;
+  o+=`Underlying      : ${p.ud||'—'}\n`;
+  if(p.allergy)o+=`Allergy         : ${p.allergy}\n`;
+  o+=`Diagnosis       : ${p.diag||'—'}\n`;
+  o+=`\n${sep}\nProblems / Diagnosis\n${sep}\n${probLines||'—'}\n`;
+  o+=`\n${sep}\nPlan\n${sep}\n${p.pl.length?p.pl.map(x=>`[${x.done?'✓':' '}] ${x.t} (${x.d})`).join('\n'):'—'}`;
   const btn=document.getElementById('ccpbtn-'+pid);
   const flash=()=>{if(btn){const orig=btn.innerHTML;btn.innerHTML='✓ Copied!';btn.style.background='#276749';setTimeout(()=>{btn.innerHTML=orig;btn.style.background=''},2000)}};
   try{navigator.clipboard.writeText(o).then(flash)}catch(e){const t2=document.createElement('textarea');t2.value=o;t2.style.cssText='position:fixed;opacity:0;top:0;left:0';document.body.appendChild(t2);t2.select();document.execCommand('copy');document.body.removeChild(t2);flash()}
