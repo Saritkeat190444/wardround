@@ -576,21 +576,23 @@ function tfd(id){
 }
 function buildFdd(id){
   const dd=document.getElementById(id+'-dd');
-  const isWard=id==='fw';
-  const list=isWard?[...new Set(pts.filter(p=>!p.tr).map(p=>p.ward))]:[...new Set(pts.filter(p=>!p.tr).map(p=>p.staff))];
-  const cur=isWard?filterWard:filterStaff;
+  const isWard=id==='fw'||id==='cfw';
+  const isConsult=id==='cfw'||id==='cfs';
+  const srcPts=isConsult?consults:pts.filter(p=>!p.tr);
+  const list=isWard?[...new Set(srcPts.map(p=>p.ward))]:[...new Set(srcPts.map(p=>p.staff))];
+  const cur=id==='fw'?filterWard:id==='fs'?filterStaff:id==='cfw'?cFilterWard:cFilterStaff;
+  const allLabel=isWard?'All wards':'All staff';
   dd.innerHTML=`<div class="fdrop-opt${!cur?' sel':''}" onclick="setFilter('${id}','')">All ${isWard?'wards':'staff'}</div>`+
   list.map(v=>`<div class="fdrop-opt${cur===v?' sel':''}" onclick="setFilter('${id}','${v.replace(/'/g,"\\'")}')">
     ${isWard?wardPill(v):staffPill(v)}
   </div>`).join('');
 }
 function setFilter(id,val){
-  if(id==='fw'){filterWard=val;document.getElementById('fw-lbl').textContent=val||'All wards';}
-  else{filterStaff=val;document.getElementById('fs-lbl').textContent=val||'All staff';}
-  const anyFilter=filterWard||filterStaff;
-  document.getElementById('fc-clear').style.display=anyFilter?'inline-flex':'none';
+  if(id==='fw'){filterWard=val;document.getElementById('fw-lbl').textContent=val||'All wards';const a=filterWard||filterStaff;document.getElementById('fc-clear').style.display=a?'inline-flex':'none';renderMain();}
+  else if(id==='fs'){filterStaff=val;document.getElementById('fs-lbl').textContent=val||'All staff';const a=filterWard||filterStaff;document.getElementById('fc-clear').style.display=a?'inline-flex':'none';renderMain();}
+  else if(id==='cfw'){cFilterWard=val;document.getElementById('cfw-lbl').textContent=val||'All wards';const a=cFilterWard||cFilterStaff;const cl=document.getElementById('cfc-clear');if(cl)cl.style.display=a?'inline-flex':'none';renderConsult();}
+  else if(id==='cfs'){cFilterStaff=val;document.getElementById('cfs-lbl').textContent=val||'All staff';const a=cFilterWard||cFilterStaff;const cl=document.getElementById('cfc-clear');if(cl)cl.style.display=a?'inline-flex':'none';renderConsult();}
   document.querySelectorAll('.fdrop-menu').forEach(x=>x.classList.remove('open'));
-  renderMain();
 }
 function clearFilters(){filterWard='';filterStaff='';document.getElementById('fw-lbl').textContent='All wards';document.getElementById('fs-lbl').textContent='All staff';document.getElementById('fc-clear').style.display='none';renderMain()}
 document.addEventListener('click',e=>{if(!e.target.closest('.fdrop'))document.querySelectorAll('.fdrop-menu').forEach(x=>x.classList.remove('open'))});
@@ -812,6 +814,12 @@ async function savePt(){
     consults.push(np);await upsertConsult(np);
     document.getElementById('addM').dataset.mode='';
     closeM('addM');renderConsult();
+  } else if(mode==='consult-edit'){
+    const cid=parseInt(document.getElementById('addM').dataset.editid);
+    const p=consults.find(x=>x.id===cid);
+    if(p){Object.assign(p,v);await upsertConsult(p);}
+    document.getElementById('addM').dataset.mode='';
+    closeM('addM');renderConsult();
   } else {
     if(eid){Object.assign(pts.find(x=>x.id===eid),v);await upsertPt(pts.find(x=>x.id===eid));}
     else{const np={id:null,...v,ww:[],pl:[],prog:[],probs:[''],probTitles:['Problem 1'],tr:false,trType:'',mc:false,dcDate:'',dcWork:[]};pts.push(np);await upsertPt(np);}
@@ -894,7 +902,7 @@ function renderConsult(){
       <td style="font-size:12px;max-width:90px">${p.diag}</td>
       <td>${todoH(p.ww,p.id,'cww')}</td><td>${todoH(p.pl,p.id,'cpl')}</td>
       <td>${sbadge(p.status,p.id)}</td>
-      <td><button class="btn sm pri" onclick="openTransferConsult(${p.id})" style="white-space:nowrap"><i class="ti ti-transfer" style="font-size:12px"></i> Transfer</button></td>
+      <td><button class="btn sm" onclick="openTransferConsult(${p.id})" style="white-space:nowrap;background:#E9982A;color:#fff;border-color:#E9982A;font-weight:500"><i class="ti ti-transfer" style="font-size:12px"></i> Transfer</button></td>
     </tr>`).join('');
   }
   const mc=document.getElementById('consult-mobile-cards');
@@ -912,7 +920,7 @@ function renderConsult(){
           <div class="pt-todo-box"><div class="pt-todo-lbl">Ward work${wwPending.length?` (${wwPending.length})`:''}</div>${wwH||'<span style="font-size:11px;color:#cbd5e0">—</span>'}</div>
           <div class="pt-todo-box"><div class="pt-todo-lbl">Plan${plPending.length?` (${plPending.length})`:''}</div>${plH||'<span style="font-size:11px;color:#cbd5e0">—</span>'}</div>
         </div>
-        <button class="btn pri sm" onclick="openTransferConsult(${p.id})" style="width:100%;justify-content:center;margin-top:10px"><i class="ti ti-transfer" style="font-size:13px"></i> Transfer to ward</button>
+        <button class="btn sm" onclick="openTransferConsult(${p.id})" style="width:100%;justify-content:center;margin-top:10px;background:#E9982A;color:#fff;border-color:#E9982A;font-weight:500"><i class="ti ti-transfer" style="font-size:13px"></i> Transfer to ward</button>
       </div>`;
     }).join('');
   }
@@ -920,7 +928,25 @@ function renderConsult(){
 
 function togC(pid,type,idx){const p=consults.find(x=>x.id===pid);if(!p)return;if(type==='cww')p.ww[idx].done=!p.ww[idx].done;else p.pl[idx].done=!p.pl[idx].done;upsertConsult(p);renderConsult()}
 
-function openTransferConsult(id){
+function openEditConsult(id){
+  const p=consults.find(x=>x.id===id);if(!p)return;
+  document.getElementById('addM-t').textContent='Edit consult patient';
+  document.getElementById('f-adm').value=p.adm;
+  document.getElementById('f-hn').value=p.hn;
+  document.getElementById('f-bed').value=p.bed;
+  document.getElementById('f-name').value=p.name;
+  document.getElementById('f-sex').value=p.sex;
+  document.getElementById('f-age').value=p.age;
+  document.getElementById('f-ud').value=p.ud;
+  document.getElementById('f-allergy').value=p.allergy||'';
+  document.getElementById('f-diag').value=p.diag;
+  document.getElementById('f-status').value=p.status;
+  document.getElementById('csw-ward-v').textContent=p.ward;
+  document.getElementById('csw-staff-v').textContent=p.staff;
+  document.getElementById('addM').dataset.mode='consult-edit';
+  document.getElementById('addM').dataset.editid=id;
+  document.getElementById('addM').classList.add('open');
+}
   transferConsultId=id;transferWardSel='';
   const list=document.getElementById('transfer-ward-list');
   list.innerHTML=wards.map(w=>`<div class="transfer-ward-opt" onclick="selTransferWard('${w.name.replace(/'/g,"\\'")}',this)" style="padding:12px 14px;border:1px solid #e2e8f0;border-radius:8px;cursor:pointer;display:flex;align-items:center;gap:8px"><span class="wpill" style="background:${w.color}">${w.emoji} ${w.name}</span></div>`).join('');
@@ -967,8 +993,9 @@ function openConsultDet(id){
     <div class="seclbl">Progress notes</div>
     <div class="det-card">${p.prog.length?p.prog.map(pr=>`<div class="prog-row"><div class="prog-dt">${pr.date}</div><div class="prog-tx">${pr.txt}</div></div>`).join(''):'<p style="font-size:12px;color:#a0aec0;margin-bottom:8px">No progress notes yet.</p>'}<div style="margin-top:8px"><div style="font-size:11px;font-weight:700;color:#718096;margin-bottom:4px;text-transform:uppercase;letter-spacing:.4px">${todF()}</div><textarea id="cnprog" rows="2" placeholder="Enter progress note..." style="width:100%;padding:8px 11px;font-size:13px;border:1px solid #e2e8f0;border-radius:8px;background:#fff;color:#1a202c;font-family:inherit;resize:none"></textarea><button class="btn sm" onclick="addCProg(${p.id})" style="margin-top:6px"><i class="ti ti-plus" style="font-size:13px"></i> Add note</button></div></div>
     <div class="act-row">
-      <button class="btn pri" onclick="openTransferConsult(${p.id});closeM('detM')"><i class="ti ti-transfer" style="font-size:14px"></i> Transfer to ward</button>
-      <button class="btn sm pri" id="ccpbtn-${p.id}" onclick="copyCPt(${p.id})"><i class="ti ti-copy" style="font-size:14px"></i> Copy</button>
+      <button class="btn" style="background:#E9982A;color:#fff;border-color:#E9982A;font-weight:500" onclick="openTransferConsult(${p.id});closeM('detM')"><i class="ti ti-transfer" style="font-size:14px"></i> Transfer to ward</button>
+      <button class="btn pri sm" id="ccpbtn-${p.id}" onclick="copyCPt(${p.id})"><i class="ti ti-copy" style="font-size:14px"></i> Copy as text</button>
+      <button class="btn sm" onclick="closeM('detM');openEditConsult(${p.id})"><i class="ti ti-edit" style="font-size:14px"></i> Edit info</button>
     </div>`;
   document.getElementById('detM').classList.add('open');
   setTimeout(()=>document.querySelectorAll('#det-body textarea').forEach(ta=>autoGrow(ta)),10);
