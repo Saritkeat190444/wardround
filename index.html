@@ -296,10 +296,11 @@ tr:hover td{background:#fafbfd}
 </div>
 
 <div class="pane" id="pane-consult" style="display:none">
-  <div class="toolbar">
+  <div class="toolbar desktop-only">
     <button class="btn pri" onclick="openAddConsult()"><i class="ti ti-plus" style="font-size:14px"></i> Add consult</button>
     <span id="cc" style="font-size:12px;color:#718096;margin-left:4px"></span>
   </div>
+  <span id="cc" class="mobile-only" style="font-size:12px;color:#718096;display:block;margin-bottom:8px"></span>
   <div class="filter-bar">
     <span class="filter-lbl">Filter</span>
     <div class="fdrop" id="cfw">
@@ -377,7 +378,7 @@ tr:hover td{background:#fafbfd}
 </div>
 
 <!-- FAB (mobile) -->
-<button class="fab mobile-only" onclick="openAdd()">+</button>
+<button class="fab mobile-only" id="fab-btn" onclick="fabClick()">+</button>
 
 <!-- MOBILE BOTTOM TABS -->
 <div class="mobile-tabs">
@@ -526,7 +527,11 @@ const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSI
 const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 const COLORS=['#378ADD','#276749','#9B2C2C','#744210','#553C9A','#97266D','#2C7A7B','#2D3748','#E9982A'];
 let mgColor=COLORS[0],wards=[],staffList=[],pts=[],eid=null,trid=null,trSel='',mgType='',sk='ward',sd=1,deleteId=null;
-let filterWard='',filterStaff='';
+let currentTab='main';
+function fabClick(){
+  if(currentTab==='consult')openAddConsult();
+  else openAdd();
+}
 let wwFilterWard='',wwFilterStaff='';
 let dcFilterWard='',dcFilterStaff='';
 
@@ -858,6 +863,7 @@ function renderStats(){
 
 function renderAll(){renderMain();renderWW();renderDC();renderHist();const sp=document.getElementById('pane-stats');if(sp&&sp.style.display!=='none')renderStats()}
 function sw(t){
+  currentTab=t;
   ['main','ww','dc','hist','stats','consult'].forEach(x=>{
     const p=document.getElementById('pane-'+x);if(p)p.style.display=x===t?'block':'none';
     document.querySelectorAll(`[data-tab="${x}"]`).forEach(e=>e.classList.toggle('active',x===t));
