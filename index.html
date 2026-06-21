@@ -169,7 +169,7 @@ tr:hover td{background:#fafbfd}
 .fab{position:fixed;bottom:80px;right:18px;width:52px;height:52px;background:#378ADD;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:24px;box-shadow:0 3px 10px rgba(55,138,221,.4);cursor:pointer;z-index:200;border:none;font-family:inherit}
 .fab:hover{background:#2b6cb0}
 .mobile-tabs{display:none;position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #e2e8f0;height:60px;z-index:100;padding-bottom:env(safe-area-inset-bottom)}
-.mobile-tabs-inner{display:grid;grid-template-columns:repeat(5,1fr);height:100%;width:100%}
+.mobile-tabs-inner{display:grid;grid-template-columns:repeat(6,1fr);height:100%;width:100%}
 .mb-tab{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;color:#a0aec0;cursor:pointer;border:none;background:none;font-family:inherit;padding:0;position:relative;-webkit-tap-highlight-color:transparent;width:100%}
 .mb-tab i{font-size:20px;line-height:1}
 .mb-tab .mb-lbl{font-size:9px;line-height:1;text-align:center;display:block}
@@ -230,6 +230,7 @@ tr:hover td{background:#fafbfd}
 <div class="tabs">
   <div class="tab active" data-tab="main" onclick="sw('main')"><i class="ti ti-layout-grid" style="font-size:13px"></i>Main board</div>
   <div class="tab" data-tab="ww" onclick="sw('ww')"><i class="ti ti-clipboard-list" style="font-size:13px"></i>Ward work<span class="nb" id="wwb" style="display:none"></span></div>
+  <div class="tab" data-tab="consult" onclick="sw('consult')"><i class="ti ti-stethoscope" style="font-size:13px"></i>Consult<span class="nb" id="cb" style="display:none"></span></div>
   <div class="tab" data-tab="dc" onclick="sw('dc')"><i class="ti ti-door-exit" style="font-size:13px"></i>D/C today<span class="nb g" id="dcb" style="display:none"></span></div>
   <div class="tab" data-tab="hist" onclick="sw('hist')"><i class="ti ti-history" style="font-size:13px"></i>D/C records</div>
   <div class="tab" data-tab="stats" onclick="sw('stats')"><i class="ti ti-chart-bar" style="font-size:13px"></i>Statistics</div>
@@ -281,6 +282,39 @@ tr:hover td{background:#fafbfd}
   </div></div>
 </div>
 
+<div class="pane" id="pane-consult" style="display:none">
+  <div class="toolbar">
+    <button class="btn pri" onclick="openAddConsult()"><i class="ti ti-plus" style="font-size:14px"></i> Add consult</button>
+    <span id="cc" style="font-size:12px;color:#718096;margin-left:4px"></span>
+  </div>
+  <div class="filter-bar">
+    <span class="filter-lbl">Filter</span>
+    <div class="fdrop" id="cfw">
+      <button class="fchip" id="cfw-btn" onclick="tfd('cfw')"><i class="ti ti-building-hospital" style="font-size:12px"></i> <span id="cfw-lbl">All wards</span> <i class="ti ti-chevron-down" style="font-size:11px"></i></button>
+      <div class="fdrop-menu" id="cfw-dd"></div>
+    </div>
+    <div class="fdrop" id="cfs">
+      <button class="fchip" id="cfs-btn" onclick="tfd('cfs')"><i class="ti ti-user" style="font-size:12px"></i> <span id="cfs-lbl">All staff</span> <i class="ti ti-chevron-down" style="font-size:11px"></i></button>
+      <div class="fdrop-menu" id="cfs-dd"></div>
+    </div>
+    <button class="fchip" id="cfc-clear" onclick="clearCFilters()" style="display:none;color:#C53030;border-color:#FEB2B2"><i class="ti ti-x" style="font-size:11px"></i> Clear</button>
+  </div>
+  <div class="sort-bar desktop-only">
+    <span class="slbl">Sort</span>
+    <button class="sc on" id="csc-ward" onclick="css2('ward')">Ward</button>
+    <button class="sc" id="csc-bed" onclick="css2('bed')">Bed</button>
+    <button class="sc" id="csc-staff" onclick="css2('staff')">Staff</button>
+    <button class="sc" id="csc-adm" onclick="css2('adm')">Adm.</button>
+    <button class="sc" id="csc-dir" onclick="ctd()"><i class="ti ti-arrow-up" id="cdiric" style="font-size:11px"></i><span id="cdirtx">A→Z</span></button>
+  </div>
+  <div class="card desktop-only"><div class="tbl-scroll">
+    <table><thead><tr>
+      <th>Adm.</th><th>Ward</th><th>Staff</th><th>Bed</th><th>HN</th><th>Sex</th><th>Name</th><th>Age</th><th>U/D</th><th>⚠ Allergy</th><th>Diagnosis</th><th>Ward work</th><th>Plan</th><th>Status</th><th>Admit</th>
+    </tr></thead><tbody id="consult-tb"></tbody></table>
+  </div></div>
+  <div class="mobile-only" id="consult-mobile-cards"></div>
+</div>
+
 <!-- DC TODAY PANE -->
 <div class="pane" id="pane-dc" style="display:none">
   <div class="card"><div class="tbl-scroll">
@@ -324,6 +358,7 @@ tr:hover td{background:#fafbfd}
   <div class="mobile-tabs-inner">
     <button class="mb-tab active" data-tab="main" onclick="sw('main')"><i class="ti ti-layout-grid"></i><span class="mb-lbl">Main</span></button>
     <button class="mb-tab" data-tab="ww" onclick="sw('ww')"><i class="ti ti-clipboard-list"></i><span class="nb mb-dot" id="wwb2"></span><span class="mb-lbl">Work</span></button>
+    <button class="mb-tab" data-tab="consult" onclick="sw('consult')"><i class="ti ti-stethoscope"></i><span class="nb mb-dot" id="cb2"></span><span class="mb-lbl">Consult</span></button>
     <button class="mb-tab" data-tab="dc" onclick="sw('dc')"><i class="ti ti-door-exit"></i><span class="nb g mb-dot" id="dcb2"></span><span class="mb-lbl">D/C</span></button>
     <button class="mb-tab" data-tab="hist" onclick="sw('hist')"><i class="ti ti-history"></i><span class="mb-lbl">Hist.</span></button>
     <button class="mb-tab" data-tab="stats" onclick="sw('stats')"><i class="ti ti-chart-bar"></i><span class="mb-lbl">Stats</span></button>
@@ -441,6 +476,21 @@ tr:hover td{background:#fafbfd}
 </div>
 </div>
 
+<!-- Admit to Ward Modal -->
+<div class="moverlay" id="admitM">
+<div class="modal xs">
+  <div class="mhd"><span class="mhd-t">Admit to ward</span><button class="mhd-x" onclick="closeM('admitM')">✕</button></div>
+  <div class="mbody">
+    <p style="font-size:13px;color:#718096;margin-bottom:12px">Select target ward to admit this patient:</p>
+    <div id="admit-ward-list" style="display:flex;flex-direction:column;gap:6px;margin-bottom:16px"></div>
+    <div style="display:flex;gap:8px">
+      <button class="btn pri" onclick="confirmAdmit()"><i class="ti ti-check" style="font-size:14px"></i> Confirm admit</button>
+      <button class="btn" onclick="closeM('admitM')">Cancel</button>
+    </div>
+  </div>
+</div>
+</div>
+
 <div class="saving" id="sav"><i class="ti ti-check"></i> Saved</div>
 </div>
 
@@ -454,11 +504,12 @@ let filterWard='',filterStaff='';
 
 function showSaved(){const e=document.getElementById('sav');e.classList.add('show');setTimeout(()=>e.classList.remove('show'),2000)}
 async function loadAll(){
-  const[pR,wR,sR]=await Promise.all([sb.from('patients').select('*').order('created_at',{ascending:true}),sb.from('wards').select('*').order('id'),sb.from('staff').select('*').order('id')]);
+  const[pR,wR,sR,cR]=await Promise.all([sb.from('patients').select('*').order('created_at',{ascending:true}),sb.from('wards').select('*').order('id'),sb.from('staff').select('*').order('id'),sb.from('consults').select('*').order('created_at',{ascending:true})]);
   if(pR.data)pts=pR.data.map(dbToLocal);
   if(wR.data)wards=wR.data;
   if(sR.data)staffList=sR.data;
-  renderAll();
+  if(cR.data)consults=cR.data.map(cDbToLocal);
+  renderAll();renderConsult();
 }
 function dbToLocal(r){return{id:r.id,adm:r.adm,ward:r.ward,staff:r.staff,bed:r.bed,hn:r.hn,sex:r.sex,name:r.name,age:r.age,ud:r.ud,allergy:r.allergy||'',diag:r.diag,status:r.status,probs:r.probs||[''],probTitles:r.prob_titles||['Problem 1'],ww:r.ww||[],pl:r.pl||[],prog:r.prog||[],tr:r.transferred||false,trType:r.tr_type||'',mc:r.mc||false,dcDate:r.dc_date||'',dcWork:r.dc_work||[]}}
 function localToDB(p){return{adm:p.adm||null,ward:p.ward,staff:p.staff,bed:p.bed,hn:p.hn,sex:p.sex,name:p.name,age:p.age,ud:p.ud,allergy:p.allergy||'',diag:p.diag,status:p.status,probs:p.probs,prob_titles:p.probTitles,ww:p.ww,pl:p.pl,prog:p.prog,transferred:p.tr,tr_type:p.trType,mc:p.mc,dc_date:p.dcDate||null,dc_work:p.dcWork}}
@@ -477,6 +528,11 @@ function setupRealtime(){
   }).subscribe();
   sb.channel('wds').on('postgres_changes',{event:'*',schema:'public',table:'wards'},async()=>{const{data}=await sb.from('wards').select('*').order('id');if(data)wards=data;renderAll()}).subscribe();
   sb.channel('stf').on('postgres_changes',{event:'*',schema:'public',table:'staff'},async()=>{const{data}=await sb.from('staff').select('*').order('id');if(data)staffList=data;renderAll()}).subscribe();
+  sb.channel('cons').on('postgres_changes',{event:'*',schema:'public',table:'consults'},p=>{
+    if(p.eventType==='INSERT'){const n=cDbToLocal(p.new);if(!consults.find(x=>x.id===n.id))consults.push(n);renderConsult()}
+    else if(p.eventType==='UPDATE'){const i=consults.findIndex(x=>x.id===p.new.id);if(i>=0)consults[i]=cDbToLocal(p.new);renderConsult()}
+    else if(p.eventType==='DELETE'){consults=consults.filter(x=>x.id!==p.old.id);renderConsult()}
+  }).subscribe();
 }
 
 function dcWorkFor(t,mc){const i=[];if(t==='dc')i.push('Discharge medication order');if(t==='death')i.push('Discharge medication order');if(t==='refer')i.push('Referral letter');i.push('Discharge summary');if(mc)i.push('Medical certificate');return i.map(x=>({t:x,done:false}))}
@@ -685,11 +741,12 @@ function renderStats(){
 
 function renderAll(){renderMain();renderWW();renderDC();renderHist();const sp=document.getElementById('pane-stats');if(sp&&sp.style.display!=='none')renderStats()}
 function sw(t){
-  ['main','ww','dc','hist','stats'].forEach(x=>{
+  ['main','ww','dc','hist','stats','consult'].forEach(x=>{
     const p=document.getElementById('pane-'+x);if(p)p.style.display=x===t?'block':'none';
     document.querySelectorAll(`[data-tab="${x}"]`).forEach(e=>e.classList.toggle('active',x===t));
   });
   if(t==='stats')renderStats();
+  else if(t==='consult')renderConsult();
   else renderAll();
 }
 function tog(pid,type,idx){const p=pts.find(x=>x.id===pid);if(!p)return;if(type==='ww')p.ww[idx].done=!p.ww[idx].done;else p.pl[idx].done=!p.pl[idx].done;upsertPt(p);renderAll()}
@@ -749,9 +806,17 @@ async function savePt(){
   if(!ward||ward==='— select —')return alert('Please select a ward.');
   if(!stf||stf==='— select —')return alert('Please select attending staff.');
   const v={adm:document.getElementById('f-adm').value,ward,staff:stf,bed:document.getElementById('f-bed').value.trim(),hn,sex:document.getElementById('f-sex').value,name,age:parseInt(document.getElementById('f-age').value)||0,ud:document.getElementById('f-ud').value.trim(),allergy:document.getElementById('f-allergy').value.trim(),diag:document.getElementById('f-diag').value.trim(),status:document.getElementById('f-status').value};
-  if(eid){Object.assign(pts.find(x=>x.id===eid),v);await upsertPt(pts.find(x=>x.id===eid));}
-  else{const np={id:null,...v,ww:[],pl:[],prog:[],probs:[''],probTitles:['Problem 1'],tr:false,trType:'',mc:false,dcDate:'',dcWork:[]};pts.push(np);await upsertPt(np);}
-  closeM('addM');renderAll();
+  const mode=document.getElementById('addM').dataset.mode;
+  if(mode==='consult'){
+    const np={id:null,...v,ww:[],pl:[],prog:[],probs:[''],probTitles:['Problem 1'],tr:false,trType:'',mc:false,dcDate:'',dcWork:[]};
+    consults.push(np);await upsertConsult(np);
+    document.getElementById('addM').dataset.mode='';
+    closeM('addM');renderConsult();
+  } else {
+    if(eid){Object.assign(pts.find(x=>x.id===eid),v);await upsertPt(pts.find(x=>x.id===eid));}
+    else{const np={id:null,...v,ww:[],pl:[],prog:[],probs:[''],probTitles:['Problem 1'],tr:false,trType:'',mc:false,dcDate:'',dcWork:[]};pts.push(np);await upsertPt(np);}
+    closeM('addM');renderAll();
+  }
 }
 function openTr(id){trid=id;trSel='';['dc','death','refer'].forEach(x=>document.getElementById('tr-'+x).classList.remove('sel'));document.getElementById('tr-mc').checked=false;document.getElementById('trM').classList.add('open')}
 function str2(t){trSel=t;['dc','death','refer'].forEach(x=>document.getElementById('tr-'+x).classList.toggle('sel',x===t))}
@@ -784,6 +849,148 @@ function printAll(){
   const w=window.open('','_blank','width=900,height=700');if(w){w.document.write(html);w.document.close();w.onload=()=>{w.focus();w.print()}}else alert('Please allow pop-ups to use Print All.');
 }
 function closeM(id){document.getElementById(id).classList.remove('open')}
+
+// ── CONSULT ──
+let consults=[],csk='ward',csd=1,cFilterWard='',cFilterStaff='',admitId=null,admitWardSel='',ceid=null;
+
+function cDbToLocal(r){return{id:r.id,adm:r.adm,ward:r.ward,staff:r.staff,bed:r.bed,hn:r.hn,sex:r.sex,name:r.name,age:r.age,ud:r.ud,allergy:r.allergy||'',diag:r.diag,status:r.status,probs:r.probs||[''],probTitles:r.prob_titles||['Problem 1'],ww:r.ww||[],pl:r.pl||[],prog:r.prog||[],tr:false,trType:'',mc:false,dcDate:'',dcWork:[]}}
+function cLocalToDB(p){return{adm:p.adm||null,ward:p.ward,staff:p.staff,bed:p.bed,hn:p.hn,sex:p.sex,name:p.name,age:p.age,ud:p.ud,allergy:p.allergy||'',diag:p.diag,status:p.status,probs:p.probs,prob_titles:p.probTitles,ww:p.ww,pl:p.pl,prog:p.prog,transferred:false,tr_type:'',mc:false,dc_date:null,dc_work:[]}}
+async function upsertConsult(p){const d=cLocalToDB(p);if(p.id){await sb.from('consults').update(d).eq('id',p.id)}else{const{data:r}=await sb.from('consults').insert(d).select().single();if(r)p.id=r.id}showSaved()}
+async function deleteConsultDB(id){await sb.from('consults').delete().eq('id',id);showSaved()}
+
+function cSorted(){
+  return consults.filter(p=>{
+    if(cFilterWard&&p.ward!==cFilterWard)return false;
+    if(cFilterStaff&&p.staff!==cFilterStaff)return false;
+    return true;
+  }).sort((a,b)=>{
+    const av=csk==='adm'?a.adm:csk==='bed'?a.bed:csk==='staff'?a.staff:a.ward;
+    const bv=csk==='adm'?b.adm:csk==='bed'?b.bed:csk==='staff'?b.staff:b.ward;
+    if(av<bv)return-csd;if(av>bv)return csd;
+    if(a.bed<b.bed)return-1;if(a.bed>b.bed)return 1;return 0;
+  });
+}
+function css2(k){if(csk===k)csd*=-1;else{csk=k;csd=1;}['ward','bed','staff','adm'].forEach(x=>{const e=document.getElementById('csc-'+x);if(e)e.classList.toggle('on',x===k)});cUpDir();renderConsult()}
+function ctd(){csd*=-1;cUpDir();renderConsult()}
+function cUpDir(){const dt=document.getElementById('cdirtx');const di=document.getElementById('cdiric');if(dt)dt.textContent=csd===1?'A→Z':'Z→A';if(di)di.className=csd===1?'ti ti-arrow-up':'ti ti-arrow-down'}
+function clearCFilters(){cFilterWard='';cFilterStaff='';['cfw-lbl','cfs-lbl'].forEach((id,i)=>{const e=document.getElementById(id);if(e)e.textContent=i===0?'All wards':'All staff'});const cl=document.getElementById('cfc-clear');if(cl)cl.style.display='none';renderConsult()}
+
+function renderConsult(){
+  const ps=cSorted();
+  const el=document.getElementById('cc');if(el)el.textContent=`${ps.length} consult${ps.length!==1?'s':''}`;
+  ['cb','cb2'].forEach(id=>{const b=document.getElementById(id);if(b){b.style.display=ps.length?'inline':'none';if(ps.length)b.textContent=ps.length}});
+  const tb=document.getElementById('consult-tb');
+  if(tb){
+    if(!ps.length)tb.innerHTML=`<tr><td colspan="15"><div class="empty">No consult patients — add one to begin</div></td></tr>`;
+    else tb.innerHTML=ps.map(p=>`<tr>
+      <td style="white-space:nowrap;color:#718096;font-size:12px">${fmt(p.adm)}</td>
+      <td>${wardPill(p.ward)}</td><td>${staffPill(p.staff)}</td>
+      <td><b>${p.bed}</b></td><td class="hn">${p.hn}</td>
+      <td class="${p.sex==='M'?'sex-m':'sex-f'}">${p.sex==='M'?'♂ M':'♀ F'}</td>
+      <td><a class="nlink" onclick="openConsultDet(${p.id})">${p.name}</a></td>
+      <td style="text-align:center">${p.age}</td>
+      <td style="font-size:12px;color:#718096;max-width:80px">${p.ud}</td>
+      <td style="max-width:90px">${p.allergy?`<span style="display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#FED7D7;color:#9B2C2C">⚠ ${p.allergy}</span>`:'<span style="color:#cbd5e0;font-size:12px">—</span>'}</td>
+      <td style="font-size:12px;max-width:90px">${p.diag}</td>
+      <td>${todoH(p.ww,p.id,'cww')}</td><td>${todoH(p.pl,p.id,'cpl')}</td>
+      <td>${sbadge(p.status,p.id)}</td>
+      <td><button class="btn sm pri" onclick="openAdmit(${p.id})" style="white-space:nowrap"><i class="ti ti-transfer-in" style="font-size:12px"></i> Admit</button></td>
+    </tr>`).join('');
+  }
+  const mc=document.getElementById('consult-mobile-cards');
+  if(mc){
+    if(!ps.length)mc.innerHTML=`<div class="empty">No consult patients — tap + to begin</div>`;
+    else mc.innerHTML=ps.map(p=>{
+      const wwPending=p.ww.filter(x=>!x.done);const plPending=p.pl.filter(x=>!x.done);
+      const wwH=p.ww.map((it,i)=>`<div class="tr2${it.done?' done':''}" style="padding:2px 4px" onclick="togC(${p.id},'cww',${i})"><input type="checkbox" ${it.done?'checked':''} onclick="event.stopPropagation();togC(${p.id},'cww',${i})"><span class="ttext" style="font-size:11px">${it.t}</span></div>`).reverse().join('');
+      const plH=p.pl.map((it,i)=>`<div class="tr2${it.done?' done':''}" style="padding:2px 4px" onclick="togC(${p.id},'cpl',${i})"><input type="checkbox" ${it.done?'checked':''} onclick="event.stopPropagation();togC(${p.id},'cpl',${i})"><span class="ttext" style="font-size:11px">${it.t}</span></div>`).reverse().join('');
+      return`<div class="pt-card-mobile">
+        <div class="pt-card-top"><div><div class="pt-card-name"><a class="nlink" onclick="openConsultDet(${p.id})">${p.name}</a></div><div class="pt-card-hn">${p.hn} · ${fmt(p.adm)}</div></div>${sbadge(p.status,p.id)}</div>
+        <div class="pt-card-chips">${wardPill(p.ward)}<span class="ichip">Bed ${p.bed}</span>${staffPill(p.staff)}</div>
+        <div class="pt-card-diag">${p.diag}${p.ud?` · U/D: ${p.ud}`:''}${p.allergy?` · <span style="color:#9B2C2C;font-weight:600">⚠ ${p.allergy}</span>`:''}</div>
+        <div class="pt-card-todos">
+          <div class="pt-todo-box"><div class="pt-todo-lbl">Ward work${wwPending.length?` (${wwPending.length})`:''}</div>${wwH||'<span style="font-size:11px;color:#cbd5e0">—</span>'}</div>
+          <div class="pt-todo-box"><div class="pt-todo-lbl">Plan${plPending.length?` (${plPending.length})`:''}</div>${plH||'<span style="font-size:11px;color:#cbd5e0">—</span>'}</div>
+        </div>
+        <button class="btn pri sm" onclick="openAdmit(${p.id})" style="width:100%;justify-content:center;margin-top:10px"><i class="ti ti-transfer-in" style="font-size:13px"></i> Admit to ward</button>
+      </div>`;
+    }).join('');
+  }
+}
+
+function togC(pid,type,idx){const p=consults.find(x=>x.id===pid);if(!p)return;if(type==='cww')p.ww[idx].done=!p.ww[idx].done;else p.pl[idx].done=!p.pl[idx].done;upsertConsult(p);renderConsult()}
+
+function openAdmit(id){
+  admitId=id;admitWardSel='';
+  const list=document.getElementById('admit-ward-list');
+  list.innerHTML=wards.map(w=>`<div class="admit-ward-opt" onclick="selAdmitWard('${w.name.replace(/'/g,"\\'")}',this)" style="padding:12px 14px;border:1px solid #e2e8f0;border-radius:8px;cursor:pointer;display:flex;align-items:center;gap:8px"><span class="wpill" style="background:${w.color}">${w.emoji} ${w.name}</span></div>`).join('');
+  document.getElementById('admitM').classList.add('open');
+}
+function selAdmitWard(name,el){admitWardSel=name;document.querySelectorAll('.admit-ward-opt').forEach(x=>x.style.borderColor='#e2e8f0');if(el)el.style.borderColor='#378ADD'}
+async function confirmAdmit(){
+  if(!admitWardSel)return alert('Please select a ward.');
+  const c=consults.find(x=>x.id===admitId);if(!c)return;
+  const newPt={id:null,adm:toDay(),ward:admitWardSel,staff:c.staff,bed:c.bed,hn:c.hn,sex:c.sex,name:c.name,age:c.age,ud:c.ud,allergy:c.allergy||'',diag:c.diag,status:c.status,probs:c.probs,probTitles:c.probTitles,ww:c.ww,pl:c.pl,prog:c.prog,tr:false,trType:'',mc:false,dcDate:'',dcWork:[]};
+  pts.push(newPt);await upsertPt(newPt);
+  await deleteConsultDB(admitId);
+  consults=consults.filter(x=>x.id!==admitId);
+  admitId=null;admitWardSel='';
+  closeM('admitM');closeM('detM');
+  renderAll();renderConsult();sw('main');
+}
+
+function openAddConsult(){
+  document.getElementById('addM-t').textContent='Add consult patient';
+  document.getElementById('f-adm').value=toDay();
+  ['hn','bed','name','ud','diag','allergy'].forEach(x=>document.getElementById('f-'+x).value='');
+  document.getElementById('f-age').value='';document.getElementById('f-sex').value='';document.getElementById('f-status').value='stable';
+  document.getElementById('csw-ward-v').textContent='— select —';document.getElementById('csw-staff-v').textContent='— select —';
+  document.getElementById('addM').dataset.mode='consult';
+  document.getElementById('addM').classList.add('open');
+}
+
+function openConsultDet(id){
+  const p=consults.find(x=>x.id===id);if(!p)return;
+  document.getElementById('det-t').textContent=`[Consult] ${p.name}`;
+  const b=document.getElementById('det-body');
+  const probBlocks=p.probs.map((pr,i)=>`<div class="prob-block" id="cpb-${id}-${i}"><div class="prob-hdr"><input value="${(p.probTitles||[])[i]||'Problem '+(i+1)}" style="border:none;background:transparent;font-size:12px;font-weight:700;color:#4a5568;text-transform:uppercase;letter-spacing:.4px;width:100%;outline:none;font-family:inherit" onchange="updCProbTitle(${id},${i},this.value)" placeholder="Problem title..."><button onclick="removeCProb(${id},${i})" style="border:none;background:none;cursor:pointer;color:#a0aec0;font-size:16px;padding:0 3px;line-height:1;font-family:inherit">✕</button></div><textarea style="width:100%;padding:10px 12px;font-family:monospace;font-size:13px;border:none;border-radius:0 0 8px 8px;background:#fff;color:#1a202c;resize:none;line-height:1.8;tab-size:4;outline:none;display:block;overflow:hidden" onchange="updCProb(${id},${i},this.value)" oninput="autoGrow(this)">${pr}</textarea></div>`).join('');
+  b.innerHTML=`
+    <div style="background:#EBF4FF;border:1px solid #90CDF4;border-radius:8px;padding:8px 12px;margin-bottom:12px;font-size:12px;color:#2B6CB0;font-weight:500"><i class="ti ti-stethoscope" style="font-size:13px"></i> Consult patient</div>
+    <div class="infobar">${sbadge(p.status,p.id+'cd')} ${wardPill(p.ward)} <span class="ichip">Bed ${p.bed}</span> ${staffPill(p.staff)} <span class="ichip">Adm. ${fmt(p.adm)}</span> <span class="ichip hn">${p.hn}</span>${p.allergy?` <span class="ichip" style="background:#FED7D7;border-color:#FC8181;color:#9B2C2C;font-weight:600">⚠ ${p.allergy}</span>`:''}</div>
+    <div class="seclbl">Problems / Diagnosis</div>
+    <div id="cprob-container-${id}">${probBlocks}</div>
+    <button class="btn sm" onclick="addCProb(${id})" style="margin:4px 0"><i class="ti ti-plus" style="font-size:13px"></i> Add problem</button>
+    <div class="seclbl">Ward work</div>
+    <div class="det-card"><div>${p.ww.map((it,i)=>`<div class="tr2${it.done?' done':''}" style="padding:5px 7px"><input type="checkbox" ${it.done?'checked':''} style="accent-color:#378ADD" onchange="togC(${p.id},'cww',${i});rldC(${p.id})"><span class="ttext">${it.t}<span class="td2">(${it.d})</span></span></div>`).join('')}</div><div style="display:flex;gap:6px;margin-top:10px"><input type="text" id="cnww" placeholder="New ward work task..." style="flex:1;padding:8px 11px;font-size:13px;border:1px solid #e2e8f0;border-radius:8px;background:#fff;color:#1a202c;font-family:inherit"><button class="btn sm" onclick="addCT(${p.id},'cww')">Add</button></div></div>
+    <div class="seclbl">Plan</div>
+    <div class="det-card"><div>${p.pl.map((it,i)=>`<div class="tr2${it.done?' done':''}" style="padding:5px 7px"><input type="checkbox" ${it.done?'checked':''} style="accent-color:#378ADD" onchange="togC(${p.id},'cpl',${i});rldC(${p.id})"><span class="ttext">${it.t}<span class="td2">(${it.d})</span></span></div>`).join('')}</div><div style="display:flex;gap:6px;margin-top:10px"><input type="text" id="cnpl" placeholder="New plan item..." style="flex:1;padding:8px 11px;font-size:13px;border:1px solid #e2e8f0;border-radius:8px;background:#fff;color:#1a202c;font-family:inherit"><button class="btn sm" onclick="addCT(${p.id},'cpl')">Add</button></div></div>
+    <div class="seclbl">Progress notes</div>
+    <div class="det-card">${p.prog.length?p.prog.map(pr=>`<div class="prog-row"><div class="prog-dt">${pr.date}</div><div class="prog-tx">${pr.txt}</div></div>`).join(''):'<p style="font-size:12px;color:#a0aec0;margin-bottom:8px">No progress notes yet.</p>'}<div style="margin-top:8px"><div style="font-size:11px;font-weight:700;color:#718096;margin-bottom:4px;text-transform:uppercase;letter-spacing:.4px">${todF()}</div><textarea id="cnprog" rows="2" placeholder="Enter progress note..." style="width:100%;padding:8px 11px;font-size:13px;border:1px solid #e2e8f0;border-radius:8px;background:#fff;color:#1a202c;font-family:inherit;resize:none"></textarea><button class="btn sm" onclick="addCProg(${p.id})" style="margin-top:6px"><i class="ti ti-plus" style="font-size:13px"></i> Add note</button></div></div>
+    <div class="act-row">
+      <button class="btn pri" onclick="openAdmit(${p.id});closeM('detM')"><i class="ti ti-transfer-in" style="font-size:14px"></i> Admit to ward</button>
+      <button class="btn sm pri" id="ccpbtn-${p.id}" onclick="copyCPt(${p.id})"><i class="ti ti-copy" style="font-size:14px"></i> Copy</button>
+    </div>`;
+  document.getElementById('detM').classList.add('open');
+  setTimeout(()=>document.querySelectorAll('#det-body textarea').forEach(ta=>autoGrow(ta)),10);
+}
+function saveCDetTA(id){const p=consults.find(x=>x.id===id);if(!p)return;p.probs.forEach((_,i)=>{const ta=document.querySelector(`#cpb-${id}-${i} textarea`);if(ta)p.probs[i]=ta.value});p.probs.forEach((_,i)=>{const inp=document.querySelector(`#cpb-${id}-${i} input`);if(inp){if(!p.probTitles)p.probTitles=[];p.probTitles[i]=inp.value}})}
+function updCProb(id,idx,val){const p=consults.find(x=>x.id===id);if(p)p.probs[idx]=val}
+function updCProbTitle(id,idx,val){const p=consults.find(x=>x.id===id);if(p){if(!p.probTitles)p.probTitles=[];p.probTitles[idx]=val}}
+function addCProb(id){saveCDetTA(id);const p=consults.find(x=>x.id===id);if(!p)return;p.probs.push('');if(!p.probTitles)p.probTitles=[];p.probTitles.push('Problem '+(p.probs.length));rldC(id)}
+function removeCProb(id,idx){saveCDetTA(id);const p=consults.find(x=>x.id===id);if(!p||p.probs.length<=1)return;p.probs.splice(idx,1);if(p.probTitles)p.probTitles.splice(idx,1);rldC(id)}
+function rldC(id){saveCDetTA(id);const scroll=document.getElementById('detM').querySelector('.mscroll');const sy=scroll?scroll.scrollTop:0;renderConsult();openConsultDet(id);if(scroll)setTimeout(()=>scroll.scrollTop=sy,20)}
+function addCT(pid,type){const p=consults.find(x=>x.id===pid);const el=document.getElementById(type==='cww'?'cnww':'cnpl');const txt=el?el.value.trim():'';if(!txt||!p)return;(type==='cww'?p.ww:p.pl).push({t:txt,done:false,d:todF()});upsertConsult(p);rldC(pid)}
+function addCProg(pid){const p=consults.find(x=>x.id===pid);const ta=document.getElementById('cnprog');const txt=ta?ta.value.trim():'';if(!txt||!p)return;p.prog.push({date:todF(),txt});upsertConsult(p);rldC(pid)}
+function copyCPt(pid){
+  const p=consults.find(x=>x.id===pid);if(!p)return;saveCDetTA(pid);
+  const sep='────────────';
+  const probLines=p.probs.map((pr,i)=>{const title=(p.probTitles&&p.probTitles[i])||('Problem '+(i+1));return`${i+1}. ${title}\n${pr.trim()}`}).join('\n\n');
+  let o=`[CONSULT]\nWard: ${p.ward} · Bed: ${p.bed} · Staff: ${p.staff}\nHN: ${p.hn} · Name: ${p.name} · Age: ${p.age} · Sex: ${p.sex==='M'?'Male':'Female'}\nU/D: ${p.ud}${p.allergy?` · Allergy: ${p.allergy}`:''}\n\n${sep}\nProblems / Diagnosis\n${sep}\n${probLines||'—'}\n\n${sep}\nPlan\n${sep}\n${p.pl.length?p.pl.map(x=>`[${x.done?'✓':' '}] ${x.t} (${x.d})`).join('\n'):'—'}`;
+  const btn=document.getElementById('ccpbtn-'+pid);
+  const flash=()=>{if(btn){const orig=btn.innerHTML;btn.innerHTML='✓ Copied!';btn.style.background='#276749';setTimeout(()=>{btn.innerHTML=orig;btn.style.background=''},2000)}};
+  try{navigator.clipboard.writeText(o).then(flash)}catch(e){const t2=document.createElement('textarea');t2.value=o;t2.style.cssText='position:fixed;opacity:0;top:0;left:0';document.body.appendChild(t2);t2.select();document.execCommand('copy');document.body.removeChild(t2);flash()}
+}
+
 loadAll().then(()=>setupRealtime());
 </script>
 </body>
