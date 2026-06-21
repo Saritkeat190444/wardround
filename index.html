@@ -309,7 +309,7 @@ tr:hover td{background:#fafbfd}
   </div>
   <div class="card desktop-only"><div class="tbl-scroll">
     <table><thead><tr>
-      <th>Adm.</th><th>Ward</th><th>Staff</th><th>Bed</th><th>HN</th><th>Sex</th><th>Name</th><th>Age</th><th>U/D</th><th>⚠ Allergy</th><th>Diagnosis</th><th>Ward work</th><th>Plan</th><th>Status</th><th>Admit</th>
+      <th>Adm.</th><th>Ward</th><th>Staff</th><th>Bed</th><th>HN</th><th>Sex</th><th>Name</th><th>Age</th><th>U/D</th><th>⚠ Allergy</th><th>Diagnosis</th><th>Ward work</th><th>Plan</th><th>Status</th><th>Transfer</th>
     </tr></thead><tbody id="consult-tb"></tbody></table>
   </div></div>
   <div class="mobile-only" id="consult-mobile-cards"></div>
@@ -476,15 +476,15 @@ tr:hover td{background:#fafbfd}
 </div>
 </div>
 
-<!-- Admit to Ward Modal -->
+<!-- Transfer to Ward Modal -->
 <div class="moverlay" id="admitM">
 <div class="modal xs">
-  <div class="mhd"><span class="mhd-t">Admit to ward</span><button class="mhd-x" onclick="closeM('admitM')">✕</button></div>
+  <div class="mhd"><span class="mhd-t">Transfer to ward</span><button class="mhd-x" onclick="closeM('admitM')">✕</button></div>
   <div class="mbody">
-    <p style="font-size:13px;color:#718096;margin-bottom:12px">Select target ward to admit this patient:</p>
-    <div id="admit-ward-list" style="display:flex;flex-direction:column;gap:6px;margin-bottom:16px"></div>
+    <p style="font-size:13px;color:#718096;margin-bottom:12px">Select target ward to transfer this patient:</p>
+    <div id="transfer-ward-list" style="display:flex;flex-direction:column;gap:6px;margin-bottom:16px"></div>
     <div style="display:flex;gap:8px">
-      <button class="btn pri" onclick="confirmAdmit()"><i class="ti ti-check" style="font-size:14px"></i> Confirm admit</button>
+      <button class="btn pri" onclick="confirmTransferConsult()"><i class="ti ti-check" style="font-size:14px"></i> Confirm transfer</button>
       <button class="btn" onclick="closeM('admitM')">Cancel</button>
     </div>
   </div>
@@ -851,7 +851,7 @@ function printAll(){
 function closeM(id){document.getElementById(id).classList.remove('open')}
 
 // ── CONSULT ──
-let consults=[],csk='ward',csd=1,cFilterWard='',cFilterStaff='',admitId=null,admitWardSel='',ceid=null;
+let consults=[],csk='ward',csd=1,cFilterWard='',cFilterStaff='',transferConsultId=null,transferWardSel='',ceid=null;
 
 function cDbToLocal(r){return{id:r.id,adm:r.adm,ward:r.ward,staff:r.staff,bed:r.bed,hn:r.hn,sex:r.sex,name:r.name,age:r.age,ud:r.ud,allergy:r.allergy||'',diag:r.diag,status:r.status,probs:r.probs||[''],probTitles:r.prob_titles||['Problem 1'],ww:r.ww||[],pl:r.pl||[],prog:r.prog||[],tr:false,trType:'',mc:false,dcDate:'',dcWork:[]}}
 function cLocalToDB(p){return{adm:p.adm||null,ward:p.ward,staff:p.staff,bed:p.bed,hn:p.hn,sex:p.sex,name:p.name,age:p.age,ud:p.ud,allergy:p.allergy||'',diag:p.diag,status:p.status,probs:p.probs,prob_titles:p.probTitles,ww:p.ww,pl:p.pl,prog:p.prog,transferred:false,tr_type:'',mc:false,dc_date:null,dc_work:[]}}
@@ -894,7 +894,7 @@ function renderConsult(){
       <td style="font-size:12px;max-width:90px">${p.diag}</td>
       <td>${todoH(p.ww,p.id,'cww')}</td><td>${todoH(p.pl,p.id,'cpl')}</td>
       <td>${sbadge(p.status,p.id)}</td>
-      <td><button class="btn sm pri" onclick="openAdmit(${p.id})" style="white-space:nowrap"><i class="ti ti-transfer-in" style="font-size:12px"></i> Admit</button></td>
+      <td><button class="btn sm pri" onclick="openTransferConsult(${p.id})" style="white-space:nowrap"><i class="ti ti-transfer" style="font-size:12px"></i> Transfer</button></td>
     </tr>`).join('');
   }
   const mc=document.getElementById('consult-mobile-cards');
@@ -912,7 +912,7 @@ function renderConsult(){
           <div class="pt-todo-box"><div class="pt-todo-lbl">Ward work${wwPending.length?` (${wwPending.length})`:''}</div>${wwH||'<span style="font-size:11px;color:#cbd5e0">—</span>'}</div>
           <div class="pt-todo-box"><div class="pt-todo-lbl">Plan${plPending.length?` (${plPending.length})`:''}</div>${plH||'<span style="font-size:11px;color:#cbd5e0">—</span>'}</div>
         </div>
-        <button class="btn pri sm" onclick="openAdmit(${p.id})" style="width:100%;justify-content:center;margin-top:10px"><i class="ti ti-transfer-in" style="font-size:13px"></i> Admit to ward</button>
+        <button class="btn pri sm" onclick="openTransferConsult(${p.id})" style="width:100%;justify-content:center;margin-top:10px"><i class="ti ti-transfer" style="font-size:13px"></i> Transfer to ward</button>
       </div>`;
     }).join('');
   }
@@ -920,21 +920,21 @@ function renderConsult(){
 
 function togC(pid,type,idx){const p=consults.find(x=>x.id===pid);if(!p)return;if(type==='cww')p.ww[idx].done=!p.ww[idx].done;else p.pl[idx].done=!p.pl[idx].done;upsertConsult(p);renderConsult()}
 
-function openAdmit(id){
-  admitId=id;admitWardSel='';
-  const list=document.getElementById('admit-ward-list');
-  list.innerHTML=wards.map(w=>`<div class="admit-ward-opt" onclick="selAdmitWard('${w.name.replace(/'/g,"\\'")}',this)" style="padding:12px 14px;border:1px solid #e2e8f0;border-radius:8px;cursor:pointer;display:flex;align-items:center;gap:8px"><span class="wpill" style="background:${w.color}">${w.emoji} ${w.name}</span></div>`).join('');
+function openTransferConsult(id){
+  transferConsultId=id;transferWardSel='';
+  const list=document.getElementById('transfer-ward-list');
+  list.innerHTML=wards.map(w=>`<div class="transfer-ward-opt" onclick="selTransferWard('${w.name.replace(/'/g,"\\'")}',this)" style="padding:12px 14px;border:1px solid #e2e8f0;border-radius:8px;cursor:pointer;display:flex;align-items:center;gap:8px"><span class="wpill" style="background:${w.color}">${w.emoji} ${w.name}</span></div>`).join('');
   document.getElementById('admitM').classList.add('open');
 }
-function selAdmitWard(name,el){admitWardSel=name;document.querySelectorAll('.admit-ward-opt').forEach(x=>x.style.borderColor='#e2e8f0');if(el)el.style.borderColor='#378ADD'}
-async function confirmAdmit(){
-  if(!admitWardSel)return alert('Please select a ward.');
-  const c=consults.find(x=>x.id===admitId);if(!c)return;
-  const newPt={id:null,adm:toDay(),ward:admitWardSel,staff:c.staff,bed:c.bed,hn:c.hn,sex:c.sex,name:c.name,age:c.age,ud:c.ud,allergy:c.allergy||'',diag:c.diag,status:c.status,probs:c.probs,probTitles:c.probTitles,ww:c.ww,pl:c.pl,prog:c.prog,tr:false,trType:'',mc:false,dcDate:'',dcWork:[]};
+function selTransferWard(name,el){transferWardSel=name;document.querySelectorAll('.transfer-ward-opt').forEach(x=>x.style.borderColor='#e2e8f0');if(el)el.style.borderColor='#378ADD'}
+async function confirmTransferConsult(){
+  if(!transferWardSel)return alert('Please select a ward.');
+  const c=consults.find(x=>x.id===transferConsultId);if(!c)return;
+  const newPt={id:null,adm:toDay(),ward:transferWardSel,staff:c.staff,bed:c.bed,hn:c.hn,sex:c.sex,name:c.name,age:c.age,ud:c.ud,allergy:c.allergy||'',diag:c.diag,status:c.status,probs:c.probs,probTitles:c.probTitles,ww:c.ww,pl:c.pl,prog:c.prog,tr:false,trType:'',mc:false,dcDate:'',dcWork:[]};
   pts.push(newPt);await upsertPt(newPt);
-  await deleteConsultDB(admitId);
-  consults=consults.filter(x=>x.id!==admitId);
-  admitId=null;admitWardSel='';
+  await deleteConsultDB(transferConsultId);
+  consults=consults.filter(x=>x.id!==transferConsultId);
+  transferConsultId=null;transferWardSel='';
   closeM('admitM');closeM('detM');
   renderAll();renderConsult();sw('main');
 }
@@ -967,7 +967,7 @@ function openConsultDet(id){
     <div class="seclbl">Progress notes</div>
     <div class="det-card">${p.prog.length?p.prog.map(pr=>`<div class="prog-row"><div class="prog-dt">${pr.date}</div><div class="prog-tx">${pr.txt}</div></div>`).join(''):'<p style="font-size:12px;color:#a0aec0;margin-bottom:8px">No progress notes yet.</p>'}<div style="margin-top:8px"><div style="font-size:11px;font-weight:700;color:#718096;margin-bottom:4px;text-transform:uppercase;letter-spacing:.4px">${todF()}</div><textarea id="cnprog" rows="2" placeholder="Enter progress note..." style="width:100%;padding:8px 11px;font-size:13px;border:1px solid #e2e8f0;border-radius:8px;background:#fff;color:#1a202c;font-family:inherit;resize:none"></textarea><button class="btn sm" onclick="addCProg(${p.id})" style="margin-top:6px"><i class="ti ti-plus" style="font-size:13px"></i> Add note</button></div></div>
     <div class="act-row">
-      <button class="btn pri" onclick="openAdmit(${p.id});closeM('detM')"><i class="ti ti-transfer-in" style="font-size:14px"></i> Admit to ward</button>
+      <button class="btn pri" onclick="openTransferConsult(${p.id});closeM('detM')"><i class="ti ti-transfer" style="font-size:14px"></i> Transfer to ward</button>
       <button class="btn sm pri" id="ccpbtn-${p.id}" onclick="copyCPt(${p.id})"><i class="ti ti-copy" style="font-size:14px"></i> Copy</button>
     </div>`;
   document.getElementById('detM').classList.add('open');
