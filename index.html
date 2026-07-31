@@ -127,46 +127,17 @@ tr:hover td{background:#fafbfd}
 .chip{display:inline-flex;align-items:center;gap:5px;padding:8px 15px;border-radius:20px;font-size:13px;background:#f7fafc;border:1px solid #e2e8f0;cursor:pointer;color:#4a5568;font-family:inherit}
 .chip:hover{background:#EBF4FF;border-color:#90CDF4}
 .chip.sel{background:#EBF4FF;border-color:#378ADD;color:#2B6CB0;font-weight:600}
-.mgl{display:flex;flex-direction:column;gap:5px;max-height:280px;overflow-y:auto;margin-bottom:10px}
-.mgl-row{display:flex;align-items:center;gap:7px;padding:8px 9px;border:1px solid #f0f4f8;border-radius:8px;background:#f7fafc;position:relative}
-.mgl-row.drag-over{border-color:#90CDF4;background:#EBF4FF}
-.mgl-row.dragging{opacity:.4}
-.mg-grip{cursor:grab;color:#cbd5e0;font-size:16px;flex-shrink:0;padding:4px;touch-action:none;user-select:none}
-.mg-grip:active{cursor:grabbing}
-.mg-emoji-inp{width:32px;padding:5px 2px;border:1px solid #e2e8f0;border-radius:6px;text-align:center;font-size:15px;background:#fff;font-family:inherit;flex-shrink:0}
-.mg-name-inp{flex:1;min-width:0;padding:6px 8px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px;background:#fff;color:#1a202c;font-family:inherit}
-.mg-clr-dot{width:16px;height:16px;border-radius:50%;flex-shrink:0;cursor:pointer;border:2px solid #fff;box-shadow:0 0 0 1px #e2e8f0}
-.mg-clr-pop{display:none;position:absolute;top:calc(100% + 4px);left:30px;background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:6px;box-shadow:0 6px 16px rgba(0,0,0,.15);z-index:400;flex-wrap:wrap;width:104px;gap:4px}
-.mg-clr-pop.open{display:flex}
-.mgl-del{border:none;background:none;cursor:pointer;color:#a0aec0;font-size:17px;padding:2px 4px;font-family:inherit;flex-shrink:0}
-.mgl-del:hover{color:#C53030}
+.mgl{display:flex;flex-direction:column;gap:5px;max-height:220px;overflow-y:auto;margin-bottom:10px}
+.mgl-row{display:flex;align-items:center;gap:8px;padding:9px 11px;border:1px solid #f0f4f8;border-radius:8px;background:#f7fafc}
 .infobar{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:14px}
 .ichip{display:inline-flex;align-items:center;gap:4px;font-size:12px;padding:4px 10px;border-radius:20px;background:#f7fafc;border:1px solid #e2e8f0;color:#4a5568}
 .cs-wrap{position:relative}
 .cs-face{display:flex;align-items:center;justify-content:space-between;padding:9px 12px;border:1px solid #e2e8f0;border-radius:8px;font-size:14px;background:#fff;cursor:pointer}
 .cs-face:hover{border-color:#90CDF4}
-.cs-dd{display:none;position:absolute;top:calc(100%+4px);left:0;min-width:100%;width:260px;max-width:calc(100vw - 32px);background:#fff;border:1px solid #e2e8f0;border-radius:10px;z-index:80;box-shadow:0 8px 24px rgba(0,0,0,.1);max-height:260px;overflow-y:auto;overflow-x:hidden}
+.cs-dd{display:none;position:absolute;top:calc(100%+4px);left:0;min-width:100%;background:#fff;border:1px solid #e2e8f0;border-radius:10px;z-index:80;box-shadow:0 8px 24px rgba(0,0,0,.1);max-height:220px;overflow-y:auto}
 .cs-dd.open{display:block}
-.cs-opt{padding:10px 13px;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:7px;position:relative}
+.cs-opt{padding:10px 13px;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:7px}
 .cs-opt:hover{background:#EBF4FF}
-.cs-opt.drag-over{background:#EBF4FF;box-shadow:inset 0 0 0 1px #90CDF4}
-.cs-opt.dragging{opacity:.4}
-.cs-opt-edit{cursor:default;background:#fafbfd}
-.cs-opt-edit:hover{background:#fafbfd}
-.cs-grip{cursor:grab;color:#cbd5e0;font-size:15px;flex-shrink:0;padding:3px;touch-action:none;user-select:none}
-.cs-grip:active{cursor:grabbing}
-.cs-emoji-disp{font-size:15px;width:18px;text-align:center;flex-shrink:0}
-.cs-clr-dot-disp{width:11px;height:11px;border-radius:50%;flex-shrink:0;display:inline-block}
-.cs-name-disp{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#1a202c}
-.cs-edit-btn{border:none;background:none;cursor:pointer;color:#a0aec0;font-size:13px;padding:5px 6px;font-family:inherit;flex-shrink:0;border-radius:6px;display:flex;align-items:center}
-.cs-edit-btn:hover{background:#EBF4FF;color:#378ADD}
-.cs-emoji-inp{width:30px;padding:4px 2px;border:1px solid #e2e8f0;border-radius:6px;text-align:center;font-size:14px;background:#fff;font-family:inherit;flex-shrink:0}
-.cs-clr-dot{width:14px;height:14px;border-radius:50%;flex-shrink:0;cursor:pointer;border:2px solid #fff;box-shadow:0 0 0 1px #e2e8f0;display:inline-block}
-.cs-clr-pop{display:none;position:absolute;top:calc(100% + 2px);left:34px;background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:6px;box-shadow:0 6px 16px rgba(0,0,0,.15);z-index:400;flex-wrap:wrap;width:100px;gap:4px}
-.cs-clr-pop.open{display:flex}
-.cs-name-inp{flex:1;min-width:0;padding:5px 7px;border:1px solid #e2e8f0;border-radius:6px;font-size:12px;background:#fff;color:#1a202c;font-family:inherit}
-.cs-del{border:none;background:none;cursor:pointer;color:#a0aec0;font-size:15px;padding:2px 4px;font-family:inherit;flex-shrink:0}
-.cs-del:hover{color:#C53030}
 .cs-addb{padding:8px 10px;border-top:1px solid #f0f4f8;display:flex;gap:6px}
 .cs-addb input{flex:1;padding:7px 9px;font-size:12px;border:1px solid #e2e8f0;border-radius:6px;font-family:inherit;color:#1a202c;background:#fff}
 .color-row{display:flex;gap:5px;flex-wrap:wrap}
@@ -492,7 +463,6 @@ tr:hover td{background:#fafbfd}
 <div class="modal sm">
   <div class="mhd"><span class="mhd-t" id="mg-t">Manage wards</span><button class="mhd-x" onclick="closeM('mgM')">✕</button></div>
   <div class="mbody">
-    <p style="font-size:11px;color:#a0aec0;margin-bottom:8px">Drag <i class="ti ti-grip-vertical"></i> to reorder. Click name, emoji, or color dot to edit.</p>
     <div class="mgl" id="mg-list"></div>
     <div style="display:flex;flex-direction:column;gap:6px;padding:10px;background:#f7fafc;border:1px solid #e2e8f0;border-radius:8px">
       <div style="display:flex;gap:6px">
@@ -566,56 +536,21 @@ let wwFilterWard='',wwFilterStaff='';
 let dcFilterWard='',dcFilterStaff='';
 
 function showSaved(){const e=document.getElementById('sav');e.classList.add('show');setTimeout(()=>e.classList.remove('show'),2000)}
-let hasOrderIdx=true; // becomes false automatically if the DB column doesn't exist yet
-async function fetchWardsOrStaff(table){
-  let res=await sb.from(table).select('*').order('order_idx',{ascending:true,nullsFirst:false}).order('id',{ascending:true});
-  if(res.error){hasOrderIdx=false;res=await sb.from(table).select('*').order('id',{ascending:true})}
-  return res.data||[];
-}
 async function loadAll(){
-  const[pR,cR]=await Promise.all([sb.from('patients').select('*').order('created_at',{ascending:true}),sb.from('consults').select('*').order('created_at',{ascending:true})]);
+  const[pR,wR,sR,cR]=await Promise.all([sb.from('patients').select('*').order('created_at',{ascending:true}),sb.from('wards').select('*').order('id'),sb.from('staff').select('*').order('id'),sb.from('consults').select('*').order('created_at',{ascending:true})]);
   if(pR.data)pts=pR.data.map(dbToLocal);
+  if(wR.data)wards=wR.data;
+  if(sR.data)staffList=sR.data;
   if(cR.data)consults=cR.data.map(cDbToLocal);
-  wards=await fetchWardsOrStaff('wards');
-  staffList=await fetchWardsOrStaff('staff');
-  await ensureOrderIdx(wards,'ward');
-  await ensureOrderIdx(staffList,'staff');
   renderAll();renderConsult();
-}
-async function ensureOrderIdx(list,type){
-  if(!hasOrderIdx)return;
-  let dirty=false;
-  list.forEach((item,idx)=>{if(item.order_idx===null||item.order_idx===undefined){item.order_idx=idx;dirty=true}});
-  if(dirty){await Promise.all(list.map(item=>type==='ward'?upsertWard(item,true):upsertStaff(item,true)))}
 }
 function dbToLocal(r){return{id:r.id,adm:r.adm,ward:r.ward,staff:r.staff,bed:r.bed,hn:r.hn,sex:r.sex,name:r.name,age:r.age,ud:r.ud,allergy:r.allergy||'',diag:r.diag,status:r.status,probs:r.probs||[''],probTitles:r.prob_titles||['Problem 1'],ww:r.ww||[],pl:r.pl||[],prog:r.prog||[],tr:r.transferred||false,trType:r.tr_type||'',mc:r.mc||false,dcDate:r.dc_date||'',dcWork:r.dc_work||[]}}
 function localToDB(p){return{adm:p.adm||null,ward:p.ward,staff:p.staff,bed:p.bed,hn:p.hn,sex:p.sex,name:p.name,age:p.age,ud:p.ud,allergy:p.allergy||'',diag:p.diag,status:p.status,probs:p.probs,prob_titles:p.probTitles,ww:p.ww,pl:p.pl,prog:p.prog,transferred:p.tr,tr_type:p.trType,mc:p.mc,dc_date:p.dcDate||null,dc_work:p.dcWork}}
 async function upsertPt(p){const d=localToDB(p);if(p.id){await sb.from('patients').update(d).eq('id',p.id)}else{const{data:r}=await sb.from('patients').insert(d).select().single();if(r)p.id=r.id}showSaved()}
 async function deletePtDB(id){await sb.from('patients').delete().eq('id',id);showSaved()}
-async function upsertWardOrStaff(table,item,silent){
-  const base={name:item.name,color:item.color,emoji:item.emoji};
-  const payload=hasOrderIdx?{...base,order_idx:item.order_idx}:base;
-  let res;
-  try{
-    if(item.id){res=await sb.from(table).update(payload).eq('id',item.id)}
-    else{res=await sb.from(table).insert(payload).select().single()}
-  }catch(err){res={error:err}}
-  if(res.error&&hasOrderIdx){
-    // order_idx column missing on this DB — retry without it and remember for next time
-    hasOrderIdx=false;
-    try{
-      if(item.id){res=await sb.from(table).update(base).eq('id',item.id)}
-      else{res=await sb.from(table).insert(base).select().single()}
-    }catch(err){res={error:err}}
-  }
-  if(!item.id&&res.data)item.id=res.data.id;
-  if(res.error){console.error(table+' save failed:',res.error);if(!silent)alert('Could not save: '+(res.error.message||res.error))}
-  else if(!silent)showSaved();
-  return res;
-}
-async function upsertWard(w,silent){return upsertWardOrStaff('wards',w,silent)}
+async function upsertWard(w){if(w.id){await sb.from('wards').update({name:w.name,color:w.color,emoji:w.emoji}).eq('id',w.id)}else{const{data:r}=await sb.from('wards').insert({name:w.name,color:w.color,emoji:w.emoji}).select().single();if(r)w.id=r.id}showSaved()}
 async function deleteWardDB(id){await sb.from('wards').delete().eq('id',id);showSaved()}
-async function upsertStaff(s,silent){return upsertWardOrStaff('staff',s,silent)}
+async function upsertStaff(s){if(s.id){await sb.from('staff').update({name:s.name,color:s.color,emoji:s.emoji}).eq('id',s.id)}else{const{data:r}=await sb.from('staff').insert({name:s.name,color:s.color,emoji:s.emoji}).select().single();if(r)s.id=r.id}showSaved()}
 async function deleteStaffDB(id){await sb.from('staff').delete().eq('id',id);showSaved()}
 
 function setupRealtime(){
@@ -624,18 +559,8 @@ function setupRealtime(){
     else if(p.eventType==='UPDATE'){const i=pts.findIndex(x=>x.id===p.new.id);if(i>=0)pts[i]=dbToLocal(p.new);renderAll()}
     else if(p.eventType==='DELETE'){pts=pts.filter(x=>x.id!==p.old.id);renderAll()}
   }).subscribe();
-  sb.channel('wds').on('postgres_changes',{event:'*',schema:'public',table:'wards'},p=>{
-    if(p.eventType==='INSERT'){if(!wards.find(x=>x.id===p.new.id))wards.push(p.new)}
-    else if(p.eventType==='UPDATE'){const i=wards.findIndex(x=>x.id===p.new.id);if(i>=0)wards[i]=p.new}
-    else if(p.eventType==='DELETE'){wards=wards.filter(x=>x.id!==p.old.id)}
-    refreshWSViews();
-  }).subscribe();
-  sb.channel('stf').on('postgres_changes',{event:'*',schema:'public',table:'staff'},p=>{
-    if(p.eventType==='INSERT'){if(!staffList.find(x=>x.id===p.new.id))staffList.push(p.new)}
-    else if(p.eventType==='UPDATE'){const i=staffList.findIndex(x=>x.id===p.new.id);if(i>=0)staffList[i]=p.new}
-    else if(p.eventType==='DELETE'){staffList=staffList.filter(x=>x.id!==p.old.id)}
-    refreshWSViews();
-  }).subscribe();
+  sb.channel('wds').on('postgres_changes',{event:'*',schema:'public',table:'wards'},async()=>{const{data}=await sb.from('wards').select('*').order('id');if(data)wards=data;renderAll()}).subscribe();
+  sb.channel('stf').on('postgres_changes',{event:'*',schema:'public',table:'staff'},async()=>{const{data}=await sb.from('staff').select('*').order('id');if(data)staffList=data;renderAll()}).subscribe();
   sb.channel('cons').on('postgres_changes',{event:'*',schema:'public',table:'consults'},p=>{
     if(p.eventType==='INSERT'){const n=cDbToLocal(p.new);if(!consults.find(x=>x.id===n.id))consults.push(n);renderConsult()}
     else if(p.eventType==='UPDATE'){const i=consults.findIndex(x=>x.id===p.new.id);if(i>=0)consults[i]=cDbToLocal(p.new);renderConsult()}
@@ -1025,169 +950,58 @@ async function savePt(){
 function openTr(id){trid=id;trSel='';['dc','death','refer'].forEach(x=>document.getElementById('tr-'+x).classList.remove('sel'));document.getElementById('tr-mc').checked=false;document.getElementById('trM').classList.add('open')}
 function str2(t){trSel=t;['dc','death','refer'].forEach(x=>document.getElementById('tr-'+x).classList.toggle('sel',x===t))}
 async function confTr(){if(!trSel)return alert('Please select a transfer type.');const p=pts.find(x=>x.id===trid);if(!p)return;const mc=document.getElementById('tr-mc').checked;p.tr=true;p.trType=trSel;p.mc=mc;p.dcDate=toDay();p.dcWork=dcWorkFor(trSel,mc);await upsertPt(p);closeM('trM');renderAll()}
-function tcs(csId){const dd=document.getElementById(csId+'-dd');const isOpen=dd.classList.contains('open');document.querySelectorAll('.cs-dd').forEach(x=>x.classList.remove('open'));csEditType=null;csEditIdx=null;if(!isOpen){buildCsDD(csId);dd.classList.add('open')}}
-let csEditType=null,csEditIdx=null;
-function buildCsDD(csId){
-  const dd=document.getElementById(csId+'-dd');if(!dd)return;
-  const type=csId==='csw-ward'?'ward':'staff';
-  const list=wsList(type);
-  const cur=document.getElementById(csId+'-v').textContent;
-  dd.innerHTML=list.map((item,i)=>{
-    if(csEditType===type&&csEditIdx===i){
-      return`<div class="cs-opt cs-opt-edit" data-idx="${i}">
-        <i class="ti ti-grip-vertical cs-grip" onpointerdown="wsPointerDown(event,'${type}',${i})"></i>
-        <input type="text" class="cs-emoji-inp" value="${(item.emoji||'').replace(/"/g,'&quot;')}" maxlength="4" onchange="updWardStaffField('${type}',${i},'emoji',this.value)">
-        <span class="cs-clr-dot" style="background:${item.color}" onclick="wsToggleClr('csclr-${csId}-','${type}',${i},event)"></span>
-        <div class="cs-clr-pop" id="csclr-${csId}-${i}"></div>
-        <input type="text" class="cs-name-inp" value="${item.name.replace(/"/g,'&quot;')}" onchange="updWardStaffField('${type}',${i},'name',this.value)" onkeydown="if(event.key==='Enter')csStopEdit()">
-        <button class="cs-edit-btn" onclick="csStopEdit()" title="Done"><i class="ti ti-check"></i></button>
-        <button class="cs-del" onclick="wsRemove('${type}',${i});csStopEdit()" title="Remove">✕</button>
+function tcs(csId){const dd=document.getElementById(csId+'-dd');const isOpen=dd.classList.contains('open');document.querySelectorAll('.cs-dd').forEach(x=>x.classList.remove('open'));if(!isOpen){const list=csId==='csw-ward'?wards:staffList;const cur=document.getElementById(csId+'-v').textContent;dd.innerHTML=list.map(item=>`<div class="cs-opt" onclick="selCS('${csId}','${item.name.replace(/'/g,"\\'")}')"><span style="font-size:15px">${item.emoji||''}</span><span style="width:11px;height:11px;border-radius:50%;background:${item.color};display:inline-block;flex-shrink:0"></span><span style="flex:1">${item.name}</span>${cur===item.name?'<span style="color:#378ADD">✓</span>':''}</div>`).join('')+`<div class="cs-addb"><input type="text" placeholder="Quick add..." id="${csId}-ni" onkeydown="if(event.key==='Enter')qAdd('${csId}')"><button class="btn sm" onclick="qAdd('${csId}')">+</button></div>`;dd.classList.add('open')}}
+function selCS(csId,val){document.getElementById(csId+'-v').textContent=val;document.getElementById(csId+'-dd').classList.remove('open')}
+async function qAdd(csId){const inp=document.getElementById(csId+'-ni');const val=inp.value.trim();if(!val)return;const list=csId==='csw-ward'?wards:staffList;if(!list.find(x=>x.name===val)){const nw={name:val,color:COLORS[0],emoji:csId==='csw-ward'?'🏥':'👨‍⚕️'};list.push(nw);if(csId==='csw-ward')await upsertWard(nw);else await upsertStaff(nw);}selCS(csId,val)}
+document.addEventListener('click',e=>{if(!e.target.closest('.cs-wrap'))document.querySelectorAll('.cs-dd').forEach(x=>x.classList.remove('open'))});
+function renderColorPicker(){const el=document.getElementById('mg-colors');if(!el)return;el.innerHTML=COLORS.map(c=>`<div class="clr${mgColor===c?' sel':''}" style="background:${c}" onclick="mgColor='${c}';renderColorPicker()" title="${c}"></div>`).join('')}
+function openMg(type){mgType=type;mgColor=COLORS[0];mgEditIdx=null;document.getElementById('mg-t').textContent=type==='ward'?'Manage wards':'Manage staff';document.getElementById('mg-inp').value='';document.getElementById('mg-emoji').value='';renderMgList();renderColorPicker();document.getElementById('mgM').classList.add('open')}
+let mgEditIdx=null,mgEditColor='';
+function renderMgList(){
+  const list=mgType==='ward'?wards:staffList;
+  document.getElementById('mg-list').innerHTML=list.map((item,i)=>{
+    if(mgEditIdx===i){
+      return`<div class="mgl-row" style="flex-direction:column;align-items:stretch;gap:8px;padding:10px 11px">
+        <div style="display:flex;gap:6px">
+          <input type="text" id="mge-name" value="${item.name.replace(/"/g,'&quot;')}" placeholder="Name..." style="flex:1;padding:8px 11px;border:1px solid #e2e8f0;border-radius:8px;font-size:13px;color:#1a202c;background:#fff;font-family:inherit">
+          <input type="text" id="mge-emoji" value="${(item.emoji||'').replace(/"/g,'&quot;')}" placeholder="😊" style="width:56px;padding:8px;border:1px solid #e2e8f0;border-radius:8px;font-size:16px;text-align:center;background:#fff;font-family:inherit">
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+          <span style="font-size:12px;color:#718096">Color:</span>
+          <div class="color-row">${COLORS.map(c=>`<div class="clr${mgEditColor===c?' sel':''}" style="background:${c}" onclick="mgEditColor='${c}';renderMgList()" title="${c}"></div>`).join('')}</div>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="btn pri sm" onclick="mgSaveEdit(${i})"><i class="ti ti-check"></i> Save</button>
+          <button class="btn sm" onclick="mgCancelEdit()">Cancel</button>
+        </div>
       </div>`;
     }
-    return`<div class="cs-opt" data-idx="${i}" onclick="selCS('${csId}','${item.name.replace(/'/g,"\\'")}')">
-      <i class="ti ti-grip-vertical cs-grip" onclick="event.stopPropagation()" onpointerdown="event.stopPropagation();wsPointerDown(event,'${type}',${i})"></i>
-      <span class="cs-emoji-disp">${item.emoji||''}</span>
-      <span class="cs-clr-dot-disp" style="background:${item.color}"></span>
-      <span class="cs-name-disp">${item.name}</span>
-      ${cur===item.name?'<i class="ti ti-check" style="color:#378ADD;flex-shrink:0"></i>':''}
-      <button class="cs-edit-btn" onclick="event.stopPropagation();csStartEdit('${csId}','${type}',${i})" title="Edit"><i class="ti ti-pencil"></i></button>
-    </div>`;
-  }).join('')+`<div class="cs-addb"><input type="text" placeholder="Quick add..." id="${csId}-ni" onkeydown="if(event.key==='Enter')qAdd('${csId}')"><button class="btn sm" onclick="qAdd('${csId}')">+</button></div>`;
+    return`<div class="mgl-row"><span style="font-size:19px">${item.emoji||''}</span><span style="width:13px;height:13px;border-radius:50%;background:${item.color};flex-shrink:0;display:inline-block"></span><span style="flex:1;font-size:13px">${item.name}</span><button onclick="mgStartEdit(${i})" style="border:none;background:none;cursor:pointer;color:#718096;font-size:15px;padding:3px 6px;font-family:inherit;border-radius:6px" title="Edit"><i class="ti ti-pencil"></i></button><button onclick="rmMg(${i})" style="border:none;background:none;cursor:pointer;color:#a0aec0;font-size:17px;padding:2px 4px;font-family:inherit" title="Remove">✕</button></div>`;
+  }).join('');
 }
-function csStartEdit(csId,type,i){csEditType=type;csEditIdx=i;buildCsDD(csId)}
-function csStopEdit(){csEditType=null;csEditIdx=null;['csw-ward','csw-staff'].forEach(csId=>{const dd=document.getElementById(csId+'-dd');if(dd&&dd.classList.contains('open'))buildCsDD(csId)})}
-function selCS(csId,val){document.getElementById(csId+'-v').textContent=val;document.getElementById(csId+'-dd').classList.remove('open');csEditType=null;csEditIdx=null}
-async function qAdd(csId){
-  const inp=document.getElementById(csId+'-ni');const val=inp.value.trim();if(!val)return;
-  const type=csId==='csw-ward'?'ward':'staff';
-  const list=wsList(type);
-  if(!list.find(x=>x.name===val)){
-    const nw={name:val,color:COLORS[0],emoji:type==='ward'?'🏥':'👨‍⚕️',order_idx:list.length};
-    list.push(nw);
-    buildCsDD(csId);
-    if(type==='ward')await upsertWard(nw);else await upsertStaff(nw);
-  }
-  selCS(csId,val);
-}
-document.addEventListener('click',e=>{if(!e.target.closest('.cs-wrap')){document.querySelectorAll('.cs-dd').forEach(x=>x.classList.remove('open'));csEditType=null;csEditIdx=null}});
-function renderColorPicker(){const el=document.getElementById('mg-colors');if(!el)return;el.innerHTML=COLORS.map(c=>`<div class="clr${mgColor===c?' sel':''}" style="background:${c}" onclick="mgColor='${c}';renderColorPicker()" title="${c}"></div>`).join('')}
-function openMg(type){mgType=type;mgColor=COLORS[0];document.getElementById('mg-t').textContent=type==='ward'?'Manage wards':'Manage staff';document.getElementById('mg-inp').value='';document.getElementById('mg-emoji').value='';renderMgList();renderColorPicker();document.getElementById('mgM').classList.add('open')}
-
-// ── Shared ward/staff inline edit + drag reorder (used by Manage modal AND the ward/staff picker) ──
-let wsPointerDrag=null;
-function wsList(type){return type==='ward'?wards:staffList}
-function refreshWSViews(){
-  renderAll();renderConsult();
-  if(document.getElementById('mgM').classList.contains('open'))renderMgList();
-  ['csw-ward','csw-staff'].forEach(csId=>{const dd=document.getElementById(csId+'-dd');if(dd&&dd.classList.contains('open'))buildCsDD(csId)});
-}
-async function updWardStaffField(type,i,field,val){
-  const list=wsList(type);
+function mgStartEdit(i){const list=mgType==='ward'?wards:staffList;const item=list[i];if(!item)return;mgEditIdx=i;mgEditColor=item.color;renderMgList()}
+function mgCancelEdit(){mgEditIdx=null;renderMgList()}
+async function mgSaveEdit(i){
+  const list=mgType==='ward'?wards:staffList;
   const item=list[i];if(!item)return;
-  if(field==='name'){
-    val=val.trim();
-    if(!val){refreshWSViews();return}
-    const oldVal=item.name;
-    if(val!==oldVal){
-      const affectedPts=pts.filter(p=>p[type]===oldVal);
-      const affectedCons=consults.filter(p=>p[type]===oldVal);
-      affectedPts.forEach(p=>p[type]=val);
-      affectedCons.forEach(p=>p[type]=val);
-      await Promise.all([...affectedPts.map(p=>upsertPt(p)),...affectedCons.map(p=>upsertConsult(p))]);
-      const csId=type==='ward'?'csw-ward':'csw-staff';
-      const vEl=document.getElementById(csId+'-v');
-      if(vEl&&vEl.textContent===oldVal)vEl.textContent=val;
-    }
+  const newName=document.getElementById('mge-name').value.trim();
+  const newEmoji=document.getElementById('mge-emoji').value.trim();
+  if(!newName){alert('Name cannot be empty.');return}
+  const oldName=item.name;
+  item.name=newName;
+  item.emoji=newEmoji;
+  item.color=mgEditColor;
+  if(newName!==oldName){
+    const key=mgType;
+    pts.forEach(p=>{if(p[key]===oldName){p[key]=newName;upsertPt(p)}});
+    consults.forEach(p=>{if(p[key]===oldName){p[key]=newName;upsertConsult(p)}});
   }
-  item[field]=val;
-  if(type==='ward')await upsertWard(item);else await upsertStaff(item);
-  refreshWSViews();
+  if(mgType==='ward')await upsertWard(item);else await upsertStaff(item);
+  mgEditIdx=null;
+  renderMgList();renderAll();renderConsult();
 }
-async function wsRemove(type,i){
-  const list=wsList(type);
-  const item=list[i];if(!item)return;
-  if(item.id){if(type==='ward')await deleteWardDB(item.id);else await deleteStaffDB(item.id)}
-  list.splice(i,1);
-  refreshWSViews();
-}
-// Pointer-based reorder (works reliably for mouse and touch, unlike native HTML5 drag-and-drop)
-function wsPointerDown(e,type,i){
-  e.preventDefault();
-  wsPointerDrag={type,idx:i};
-  const row=e.currentTarget.closest('.mgl-row,.cs-opt');
-  if(row)row.classList.add('dragging');
-  window.addEventListener('pointermove',wsPointerMove);
-  window.addEventListener('pointerup',wsPointerUp);
-  window.addEventListener('pointercancel',wsPointerUp);
-}
-function wsPointerMove(e){
-  if(!wsPointerDrag)return;
-  e.preventDefault();
-  const el=document.elementFromPoint(e.clientX,e.clientY);
-  const row=el&&el.closest('.mgl-row,.cs-opt');
-  if(!row||row.dataset.idx===undefined)return;
-  const idx=parseInt(row.dataset.idx,10);
-  if(isNaN(idx)||idx===wsPointerDrag.idx)return;
-  const list=wsList(wsPointerDrag.type);
-  if(idx<0||idx>=list.length)return;
-  const[moved]=list.splice(wsPointerDrag.idx,1);
-  list.splice(idx,0,moved);
-  wsPointerDrag.idx=idx;
-  refreshWSViews();
-  const newRow=document.querySelector(`.mgl-row[data-idx="${idx}"]`)||document.querySelector(`.cs-opt[data-idx="${idx}"]`);
-  if(newRow)newRow.classList.add('dragging');
-}
-async function wsPointerUp(){
-  window.removeEventListener('pointermove',wsPointerMove);
-  window.removeEventListener('pointerup',wsPointerUp);
-  window.removeEventListener('pointercancel',wsPointerUp);
-  if(!wsPointerDrag)return;
-  const{type}=wsPointerDrag;
-  wsPointerDrag=null;
-  document.querySelectorAll('.mgl-row,.cs-opt').forEach(r=>r.classList.remove('dragging'));
-  const list=wsList(type);
-  await Promise.all(list.map((item,idx)=>{item.order_idx=idx;return type==='ward'?upsertWard(item,true):upsertStaff(item,true)}));
-  showSaved();
-}
-function wsToggleClr(popPrefix,type,i,e){
-  e.stopPropagation();
-  document.querySelectorAll('.mg-clr-pop,.cs-clr-pop').forEach(p=>{if(p.id!==popPrefix+i)p.classList.remove('open')});
-  const pop=document.getElementById(popPrefix+i);
-  if(!pop)return;
-  if(pop.classList.contains('open')){pop.classList.remove('open');return}
-  const list=wsList(type);
-  const cur=list[i]?list[i].color:'';
-  pop.innerHTML=COLORS.map(c=>`<div class="clr${cur===c?' sel':''}" style="background:${c}" onclick="event.stopPropagation();updWardStaffField('${type}',${i},'color','${c}');document.getElementById('${popPrefix}${i}').classList.remove('open')"></div>`).join('');
-  pop.classList.add('open');
-}
-document.addEventListener('click',e=>{if(!e.target.closest('.mg-clr-dot')&&!e.target.closest('.mg-clr-pop')&&!e.target.closest('.cs-clr-dot')&&!e.target.closest('.cs-clr-pop'))document.querySelectorAll('.mg-clr-pop,.cs-clr-pop').forEach(p=>p.classList.remove('open'))});
-
-// ── Manage modal list ──
-function renderMgList(){
-  const list=wsList(mgType);
-  document.getElementById('mg-list').innerHTML=list.map((item,i)=>`
-    <div class="mgl-row" data-idx="${i}">
-      <i class="ti ti-grip-vertical mg-grip" onpointerdown="wsPointerDown(event,'${mgType}',${i})"></i>
-      <input type="text" class="mg-emoji-inp" value="${(item.emoji||'').replace(/"/g,'&quot;')}" maxlength="4" onchange="updWardStaffField('${mgType}',${i},'emoji',this.value)">
-      <div class="mg-clr-dot" style="background:${item.color}" onclick="wsToggleClr('mgclr-','${mgType}',${i},event)"></div>
-      <div class="mg-clr-pop" id="mgclr-${i}"></div>
-      <input type="text" class="mg-name-inp" value="${item.name.replace(/"/g,'&quot;')}" onchange="updWardStaffField('${mgType}',${i},'name',this.value)">
-      <button class="mgl-del" onclick="wsRemove('${mgType}',${i})" title="Remove">✕</button>
-    </div>`).join('');
-}
-async function addMg(){
-  const v=document.getElementById('mg-inp').value.trim();if(!v)return;
-  const em=document.getElementById('mg-emoji').value.trim();
-  const list=wsList(mgType);
-  document.getElementById('mg-inp').value='';
-  document.getElementById('mg-emoji').value='';
-  if(list.find(x=>x.name===v))return;
-  const nw={name:v,color:mgColor,emoji:em||(mgType==='ward'?'🏥':'👨‍⚕️'),order_idx:list.length};
-  list.push(nw);
-  refreshWSViews();
-  if(mgType==='ward')await upsertWard(nw);else await upsertStaff(nw);
-  refreshWSViews();
-}
+async function addMg(){const v=document.getElementById('mg-inp').value.trim();if(!v)return;const em=document.getElementById('mg-emoji').value.trim();const list=mgType==='ward'?wards:staffList;if(!list.find(x=>x.name===v)){const nw={name:v,color:mgColor,emoji:em||(mgType==='ward'?'🏥':'👨‍⚕️')};list.push(nw);if(mgType==='ward')await upsertWard(nw);else await upsertStaff(nw);}document.getElementById('mg-inp').value='';document.getElementById('mg-emoji').value='';renderMgList()}
+async function rmMg(idx){if(mgType==='ward'){const w=wards[idx];if(w&&w.id)await deleteWardDB(w.id);wards.splice(idx,1);}else{const s=staffList[idx];if(s&&s.id)await deleteStaffDB(s.id);staffList.splice(idx,1);}mgEditIdx=null;renderMgList()}
 function openDelete(id){const p=pts.find(x=>x.id===id);if(!p)return;deleteId=id;const trLabel={dc:'D/C',death:'Death',refer:'Refer'}[p.trType]||p.trType;document.getElementById('del-name').textContent=p.name;document.getElementById('del-sub').textContent=`${p.hn}  ·  D/C: ${fmt(p.dcDate)}  ·  ${trLabel}`;document.getElementById('delM').classList.add('open')}
 async function confirmDelete(){if(deleteId===null)return;await deletePtDB(deleteId);pts=pts.filter(x=>x.id!==deleteId);deleteId=null;closeM('delM');renderAll()}
 function printAll(){
