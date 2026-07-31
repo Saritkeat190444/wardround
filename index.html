@@ -131,7 +131,7 @@ tr:hover td{background:#fafbfd}
 .mgl-row{display:flex;align-items:center;gap:7px;padding:8px 9px;border:1px solid #f0f4f8;border-radius:8px;background:#f7fafc;position:relative}
 .mgl-row.drag-over{border-color:#90CDF4;background:#EBF4FF}
 .mgl-row.dragging{opacity:.4}
-.mg-grip{cursor:grab;color:#cbd5e0;font-size:16px;flex-shrink:0}
+.mg-grip{cursor:grab;color:#cbd5e0;font-size:16px;flex-shrink:0;padding:4px;touch-action:none;user-select:none}
 .mg-grip:active{cursor:grabbing}
 .mg-emoji-inp{width:32px;padding:5px 2px;border:1px solid #e2e8f0;border-radius:6px;text-align:center;font-size:15px;background:#fff;font-family:inherit;flex-shrink:0}
 .mg-name-inp{flex:1;min-width:0;padding:6px 8px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px;background:#fff;color:#1a202c;font-family:inherit}
@@ -153,7 +153,7 @@ tr:hover td{background:#fafbfd}
 .cs-opt.dragging{opacity:.4}
 .cs-opt-edit{cursor:default;background:#fafbfd}
 .cs-opt-edit:hover{background:#fafbfd}
-.cs-grip{cursor:grab;color:#cbd5e0;font-size:15px;flex-shrink:0}
+.cs-grip{cursor:grab;color:#cbd5e0;font-size:15px;flex-shrink:0;padding:3px;touch-action:none;user-select:none}
 .cs-grip:active{cursor:grabbing}
 .cs-emoji-disp{font-size:15px;width:18px;text-align:center;flex-shrink:0}
 .cs-clr-dot-disp{width:11px;height:11px;border-radius:50%;flex-shrink:0;display:inline-block}
@@ -596,16 +596,20 @@ async function upsertWardOrStaff(table,item,silent){
   const base={name:item.name,color:item.color,emoji:item.emoji};
   const payload=hasOrderIdx?{...base,order_idx:item.order_idx}:base;
   let res;
-  if(item.id){res=await sb.from(table).update(payload).eq('id',item.id)}
-  else{res=await sb.from(table).insert(payload).select().single()}
+  try{
+    if(item.id){res=await sb.from(table).update(payload).eq('id',item.id)}
+    else{res=await sb.from(table).insert(payload).select().single()}
+  }catch(err){res={error:err}}
   if(res.error&&hasOrderIdx){
     // order_idx column missing on this DB — retry without it and remember for next time
     hasOrderIdx=false;
-    if(item.id){res=await sb.from(table).update(base).eq('id',item.id)}
-    else{res=await sb.from(table).insert(base).select().single()}
+    try{
+      if(item.id){res=await sb.from(table).update(base).eq('id',item.id)}
+      else{res=await sb.from(table).insert(base).select().single()}
+    }catch(err){res={error:err}}
   }
   if(!item.id&&res.data)item.id=res.data.id;
-  if(res.error){console.error(table+' save failed:',res.error);alert('Could not save: '+res.error.message)}
+  if(res.error){console.error(table+' save failed:',res.error);if(!silent)alert('Could not save: '+(res.error.message||res.error))}
   else if(!silent)showSaved();
   return res;
 }
@@ -1021,7 +1025,7 @@ function buildCsDD(csId){
   dd.innerHTML=list.map((item,i)=>{
     if(csEditType===type&&csEditIdx===i){
       return`<div class="cs-opt cs-opt-edit" data-idx="${i}">
-        <i class="ti ti-grip-vertical cs-grip" draggable="true" ondragstart="wsDragStart(event,'${type}',${i})" ondragend="wsDragEnd(event)"></i>
+        <i class="ti ti-grip-vertical cs-grip" onpointerdown="wsPointerDown(event,'${type}',${i})"></i>
         <input type="text" class="cs-emoji-inp" value="${(item.emoji||'').replace(/"/g,'&quot;')}" maxlength="4" onchange="updWardStaffField('${type}',${i},'emoji',this.value)">
         <span class="cs-clr-dot" style="background:${item.color}" onclick="wsToggleClr('csclr-${csId}-','${type}',${i},event)"></span>
         <div class="cs-clr-pop" id="csclr-${csId}-${i}"></div>
@@ -1030,8 +1034,8 @@ function buildCsDD(csId){
         <button class="cs-del" onclick="wsRemove('${type}',${i});csStopEdit()" title="Remove">✕</button>
       </div>`;
     }
-    return`<div class="cs-opt" data-idx="${i}" onclick="selCS('${csId}','${item.name.replace(/'/g,"\\'")}')" ondragover="wsDragOver(event,'${type}',${i})" ondragleave="wsDragLeave(event)" ondrop="wsDrop(event,'${type}',${i})">
-      <i class="ti ti-grip-vertical cs-grip" draggable="true" onclick="event.stopPropagation()" ondragstart="wsDragStart(event,'${type}',${i})" ondragend="wsDragEnd(event)"></i>
+    return`<div class="cs-opt" data-idx="${i}" onclick="selCS('${csId}','${item.name.replace(/'/g,"\\'")}')">
+      <i class="ti ti-grip-vertical cs-grip" onclick="event.stopPropagation()" onpointerdown="event.stopPropagation();wsPointerDown(event,'${type}',${i})"></i>
       <span class="cs-emoji-disp">${item.emoji||''}</span>
       <span class="cs-clr-dot-disp" style="background:${item.color}"></span>
       <span class="cs-name-disp">${item.name}</span>
@@ -1043,13 +1047,24 @@ function buildCsDD(csId){
 function csStartEdit(csId,type,i){csEditType=type;csEditIdx=i;buildCsDD(csId)}
 function csStopEdit(){csEditType=null;csEditIdx=null;['csw-ward','csw-staff'].forEach(csId=>{const dd=document.getElementById(csId+'-dd');if(dd&&dd.classList.contains('open'))buildCsDD(csId)})}
 function selCS(csId,val){document.getElementById(csId+'-v').textContent=val;document.getElementById(csId+'-dd').classList.remove('open');csEditType=null;csEditIdx=null}
-async function qAdd(csId){const inp=document.getElementById(csId+'-ni');const val=inp.value.trim();if(!val)return;const type=csId==='csw-ward'?'ward':'staff';const list=wsList(type);if(!list.find(x=>x.name===val)){const nw={name:val,color:COLORS[0],emoji:type==='ward'?'🏥':'👨‍⚕️',order_idx:list.length};list.push(nw);if(type==='ward')await upsertWard(nw);else await upsertStaff(nw);}selCS(csId,val)}
+async function qAdd(csId){
+  const inp=document.getElementById(csId+'-ni');const val=inp.value.trim();if(!val)return;
+  const type=csId==='csw-ward'?'ward':'staff';
+  const list=wsList(type);
+  if(!list.find(x=>x.name===val)){
+    const nw={name:val,color:COLORS[0],emoji:type==='ward'?'🏥':'👨‍⚕️',order_idx:list.length};
+    list.push(nw);
+    buildCsDD(csId);
+    if(type==='ward')await upsertWard(nw);else await upsertStaff(nw);
+  }
+  selCS(csId,val);
+}
 document.addEventListener('click',e=>{if(!e.target.closest('.cs-wrap')){document.querySelectorAll('.cs-dd').forEach(x=>x.classList.remove('open'));csEditType=null;csEditIdx=null}});
 function renderColorPicker(){const el=document.getElementById('mg-colors');if(!el)return;el.innerHTML=COLORS.map(c=>`<div class="clr${mgColor===c?' sel':''}" style="background:${c}" onclick="mgColor='${c}';renderColorPicker()" title="${c}"></div>`).join('')}
 function openMg(type){mgType=type;mgColor=COLORS[0];document.getElementById('mg-t').textContent=type==='ward'?'Manage wards':'Manage staff';document.getElementById('mg-inp').value='';document.getElementById('mg-emoji').value='';renderMgList();renderColorPicker();document.getElementById('mgM').classList.add('open')}
 
 // ── Shared ward/staff inline edit + drag reorder (used by Manage modal AND the ward/staff picker) ──
-let wsDragIdx=null,wsDragType=null;
+let wsPointerDrag=null;
 function wsList(type){return type==='ward'?wards:staffList}
 function refreshWSViews(){
   renderAll();renderConsult();
@@ -1085,19 +1100,42 @@ async function wsRemove(type,i){
   list.splice(i,1);
   refreshWSViews();
 }
-function wsDragStart(e,type,i){wsDragIdx=i;wsDragType=type;e.dataTransfer.effectAllowed='move';const row=e.target.closest('.mgl-row,.cs-opt');if(row)row.classList.add('dragging')}
-function wsDragOver(e,type,i){if(type!==wsDragType&&wsDragType!==null)return;e.preventDefault();e.dataTransfer.dropEffect='move';e.currentTarget.classList.add('drag-over')}
-function wsDragLeave(e){e.currentTarget.classList.remove('drag-over')}
-function wsDragEnd(e){document.querySelectorAll('.mgl-row,.cs-opt').forEach(r=>{r.classList.remove('dragging');r.classList.remove('drag-over')})}
-async function wsDrop(e,type,i){
+// Pointer-based reorder (works reliably for mouse and touch, unlike native HTML5 drag-and-drop)
+function wsPointerDown(e,type,i){
   e.preventDefault();
-  e.currentTarget.classList.remove('drag-over');
-  if(wsDragIdx===null||wsDragType!==type||wsDragIdx===i){wsDragIdx=null;wsDragType=null;return}
-  const list=wsList(type);
-  const[moved]=list.splice(wsDragIdx,1);
-  list.splice(i,0,moved);
-  wsDragIdx=null;wsDragType=null;
+  wsPointerDrag={type,idx:i};
+  const row=e.currentTarget.closest('.mgl-row,.cs-opt');
+  if(row)row.classList.add('dragging');
+  window.addEventListener('pointermove',wsPointerMove);
+  window.addEventListener('pointerup',wsPointerUp);
+  window.addEventListener('pointercancel',wsPointerUp);
+}
+function wsPointerMove(e){
+  if(!wsPointerDrag)return;
+  e.preventDefault();
+  const el=document.elementFromPoint(e.clientX,e.clientY);
+  const row=el&&el.closest('.mgl-row,.cs-opt');
+  if(!row||row.dataset.idx===undefined)return;
+  const idx=parseInt(row.dataset.idx,10);
+  if(isNaN(idx)||idx===wsPointerDrag.idx)return;
+  const list=wsList(wsPointerDrag.type);
+  if(idx<0||idx>=list.length)return;
+  const[moved]=list.splice(wsPointerDrag.idx,1);
+  list.splice(idx,0,moved);
+  wsPointerDrag.idx=idx;
   refreshWSViews();
+  const newRow=document.querySelector(`.mgl-row[data-idx="${idx}"]`)||document.querySelector(`.cs-opt[data-idx="${idx}"]`);
+  if(newRow)newRow.classList.add('dragging');
+}
+async function wsPointerUp(){
+  window.removeEventListener('pointermove',wsPointerMove);
+  window.removeEventListener('pointerup',wsPointerUp);
+  window.removeEventListener('pointercancel',wsPointerUp);
+  if(!wsPointerDrag)return;
+  const{type}=wsPointerDrag;
+  wsPointerDrag=null;
+  document.querySelectorAll('.mgl-row,.cs-opt').forEach(r=>r.classList.remove('dragging'));
+  const list=wsList(type);
   await Promise.all(list.map((item,idx)=>{item.order_idx=idx;return type==='ward'?upsertWard(item,true):upsertStaff(item,true)}));
   showSaved();
 }
@@ -1118,8 +1156,8 @@ document.addEventListener('click',e=>{if(!e.target.closest('.mg-clr-dot')&&!e.ta
 function renderMgList(){
   const list=wsList(mgType);
   document.getElementById('mg-list').innerHTML=list.map((item,i)=>`
-    <div class="mgl-row" data-idx="${i}" ondragover="wsDragOver(event,'${mgType}',${i})" ondragleave="wsDragLeave(event)" ondrop="wsDrop(event,'${mgType}',${i})">
-      <i class="ti ti-grip-vertical mg-grip" draggable="true" ondragstart="wsDragStart(event,'${mgType}',${i})" ondragend="wsDragEnd(event)"></i>
+    <div class="mgl-row" data-idx="${i}">
+      <i class="ti ti-grip-vertical mg-grip" onpointerdown="wsPointerDown(event,'${mgType}',${i})"></i>
       <input type="text" class="mg-emoji-inp" value="${(item.emoji||'').replace(/"/g,'&quot;')}" maxlength="4" onchange="updWardStaffField('${mgType}',${i},'emoji',this.value)">
       <div class="mg-clr-dot" style="background:${item.color}" onclick="wsToggleClr('mgclr-','${mgType}',${i},event)"></div>
       <div class="mg-clr-pop" id="mgclr-${i}"></div>
@@ -1127,7 +1165,19 @@ function renderMgList(){
       <button class="mgl-del" onclick="wsRemove('${mgType}',${i})" title="Remove">✕</button>
     </div>`).join('');
 }
-async function addMg(){const v=document.getElementById('mg-inp').value.trim();if(!v)return;const em=document.getElementById('mg-emoji').value.trim();const list=wsList(mgType);if(!list.find(x=>x.name===v)){const nw={name:v,color:mgColor,emoji:em||(mgType==='ward'?'🏥':'👨‍⚕️'),order_idx:list.length};list.push(nw);if(mgType==='ward')await upsertWard(nw);else await upsertStaff(nw);}document.getElementById('mg-inp').value='';document.getElementById('mg-emoji').value='';refreshWSViews()}
+async function addMg(){
+  const v=document.getElementById('mg-inp').value.trim();if(!v)return;
+  const em=document.getElementById('mg-emoji').value.trim();
+  const list=wsList(mgType);
+  document.getElementById('mg-inp').value='';
+  document.getElementById('mg-emoji').value='';
+  if(list.find(x=>x.name===v))return;
+  const nw={name:v,color:mgColor,emoji:em||(mgType==='ward'?'🏥':'👨‍⚕️'),order_idx:list.length};
+  list.push(nw);
+  refreshWSViews();
+  if(mgType==='ward')await upsertWard(nw);else await upsertStaff(nw);
+  refreshWSViews();
+}
 function openDelete(id){const p=pts.find(x=>x.id===id);if(!p)return;deleteId=id;const trLabel={dc:'D/C',death:'Death',refer:'Refer'}[p.trType]||p.trType;document.getElementById('del-name').textContent=p.name;document.getElementById('del-sub').textContent=`${p.hn}  ·  D/C: ${fmt(p.dcDate)}  ·  ${trLabel}`;document.getElementById('delM').classList.add('open')}
 async function confirmDelete(){if(deleteId===null)return;await deletePtDB(deleteId);pts=pts.filter(x=>x.id!==deleteId);deleteId=null;closeM('delM');renderAll()}
 function printAll(){
