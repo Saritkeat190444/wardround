@@ -145,14 +145,21 @@ tr:hover td{background:#fafbfd}
 .cs-wrap{position:relative}
 .cs-face{display:flex;align-items:center;justify-content:space-between;padding:9px 12px;border:1px solid #e2e8f0;border-radius:8px;font-size:14px;background:#fff;cursor:pointer}
 .cs-face:hover{border-color:#90CDF4}
-.cs-dd{display:none;position:absolute;top:calc(100%+4px);left:0;min-width:min(100%,290px);width:max-content;max-width:340px;background:#fff;border:1px solid #e2e8f0;border-radius:10px;z-index:80;box-shadow:0 8px 24px rgba(0,0,0,.1);max-height:280px;overflow-y:auto}
+.cs-dd{display:none;position:absolute;top:calc(100%+4px);left:0;min-width:100%;width:260px;max-width:calc(100vw - 32px);background:#fff;border:1px solid #e2e8f0;border-radius:10px;z-index:80;box-shadow:0 8px 24px rgba(0,0,0,.1);max-height:260px;overflow-y:auto;overflow-x:hidden}
 .cs-dd.open{display:block}
-.cs-opt{padding:8px 13px;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:6px;position:relative}
+.cs-opt{padding:10px 13px;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:7px;position:relative}
 .cs-opt:hover{background:#EBF4FF}
-.cs-opt.drag-over{border-radius:6px;background:#EBF4FF;box-shadow:inset 0 0 0 1px #90CDF4}
+.cs-opt.drag-over{background:#EBF4FF;box-shadow:inset 0 0 0 1px #90CDF4}
 .cs-opt.dragging{opacity:.4}
+.cs-opt-edit{cursor:default;background:#fafbfd}
+.cs-opt-edit:hover{background:#fafbfd}
 .cs-grip{cursor:grab;color:#cbd5e0;font-size:15px;flex-shrink:0}
 .cs-grip:active{cursor:grabbing}
+.cs-emoji-disp{font-size:15px;width:18px;text-align:center;flex-shrink:0}
+.cs-clr-dot-disp{width:11px;height:11px;border-radius:50%;flex-shrink:0;display:inline-block}
+.cs-name-disp{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#1a202c}
+.cs-edit-btn{border:none;background:none;cursor:pointer;color:#a0aec0;font-size:13px;padding:5px 6px;font-family:inherit;flex-shrink:0;border-radius:6px;display:flex;align-items:center}
+.cs-edit-btn:hover{background:#EBF4FF;color:#378ADD}
 .cs-emoji-inp{width:30px;padding:4px 2px;border:1px solid #e2e8f0;border-radius:6px;text-align:center;font-size:14px;background:#fff;font-family:inherit;flex-shrink:0}
 .cs-clr-dot{width:14px;height:14px;border-radius:50%;flex-shrink:0;cursor:pointer;border:2px solid #fff;box-shadow:0 0 0 1px #e2e8f0;display:inline-block}
 .cs-clr-pop{display:none;position:absolute;top:calc(100% + 2px);left:34px;background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:6px;box-shadow:0 6px 16px rgba(0,0,0,.15);z-index:400;flex-wrap:wrap;width:100px;gap:4px}
@@ -1004,27 +1011,40 @@ async function savePt(){
 function openTr(id){trid=id;trSel='';['dc','death','refer'].forEach(x=>document.getElementById('tr-'+x).classList.remove('sel'));document.getElementById('tr-mc').checked=false;document.getElementById('trM').classList.add('open')}
 function str2(t){trSel=t;['dc','death','refer'].forEach(x=>document.getElementById('tr-'+x).classList.toggle('sel',x===t))}
 async function confTr(){if(!trSel)return alert('Please select a transfer type.');const p=pts.find(x=>x.id===trid);if(!p)return;const mc=document.getElementById('tr-mc').checked;p.tr=true;p.trType=trSel;p.mc=mc;p.dcDate=toDay();p.dcWork=dcWorkFor(trSel,mc);await upsertPt(p);closeM('trM');renderAll()}
-function tcs(csId){const dd=document.getElementById(csId+'-dd');const isOpen=dd.classList.contains('open');document.querySelectorAll('.cs-dd').forEach(x=>x.classList.remove('open'));if(!isOpen){buildCsDD(csId);dd.classList.add('open')}}
+function tcs(csId){const dd=document.getElementById(csId+'-dd');const isOpen=dd.classList.contains('open');document.querySelectorAll('.cs-dd').forEach(x=>x.classList.remove('open'));csEditType=null;csEditIdx=null;if(!isOpen){buildCsDD(csId);dd.classList.add('open')}}
+let csEditType=null,csEditIdx=null;
 function buildCsDD(csId){
   const dd=document.getElementById(csId+'-dd');if(!dd)return;
   const type=csId==='csw-ward'?'ward':'staff';
   const list=wsList(type);
   const cur=document.getElementById(csId+'-v').textContent;
-  dd.innerHTML=`<div style="padding:6px 13px 2px;font-size:10px;color:#a0aec0">Drag <i class="ti ti-grip-vertical"></i> to reorder · click text to edit</div>`+
-  list.map((item,i)=>`
-    <div class="cs-opt" data-idx="${i}" onclick="selCS('${csId}','${item.name.replace(/'/g,"\\'")}')" ondragover="wsDragOver(event,'${type}',${i})" ondragleave="wsDragLeave(event)" ondrop="wsDrop(event,'${type}',${i})">
+  dd.innerHTML=list.map((item,i)=>{
+    if(csEditType===type&&csEditIdx===i){
+      return`<div class="cs-opt cs-opt-edit" data-idx="${i}">
+        <i class="ti ti-grip-vertical cs-grip" draggable="true" ondragstart="wsDragStart(event,'${type}',${i})" ondragend="wsDragEnd(event)"></i>
+        <input type="text" class="cs-emoji-inp" value="${(item.emoji||'').replace(/"/g,'&quot;')}" maxlength="4" onchange="updWardStaffField('${type}',${i},'emoji',this.value)">
+        <span class="cs-clr-dot" style="background:${item.color}" onclick="wsToggleClr('csclr-${csId}-','${type}',${i},event)"></span>
+        <div class="cs-clr-pop" id="csclr-${csId}-${i}"></div>
+        <input type="text" class="cs-name-inp" value="${item.name.replace(/"/g,'&quot;')}" onchange="updWardStaffField('${type}',${i},'name',this.value)" onkeydown="if(event.key==='Enter')csStopEdit()">
+        <button class="cs-edit-btn" onclick="csStopEdit()" title="Done"><i class="ti ti-check"></i></button>
+        <button class="cs-del" onclick="wsRemove('${type}',${i});csStopEdit()" title="Remove">✕</button>
+      </div>`;
+    }
+    return`<div class="cs-opt" data-idx="${i}" onclick="selCS('${csId}','${item.name.replace(/'/g,"\\'")}')" ondragover="wsDragOver(event,'${type}',${i})" ondragleave="wsDragLeave(event)" ondrop="wsDrop(event,'${type}',${i})">
       <i class="ti ti-grip-vertical cs-grip" draggable="true" onclick="event.stopPropagation()" ondragstart="wsDragStart(event,'${type}',${i})" ondragend="wsDragEnd(event)"></i>
-      <input type="text" class="cs-emoji-inp" value="${(item.emoji||'').replace(/"/g,'&quot;')}" maxlength="4" onclick="event.stopPropagation()" onchange="updWardStaffField('${type}',${i},'emoji',this.value)">
-      <span class="cs-clr-dot" style="background:${item.color}" onclick="event.stopPropagation();wsToggleClr('csclr-${csId}-','${type}',${i},event)"></span>
-      <div class="cs-clr-pop" id="csclr-${csId}-${i}"></div>
-      <input type="text" class="cs-name-inp" value="${item.name.replace(/"/g,'&quot;')}" onclick="event.stopPropagation()" onchange="updWardStaffField('${type}',${i},'name',this.value)">
+      <span class="cs-emoji-disp">${item.emoji||''}</span>
+      <span class="cs-clr-dot-disp" style="background:${item.color}"></span>
+      <span class="cs-name-disp">${item.name}</span>
       ${cur===item.name?'<i class="ti ti-check" style="color:#378ADD;flex-shrink:0"></i>':''}
-      <button class="cs-del" onclick="event.stopPropagation();wsRemove('${type}',${i})" title="Remove">✕</button>
-    </div>`).join('')+`<div class="cs-addb"><input type="text" placeholder="Quick add..." id="${csId}-ni" onkeydown="if(event.key==='Enter')qAdd('${csId}')"><button class="btn sm" onclick="qAdd('${csId}')">+</button></div>`;
+      <button class="cs-edit-btn" onclick="event.stopPropagation();csStartEdit('${csId}','${type}',${i})" title="Edit"><i class="ti ti-pencil"></i></button>
+    </div>`;
+  }).join('')+`<div class="cs-addb"><input type="text" placeholder="Quick add..." id="${csId}-ni" onkeydown="if(event.key==='Enter')qAdd('${csId}')"><button class="btn sm" onclick="qAdd('${csId}')">+</button></div>`;
 }
-function selCS(csId,val){document.getElementById(csId+'-v').textContent=val;document.getElementById(csId+'-dd').classList.remove('open')}
+function csStartEdit(csId,type,i){csEditType=type;csEditIdx=i;buildCsDD(csId)}
+function csStopEdit(){csEditType=null;csEditIdx=null;['csw-ward','csw-staff'].forEach(csId=>{const dd=document.getElementById(csId+'-dd');if(dd&&dd.classList.contains('open'))buildCsDD(csId)})}
+function selCS(csId,val){document.getElementById(csId+'-v').textContent=val;document.getElementById(csId+'-dd').classList.remove('open');csEditType=null;csEditIdx=null}
 async function qAdd(csId){const inp=document.getElementById(csId+'-ni');const val=inp.value.trim();if(!val)return;const type=csId==='csw-ward'?'ward':'staff';const list=wsList(type);if(!list.find(x=>x.name===val)){const nw={name:val,color:COLORS[0],emoji:type==='ward'?'🏥':'👨‍⚕️',order_idx:list.length};list.push(nw);if(type==='ward')await upsertWard(nw);else await upsertStaff(nw);}selCS(csId,val)}
-document.addEventListener('click',e=>{if(!e.target.closest('.cs-wrap'))document.querySelectorAll('.cs-dd').forEach(x=>x.classList.remove('open'))});
+document.addEventListener('click',e=>{if(!e.target.closest('.cs-wrap')){document.querySelectorAll('.cs-dd').forEach(x=>x.classList.remove('open'));csEditType=null;csEditIdx=null}});
 function renderColorPicker(){const el=document.getElementById('mg-colors');if(!el)return;el.innerHTML=COLORS.map(c=>`<div class="clr${mgColor===c?' sel':''}" style="background:${c}" onclick="mgColor='${c}';renderColorPicker()" title="${c}"></div>`).join('')}
 function openMg(type){mgType=type;mgColor=COLORS[0];document.getElementById('mg-t').textContent=type==='ward'?'Manage wards':'Manage staff';document.getElementById('mg-inp').value='';document.getElementById('mg-emoji').value='';renderMgList();renderColorPicker();document.getElementById('mgM').classList.add('open')}
 
