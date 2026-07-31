@@ -624,8 +624,18 @@ function setupRealtime(){
     else if(p.eventType==='UPDATE'){const i=pts.findIndex(x=>x.id===p.new.id);if(i>=0)pts[i]=dbToLocal(p.new);renderAll()}
     else if(p.eventType==='DELETE'){pts=pts.filter(x=>x.id!==p.old.id);renderAll()}
   }).subscribe();
-  sb.channel('wds').on('postgres_changes',{event:'*',schema:'public',table:'wards'},async()=>{wards=await fetchWardsOrStaff('wards');renderAll();if(document.getElementById('mgM').classList.contains('open')&&mgType==='ward')renderMgList()}).subscribe();
-  sb.channel('stf').on('postgres_changes',{event:'*',schema:'public',table:'staff'},async()=>{staffList=await fetchWardsOrStaff('staff');renderAll();if(document.getElementById('mgM').classList.contains('open')&&mgType==='staff')renderMgList()}).subscribe();
+  sb.channel('wds').on('postgres_changes',{event:'*',schema:'public',table:'wards'},p=>{
+    if(p.eventType==='INSERT'){if(!wards.find(x=>x.id===p.new.id))wards.push(p.new)}
+    else if(p.eventType==='UPDATE'){const i=wards.findIndex(x=>x.id===p.new.id);if(i>=0)wards[i]=p.new}
+    else if(p.eventType==='DELETE'){wards=wards.filter(x=>x.id!==p.old.id)}
+    refreshWSViews();
+  }).subscribe();
+  sb.channel('stf').on('postgres_changes',{event:'*',schema:'public',table:'staff'},p=>{
+    if(p.eventType==='INSERT'){if(!staffList.find(x=>x.id===p.new.id))staffList.push(p.new)}
+    else if(p.eventType==='UPDATE'){const i=staffList.findIndex(x=>x.id===p.new.id);if(i>=0)staffList[i]=p.new}
+    else if(p.eventType==='DELETE'){staffList=staffList.filter(x=>x.id!==p.old.id)}
+    refreshWSViews();
+  }).subscribe();
   sb.channel('cons').on('postgres_changes',{event:'*',schema:'public',table:'consults'},p=>{
     if(p.eventType==='INSERT'){const n=cDbToLocal(p.new);if(!consults.find(x=>x.id===n.id))consults.push(n);renderConsult()}
     else if(p.eventType==='UPDATE'){const i=consults.findIndex(x=>x.id===p.new.id);if(i>=0)consults[i]=cDbToLocal(p.new);renderConsult()}
