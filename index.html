@@ -47,8 +47,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-siz
 .btn{font-size:13px;padding:8px 14px;border:1px solid #e2e8f0;background:#fff;color:#1a202c;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;gap:5px;font-family:inherit;white-space:nowrap;transition:transform .12s,box-shadow .12s,background .12s}
 .btn:active{transform:scale(.97)}
 .btn:hover{background:#f7fafc}
-.btn.pri{background:#378ADD;color:#fff;border-color:#378ADD;font-weight:500}
-.btn.pri:hover{background:#2b6cb0}
+.btn.pri{background:linear-gradient(135deg,#4299E1,#2B6CB0);color:#fff;border-color:#2B6CB0;font-weight:500;box-shadow:0 2px 6px rgba(43,108,176,.3)}
+.btn.pri:hover{background:linear-gradient(135deg,#3182CE,#2C5282);box-shadow:0 3px 10px rgba(43,108,176,.4)}
 .btn.sm{font-size:12px;padding:6px 11px}
 .btn.danger{color:#C53030;border-color:#FEB2B2;background:#FFF5F5}
 .btn.danger:hover{background:#FED7D7}
@@ -76,7 +76,15 @@ tr td{transition:background .1s}
 .sex-f{color:#97266D;font-weight:600}
 /* ── TODO ── */
 .tl{display:flex;flex-direction:column;gap:3px;min-width:110px;list-style:none}
-.tr2{display:flex;align-items:flex-start;gap:5px;cursor:pointer;padding:3px 5px;border-radius:4px;font-size:12px;line-height:1.4}
+.tr2{display:flex;align-items:flex-start;gap:5px;cursor:pointer;padding:3px 5px;border-radius:4px;font-size:12px;line-height:1.4;transition:background .12s}
+.todo-row-actions{display:flex;gap:2px;margin-left:auto;flex-shrink:0}
+.todo-act{border:none;background:none;cursor:pointer;color:#a0aec0;font-size:12px;padding:4px 6px;border-radius:6px;font-family:inherit;display:inline-flex;align-items:center;transition:background .12s,color .12s}
+.todo-act:hover{background:#EBF4FF;color:#378ADD}
+.todo-act.danger:hover{background:#FED7D7;color:#C53030}
+.todo-act.save{color:#276749}
+.todo-act.save:hover{background:#C6F6D5}
+.tr2-edit{display:flex;align-items:center;gap:6px;padding:4px 6px}
+.todo-edit-inp{flex:1;padding:6px 9px;font-size:12px;border:1px solid #90CDF4;border-radius:6px;background:#fff;color:#1a202c;font-family:inherit;outline:none;box-shadow:0 0 0 3px rgba(144,205,244,.15)}
 .tr2:hover{background:#f0f4f8}
 .tr2 input[type=checkbox]{margin-top:2px;cursor:pointer;flex-shrink:0;accent-color:#378ADD;width:13px;height:13px}
 .tr2 .ttext{font-size:12px;line-height:1.4;color:#4a5568}
@@ -176,7 +184,7 @@ tr td{transition:background .1s}
 .pt-card-todos{display:grid;grid-template-columns:1fr 1fr;gap:6px}
 .pt-todo-box{background:#f7fafc;border-radius:8px;padding:7px 9px}
 .pt-todo-lbl{font-size:9px;font-weight:700;color:#a0aec0;text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px}
-.fab{position:fixed;bottom:80px;right:18px;width:52px;height:52px;background:#378ADD;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:24px;box-shadow:0 4px 14px rgba(55,138,221,.45);cursor:pointer;z-index:200;border:none;font-family:inherit;transition:transform .15s,box-shadow .15s}
+.fab{position:fixed;bottom:80px;right:18px;width:52px;height:52px;background:linear-gradient(135deg,#4299E1,#2B6CB0);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:24px;box-shadow:0 4px 14px rgba(43,108,176,.45);cursor:pointer;z-index:200;border:none;font-family:inherit;transition:transform .15s,box-shadow .15s}
 .fab:active{transform:scale(.94)}
 .fab:hover{background:#2b6cb0}
 .mobile-tabs{display:none;position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #e2e8f0;height:60px;z-index:100;padding-bottom:env(safe-area-inset-bottom);box-shadow:0 -2px 10px rgba(15,23,42,.06)}
@@ -279,7 +287,7 @@ tr td{transition:background .1s}
   <div class="card desktop-only"><div class="tbl-scroll">
     <table><thead><tr>
       <th>Adm.</th><th>Ward</th><th>Staff</th><th>Bed</th><th>HN</th><th>Sex</th><th>Name</th><th>Age</th><th>U/D</th><th>⚠ Allergy</th><th>Chief Complaint</th><th>Ward work</th><th>Plan</th><th>Status</th>
-    </tr></thead><tbody id="main-tb"><tr><td colspan="13"><div class="empty">Loading...</div></td></tr></tbody></table>
+    </tr></thead><tbody id="main-tb"><tr><td colspan="13"><div class="empty">⏳ Loading...</div></td></tr></tbody></table>
   </div></div>
   <!-- Mobile cards -->
   <div class="mobile-only" id="mobile-cards"></div>
@@ -747,11 +755,11 @@ function renderMain(){
   const el=document.getElementById('ptc');if(el)el.textContent=`${total} active patient${total!==1?'s':''}`;
   // Desktop table
   const tb=document.getElementById('main-tb');
-  if(!ps.length){tb.innerHTML=`<tr><td colspan="13"><div class="empty">No patients — add one to begin</div></td></tr>`}
+  if(!ps.length){tb.innerHTML=`<tr><td colspan="13"><div class="empty">🛏️ No patients — add one to begin</div></td></tr>`}
   else tb.innerHTML=ps.map(p=>`<tr><td style="white-space:nowrap;color:#718096;font-size:12px">${fmt(p.adm)}</td><td>${wardPill(p.ward)}</td><td>${staffPill(p.staff)}</td><td>${bedBadge(p)}</td><td class="hn">${p.hn}</td><td class="${p.sex==='M'?'sex-m':'sex-f'}">${p.sex==='M'?'♂ M':'♀ F'}</td><td><a class="nlink" onclick="openDet(${p.id})">${p.name}</a></td><td style="text-align:center">${p.age}</td><td style="font-size:12px;color:#718096;max-width:80px">${p.ud}</td><td style="max-width:90px">${p.allergy?`<span style="display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#FED7D7;color:#9B2C2C">⚠ ${p.allergy}</span>`:'<span style="color:#cbd5e0;font-size:12px">—</span>'}</td><td style="font-size:12px;max-width:90px">${p.diag}</td><td>${todoH(p.ww,p.id,'ww')}</td><td>${todoH(p.pl,p.id,'pl')}</td><td>${sbadge(p.status,p.id)}</td></tr>`).join('');
   // Mobile cards
   const mc=document.getElementById('mobile-cards');
-  if(!ps.length){mc.innerHTML=`<div class="empty">No patients — tap + to begin</div>`}
+  if(!ps.length){mc.innerHTML=`<div class="empty">🛏️ No patients — tap + to begin</div>`}
   else mc.innerHTML=ps.map(p=>{
     const wwPending=p.ww.filter(x=>!x.done);const plPending=p.pl.filter(x=>!x.done);
     const wwH=p.ww.map((it,i)=>`<div class="tr2${it.done?' done':''}" style="padding:2px 4px" onclick="tog(${p.id},'ww',${items_real_idx(p.ww,i)})"><input type="checkbox" ${it.done?'checked':''} onclick="event.stopPropagation();tog(${p.id},'ww',${i})"><span class="ttext" style="font-size:11px">${it.t}</span></div>`).reverse().join('');
@@ -791,13 +799,13 @@ function renderWW(){
   ['wwb','wwb2'].forEach(id=>{const b=document.getElementById(id);if(b){b.style.display=allRows.reduce((s,r)=>s+r.pending.length,0)?'inline':'none';if(allRows.length)b.textContent=allRows.reduce((s,r)=>s+r.pending.length,0)}});
   // Desktop table
   if(tb){
-    if(!rows.length)tb.innerHTML=`<tr><td colspan="5"><div class="empty">All ward work completed</div></td></tr>`;
+    if(!rows.length)tb.innerHTML=`<tr><td colspan="5"><div class="empty">✅ All ward work completed</div></td></tr>`;
     else tb.innerHTML=rows.map(({p,pending})=>`<tr><td><a class="nlink" onclick="openDet(${p.id})">${p.name}</a></td><td class="hn">${p.hn}</td><td>${bedBadge(p)}</td><td>${wardPill(p.ward)}</td><td><div class="tl">${pending.map(it=>`<div class="tr2" onclick="togByT(${p.id},'${it.t.replace(/'/g,"\\'")}')"><input type="checkbox" onclick="event.stopPropagation();togByT(${p.id},'${it.t.replace(/'/g,"\\'")}')"><span class="ttext">${it.t}<span class="td2">(${it.d})</span></span></div>`).join('')}</div></td></tr>`).join('');
   }
   // Mobile cards
   const mc=document.getElementById('ww-mobile');
   if(mc){
-    if(!rows.length)mc.innerHTML=`<div class="empty">All ward work completed</div>`;
+    if(!rows.length)mc.innerHTML=`<div class="empty">✅ All ward work completed</div>`;
     else mc.innerHTML=rows.map(({p,pending})=>`
       <div class="pt-card-mobile">
         <div class="pt-card-top">
@@ -826,13 +834,13 @@ function renderDC(){
   ['dcb','dcb2'].forEach(id=>{const b=document.getElementById(id);if(b){b.style.display=allPs.length?'inline':'none';if(allPs.length)b.textContent=allPs.length}});
   // Desktop table
   if(tb){
-    if(!ps.length)tb.innerHTML=`<tr><td colspan="6"><div class="empty">No transfers today</div></td></tr>`;
+    if(!ps.length)tb.innerHTML=`<tr><td colspan="6"><div class="empty">🚪 No transfers today</div></td></tr>`;
     else tb.innerHTML=ps.map(p=>`<tr><td><a class="nlink" onclick="openDet(${p.id})">${p.name}</a></td><td class="hn">${p.hn}</td><td>${wardPill(p.ward)} / <b>${p.bed}</b></td><td>${dcBadge(p.trType)}</td><td>${dcWorkH(p)}</td><td>${p.mc?'<span class="bdg bn">Required</span>':'<span style="font-size:12px;color:#cbd5e0">—</span>'}</td></tr>`).join('');
   }
   // Mobile cards
   const mc=document.getElementById('dc-mobile');
   if(mc){
-    if(!ps.length)mc.innerHTML=`<div class="empty">No transfers today</div>`;
+    if(!ps.length)mc.innerHTML=`<div class="empty">🚪 No transfers today</div>`;
     else mc.innerHTML=ps.map(p=>`
       <div class="pt-card-mobile">
         <div class="pt-card-top">
@@ -855,7 +863,7 @@ function renderHist(){
   const tb=document.getElementById('hist-tb');
   const ps=pts.filter(p=>p.tr&&p.dcDate!==toDay()).sort((a,b)=>a.dcDate<b.dcDate?1:-1);
   const cEl=document.getElementById('hist-count');if(cEl)cEl.textContent=ps.length?`${ps.length} record${ps.length!==1?'s':''}  ·  Use 🗑 Delete record to permanently remove`:'';
-  if(!ps.length){tb.innerHTML=`<tr><td colspan="12"><div class="empty">No historical records yet</div></td></tr>`;return}
+  if(!ps.length){tb.innerHTML=`<tr><td colspan="12"><div class="empty">📋 No historical records yet</div></td></tr>`;return}
   tb.innerHTML=ps.map(p=>`<tr><td style="white-space:nowrap;font-size:12px;color:#718096">${fmt(p.dcDate)}</td><td style="white-space:nowrap;font-size:12px;color:#718096">${fmt(p.adm)}</td><td>${wardPill(p.ward)}</td><td class="hn">${p.hn}</td><td style="font-weight:600">${p.name}</td><td style="text-align:center">${p.age}</td><td class="${p.sex==='M'?'sex-m':'sex-f'}" style="font-size:12px">${p.sex}</td><td style="font-size:12px">${p.diag}</td><td>${dcBadge(p.trType)}</td><td>${dcWorkH(p)}</td><td>${p.mc?'<span class="bdg bn">Yes</span>':'<span style="font-size:12px;color:#a0aec0">No</span>'}</td><td><button class="del-btn" onclick="openDelete(${p.id})">🗑 Delete</button></td></tr>`).join('')}
 
 function renderStats(){
@@ -880,7 +888,7 @@ function renderStats(){
   // By ward
   const wardCounts={};active.forEach(p=>{wardCounts[p.ward]=(wardCounts[p.ward]||0)+1});
   const wardRows=Object.entries(wardCounts).sort((a,b)=>b[1]-a[1]);
-  document.getElementById('stats-ward').innerHTML=wardRows.length?wardRows.map(([w,c])=>`<div class="stat-row"><span>${wardPill(w)}</span><span style="font-weight:600">${c} patient${c!==1?'s':''}</span></div>`).join(''):'<div class="empty">No active patients</div>';
+  document.getElementById('stats-ward').innerHTML=wardRows.length?wardRows.map(([w,c])=>`<div class="stat-row"><span>${wardPill(w)}</span><span style="font-weight:600">${c} patient${c!==1?'s':''}</span></div>`).join(''):'<div class="empty">🛏️ No active patients</div>';
   // Daily (last 7 days)
   const days=[];for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);days.push(d.toISOString().split('T')[0])}
   const dailyRows=days.map(d=>{
@@ -904,6 +912,26 @@ function sw(t){
 }
 function tog(pid,type,idx){const p=pts.find(x=>x.id===pid);if(!p)return;if(type==='ww')p.ww[idx].done=!p.ww[idx].done;else p.pl[idx].done=!p.pl[idx].done;upsertPt(p);renderAll()}
 function togByT(pid,text){const p=pts.find(x=>x.id===pid);if(!p)return;const it=p.ww.find(x=>x.t===text);if(it){it.done=!it.done;upsertPt(p);}renderAll()}
+
+// ── Ward work / Plan item edit & delete (used in both patient and consult detail modals) ──
+let todoEdit=null;
+function ttOwner(type){return(type==='cww'||type==='cpl')?'consult':'pt'}
+function ttObj(pid,type){return ttOwner(type)==='pt'?pts.find(x=>x.id===pid):consults.find(x=>x.id===pid)}
+function ttArr(pid,type){const o=ttObj(pid,type);if(!o)return null;return(type==='pl'||type==='cpl')?o.pl:o.ww}
+function ttSave(pid,type){const o=ttObj(pid,type);if(!o)return;ttOwner(type)==='pt'?upsertPt(o):upsertConsult(o)}
+function ttReload(pid,type){ttOwner(type)==='pt'?rld(pid):rldC(pid)}
+function startTodoEdit(pid,type,idx){todoEdit={pid,type,idx};ttReload(pid,type)}
+function cancelTodoEdit(pid,type){todoEdit=null;ttReload(pid,type)}
+function saveTodoEdit(pid,type,idx){const inp=document.getElementById(`tei-${pid}-${type}-${idx}`);if(!inp)return;const v=inp.value.trim();if(!v)return;const arr=ttArr(pid,type);if(!arr||!arr[idx])return;arr[idx].t=v;todoEdit=null;ttSave(pid,type);ttReload(pid,type)}
+function deleteTodoItem(pid,type,idx){const arr=ttArr(pid,type);if(!arr)return;arr.splice(idx,1);todoEdit=null;ttSave(pid,type);ttReload(pid,type)}
+function todoRowHTML(pid,type,it,idx){
+  const editing=todoEdit&&todoEdit.pid===pid&&todoEdit.type===type&&todoEdit.idx===idx;
+  if(editing){
+    return`<div class="tr2-edit"><input type="text" class="todo-edit-inp" id="tei-${pid}-${type}-${idx}" value="${it.t.replace(/"/g,'&quot;')}" onkeydown="if(event.key==='Enter'){event.preventDefault();saveTodoEdit(${pid},'${type}',${idx})}else if(event.key==='Escape'){cancelTodoEdit(${pid},'${type}')}"><button class="todo-act save" onclick="saveTodoEdit(${pid},'${type}',${idx})" title="Save"><i class="ti ti-check"></i></button><button class="todo-act" onclick="cancelTodoEdit(${pid},'${type}')" title="Cancel"><i class="ti ti-x"></i></button></div>`;
+  }
+  const toggleCall=(type==='cww'||type==='cpl')?`togC(${pid},'${type}',${idx});rldC(${pid})`:`tog(${pid},'${type}',${idx});rld(${pid})`;
+  return`<div class="tr2${it.done?' done':''}" style="padding:5px 7px"><input type="checkbox" ${it.done?'checked':''} style="accent-color:#378ADD" onchange="${toggleCall}"><span class="ttext">${it.t}<span class="td2">(${it.d})</span></span><span class="todo-row-actions"><button class="todo-act" onclick="startTodoEdit(${pid},'${type}',${idx})" title="Edit"><i class="ti ti-pencil"></i></button><button class="todo-act danger" onclick="deleteTodoItem(${pid},'${type}',${idx})" title="Delete"><i class="ti ti-trash"></i></button></span></div>`;
+}
 function openDet(id){
   const p=pts.find(x=>x.id===id);if(!p)return;
   document.getElementById('det-t').textContent=p.name;
@@ -916,9 +944,9 @@ function openDet(id){
     <div id="prob-container-${id}">${probBlocks}</div>
     <button class="btn sm" onclick="addProb(${id})" style="margin:4px 0"><i class="ti ti-plus" style="font-size:13px"></i> Add problem</button>
     <div class="seclbl">Ward work</div>
-    <div class="det-card"><div id="dww">${p.ww.map((it,i)=>`<div class="tr2${it.done?' done':''}" style="padding:5px 7px"><input type="checkbox" ${it.done?'checked':''} style="accent-color:#378ADD" onchange="tog(${p.id},'ww',${i});rld(${p.id})"><span class="ttext">${it.t}<span class="td2">(${it.d})</span></span></div>`).join('')}</div><div style="display:flex;gap:6px;margin-top:10px"><input type="text" id="nww" placeholder="New ward work task..." style="flex:1;padding:8px 11px;font-size:13px;border:1px solid #e2e8f0;border-radius:8px;background:#fff;color:#1a202c;font-family:inherit"><button class="btn sm" onclick="addT(${p.id},'ww')">Add</button></div></div>
+    <div class="det-card"><div id="dww">${p.ww.map((it,i)=>todoRowHTML(p.id,'ww',it,i)).join('')}</div><div style="display:flex;gap:6px;margin-top:10px"><input type="text" id="nww" placeholder="New ward work task..." style="flex:1;padding:8px 11px;font-size:13px;border:1px solid #e2e8f0;border-radius:8px;background:#fff;color:#1a202c;font-family:inherit"><button class="btn sm" onclick="addT(${p.id},'ww')">Add</button></div></div>
     <div class="seclbl">Plan</div>
-    <div class="det-card"><div id="dpl">${p.pl.map((it,i)=>`<div class="tr2${it.done?' done':''}" style="padding:5px 7px"><input type="checkbox" ${it.done?'checked':''} style="accent-color:#378ADD" onchange="tog(${p.id},'pl',${i});rld(${p.id})"><span class="ttext">${it.t}<span class="td2">(${it.d})</span></span></div>`).join('')}</div><div style="display:flex;gap:6px;margin-top:10px"><input type="text" id="npl" placeholder="New plan item..." style="flex:1;padding:8px 11px;font-size:13px;border:1px solid #e2e8f0;border-radius:8px;background:#fff;color:#1a202c;font-family:inherit"><button class="btn sm" onclick="addT(${p.id},'pl')">Add</button></div></div>
+    <div class="det-card"><div id="dpl">${p.pl.map((it,i)=>todoRowHTML(p.id,'pl',it,i)).join('')}</div><div style="display:flex;gap:6px;margin-top:10px"><input type="text" id="npl" placeholder="New plan item..." style="flex:1;padding:8px 11px;font-size:13px;border:1px solid #e2e8f0;border-radius:8px;background:#fff;color:#1a202c;font-family:inherit"><button class="btn sm" onclick="addT(${p.id},'pl')">Add</button></div></div>
     <div class="seclbl">Progress notes</div>
     <div class="det-card">${p.prog.length?p.prog.map(pr=>`<div class="prog-row"><div class="prog-dt">${pr.date}</div><div class="prog-tx">${pr.txt}</div></div>`).join(''):'<p style="font-size:12px;color:#a0aec0;margin-bottom:8px">No progress notes yet.</p>'}<div style="margin-top:8px"><div style="font-size:11px;font-weight:700;color:#718096;margin-bottom:4px;text-transform:uppercase;letter-spacing:.4px">${todF()}</div><textarea id="nprog" rows="2" placeholder="Enter progress note..." style="width:100%;padding:8px 11px;font-size:13px;border:1px solid #e2e8f0;border-radius:8px;background:#fff;color:#1a202c;font-family:inherit;resize:none"></textarea><button class="btn sm" onclick="addProg(${p.id})" style="margin-top:6px"><i class="ti ti-plus" style="font-size:13px"></i> Add note</button></div></div>
     <div class="act-row">
@@ -1099,7 +1127,7 @@ function renderConsult(){
   ['cb','cb2'].forEach(id=>{const b=document.getElementById(id);if(b){b.style.display=ps.length?'inline':'none';if(ps.length)b.textContent=ps.length}});
   const tb=document.getElementById('consult-tb');
   if(tb){
-    if(!ps.length)tb.innerHTML=`<tr><td colspan="15"><div class="empty">No consult patients — add one to begin</div></td></tr>`;
+    if(!ps.length)tb.innerHTML=`<tr><td colspan="15"><div class="empty">🩺 No consult patients — add one to begin</div></td></tr>`;
     else tb.innerHTML=ps.map(p=>`<tr>
       <td style="white-space:nowrap;color:#718096;font-size:12px">${fmt(p.adm)}</td>
       <td>${wardPill(p.ward)}</td><td>${staffPill(p.staff)}</td>
@@ -1117,7 +1145,7 @@ function renderConsult(){
   }
   const mc=document.getElementById('consult-mobile-cards');
   if(mc){
-    if(!ps.length)mc.innerHTML=`<div class="empty">No consult patients — tap + to begin</div>`;
+    if(!ps.length)mc.innerHTML=`<div class="empty">🩺 No consult patients — tap + to begin</div>`;
     else mc.innerHTML=ps.map(p=>{
       const wwPending=p.ww.filter(x=>!x.done);const plPending=p.pl.filter(x=>!x.done);
       const wwH=p.ww.map((it,i)=>`<div class="tr2${it.done?' done':''}" style="padding:2px 4px" onclick="togC(${p.id},'cww',${i})"><input type="checkbox" ${it.done?'checked':''} onclick="event.stopPropagation();togC(${p.id},'cww',${i})"><span class="ttext" style="font-size:11px">${it.t}</span></div>`).reverse().join('');
@@ -1201,9 +1229,9 @@ function openConsultDet(id){
     <div id="cprob-container-${id}">${probBlocks}</div>
     <button class="btn sm" onclick="addCProb(${id})" style="margin:4px 0"><i class="ti ti-plus" style="font-size:13px"></i> Add problem</button>
     <div class="seclbl">Ward work</div>
-    <div class="det-card"><div>${p.ww.map((it,i)=>`<div class="tr2${it.done?' done':''}" style="padding:5px 7px"><input type="checkbox" ${it.done?'checked':''} style="accent-color:#378ADD" onchange="togC(${p.id},'cww',${i});rldC(${p.id})"><span class="ttext">${it.t}<span class="td2">(${it.d})</span></span></div>`).join('')}</div><div style="display:flex;gap:6px;margin-top:10px"><input type="text" id="cnww" placeholder="New ward work task..." style="flex:1;padding:8px 11px;font-size:13px;border:1px solid #e2e8f0;border-radius:8px;background:#fff;color:#1a202c;font-family:inherit"><button class="btn sm" onclick="addCT(${p.id},'cww')">Add</button></div></div>
+    <div class="det-card"><div>${p.ww.map((it,i)=>todoRowHTML(p.id,'cww',it,i)).join('')}</div><div style="display:flex;gap:6px;margin-top:10px"><input type="text" id="cnww" placeholder="New ward work task..." style="flex:1;padding:8px 11px;font-size:13px;border:1px solid #e2e8f0;border-radius:8px;background:#fff;color:#1a202c;font-family:inherit"><button class="btn sm" onclick="addCT(${p.id},'cww')">Add</button></div></div>
     <div class="seclbl">Plan</div>
-    <div class="det-card"><div>${p.pl.map((it,i)=>`<div class="tr2${it.done?' done':''}" style="padding:5px 7px"><input type="checkbox" ${it.done?'checked':''} style="accent-color:#378ADD" onchange="togC(${p.id},'cpl',${i});rldC(${p.id})"><span class="ttext">${it.t}<span class="td2">(${it.d})</span></span></div>`).join('')}</div><div style="display:flex;gap:6px;margin-top:10px"><input type="text" id="cnpl" placeholder="New plan item..." style="flex:1;padding:8px 11px;font-size:13px;border:1px solid #e2e8f0;border-radius:8px;background:#fff;color:#1a202c;font-family:inherit"><button class="btn sm" onclick="addCT(${p.id},'cpl')">Add</button></div></div>
+    <div class="det-card"><div>${p.pl.map((it,i)=>todoRowHTML(p.id,'cpl',it,i)).join('')}</div><div style="display:flex;gap:6px;margin-top:10px"><input type="text" id="cnpl" placeholder="New plan item..." style="flex:1;padding:8px 11px;font-size:13px;border:1px solid #e2e8f0;border-radius:8px;background:#fff;color:#1a202c;font-family:inherit"><button class="btn sm" onclick="addCT(${p.id},'cpl')">Add</button></div></div>
     <div class="seclbl">Progress notes</div>
     <div class="det-card">${p.prog.length?p.prog.map(pr=>`<div class="prog-row"><div class="prog-dt">${pr.date}</div><div class="prog-tx">${pr.txt}</div></div>`).join(''):'<p style="font-size:12px;color:#a0aec0;margin-bottom:8px">No progress notes yet.</p>'}<div style="margin-top:8px"><div style="font-size:11px;font-weight:700;color:#718096;margin-bottom:4px;text-transform:uppercase;letter-spacing:.4px">${todF()}</div><textarea id="cnprog" rows="2" placeholder="Enter progress note..." style="width:100%;padding:8px 11px;font-size:13px;border:1px solid #e2e8f0;border-radius:8px;background:#fff;color:#1a202c;font-family:inherit;resize:none"></textarea><button class="btn sm" onclick="addCProg(${p.id})" style="margin-top:6px"><i class="ti ti-plus" style="font-size:13px"></i> Add note</button></div></div>
     <div class="act-row">
