@@ -10,7 +10,7 @@
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:14px;color:#1a202c;background:#f0f2f5}
 /* ── TOPBAR ── */
-.topbar{background:#fff;border-bottom:1px solid #e2e8f0;padding:0 16px;height:56px;display:flex;align-items:center;justify-content:space-between;gap:8px;position:sticky;top:0;z-index:50}
+.topbar{background:rgba(255,255,255,.92);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1px solid #e2e8f0;padding:0 16px;height:56px;display:flex;align-items:center;justify-content:space-between;gap:8px;position:sticky;top:0;z-index:50;box-shadow:0 1px 3px rgba(15,23,42,.04)}
 .brand{display:flex;align-items:center;gap:10px}
 .brand-icon{width:36px;height:36px;background:linear-gradient(135deg,#378ADD,#185FA5);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:17px;flex-shrink:0}
 .brand-name{font-size:15px;font-weight:600}
@@ -22,7 +22,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-siz
 /* ── TABS (desktop top, mobile bottom) ── */
 .tabs{display:flex;background:#fff;border-bottom:1px solid #e2e8f0;padding:0 16px;overflow-x:auto;position:sticky;top:56px;z-index:40}
 .tabs::-webkit-scrollbar{display:none}
-.tab{padding:13px 15px;font-size:13px;cursor:pointer;border-bottom:2px solid transparent;color:#718096;white-space:nowrap;display:flex;align-items:center;gap:5px;flex-shrink:0}
+.tab{padding:13px 15px;font-size:13px;cursor:pointer;border-bottom:2px solid transparent;color:#718096;white-space:nowrap;display:flex;align-items:center;gap:5px;flex-shrink:0;transition:color .15s,border-color .15s}
 .tab.active{color:#1a202c;border-bottom-color:#378ADD;font-weight:600}
 .tab:hover:not(.active){background:#f7fafc}
 .nb{background:#FED7D7;color:#9B2C2C;border-radius:10px;padding:1px 6px;font-size:10px;font-weight:600}
@@ -34,17 +34,18 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-siz
 /* ── FILTER BAR ── */
 .filter-bar{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;align-items:center}
 .filter-lbl{font-size:11px;color:#a0aec0;font-weight:600;text-transform:uppercase;letter-spacing:.4px}
-.fchip{font-size:12px;padding:5px 12px;border:1px solid #e2e8f0;background:#fff;color:#4a5568;border-radius:20px;cursor:pointer;display:inline-flex;align-items:center;gap:4px;font-family:inherit;white-space:nowrap}
+.fchip{font-size:12px;padding:5px 12px;border:1px solid #e2e8f0;background:#fff;color:#4a5568;border-radius:20px;cursor:pointer;display:inline-flex;align-items:center;gap:4px;font-family:inherit;white-space:nowrap;transition:background .15s,border-color .15s,color .15s}
 .fchip.on{background:#EBF4FF;border-color:#90CDF4;color:#2B6CB0;font-weight:600}
 .fchip:hover:not(.on){background:#f7fafc}
 /* ── SORT BAR ── */
 .sort-bar{display:flex;align-items:center;gap:6px;margin-bottom:12px;flex-wrap:wrap;padding:8px 12px;background:#fff;border:1px solid #e2e8f0;border-radius:10px}
 .slbl{font-size:11px;color:#a0aec0;font-weight:600;text-transform:uppercase;letter-spacing:.4px;margin-right:2px}
-.sc{font-size:12px;padding:5px 11px;border:1px solid #e2e8f0;background:#f7fafc;color:#4a5568;border-radius:20px;cursor:pointer;display:flex;align-items:center;gap:3px;font-family:inherit}
+.sc{font-size:12px;padding:5px 11px;border:1px solid #e2e8f0;background:#f7fafc;color:#4a5568;border-radius:20px;cursor:pointer;display:flex;align-items:center;gap:3px;font-family:inherit;transition:background .15s,border-color .15s,color .15s}
 .sc.on{background:#EBF4FF;border-color:#90CDF4;color:#2B6CB0;font-weight:600}
 .sc:hover:not(.on){background:#edf2f7}
 /* ── BUTTONS ── */
-.btn{font-size:13px;padding:8px 14px;border:1px solid #e2e8f0;background:#fff;color:#1a202c;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;gap:5px;font-family:inherit;white-space:nowrap}
+.btn{font-size:13px;padding:8px 14px;border:1px solid #e2e8f0;background:#fff;color:#1a202c;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;gap:5px;font-family:inherit;white-space:nowrap;transition:transform .12s,box-shadow .12s,background .12s}
+.btn:active{transform:scale(.97)}
 .btn:hover{background:#f7fafc}
 .btn.pri{background:#378ADD;color:#fff;border-color:#378ADD;font-weight:500}
 .btn.pri:hover{background:#2b6cb0}
@@ -56,7 +57,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-siz
 .del-btn{font-size:11px;padding:5px 10px;border:1px solid #FEB2B2;background:#FFF5F5;color:#C53030;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;gap:4px;font-family:inherit;font-weight:500;white-space:nowrap;transition:all .15s}
 .del-btn:hover{background:#C53030;color:#fff;border-color:#C53030}
 /* ── TABLE ── */
-.card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;overflow:hidden}
+.card{background:#fff;border:1px solid #edf1f5;border-radius:12px;overflow:hidden;box-shadow:0 1px 2px rgba(15,23,42,.04),0 1px 8px rgba(15,23,42,.03)}
 .tbl-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
 table{width:100%;border-collapse:collapse;min-width:780px}
 thead{background:#f7fafc}
@@ -64,8 +65,10 @@ th{padding:10px 12px;text-align:left;font-weight:600;font-size:11px;color:#71809
 td{padding:9px 12px;border-bottom:1px solid #f0f4f8;vertical-align:middle;font-size:13px}
 tr:last-child td{border-bottom:none}
 tr:hover td{background:#fafbfd}
+tr td{transition:background .1s}
 /* ── BADGES ── */
-.bdg{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:12px;font-weight:500;cursor:pointer;user-select:none}
+.bdg{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:12px;font-weight:500;cursor:pointer;user-select:none;transition:filter .15s}
+.bdg:hover{filter:brightness(.96)}
 .bs{background:#C6F6D5;color:#22543D}
 .bc{background:#FED7D7;color:#9B2C2C}
 .bn{background:#BEE3F8;color:#2A4365}
@@ -83,13 +86,15 @@ tr:hover td{background:#fafbfd}
 .nlink{color:#2B6CB0;cursor:pointer;font-weight:600}
 .nlink:hover{text-decoration:underline}
 .hn{font-family:monospace;font-size:12px;color:#718096}
-.empty{text-align:center;padding:40px 16px;color:#a0aec0;font-size:13px}
+.empty{text-align:center;padding:48px 16px;color:#a0aec0;font-size:13px;letter-spacing:.2px}
 /* ── DC BADGES ── */
 .dcb{display:inline-flex;padding:3px 9px;border-radius:20px;font-size:12px;font-weight:500}
 .dcc{background:#C6F6D5;color:#22543D}
 .dcd{background:#FED7D7;color:#9B2C2C}
 .dcr{background:#FEEBC8;color:#7B341E}
 .wpill{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:12px;font-weight:500;color:#fff}
+.bed-circle{display:inline-flex;align-items:center;justify-content:center;min-width:30px;height:30px;padding:0 5px;border-radius:50%;border:2px solid #cbd5e0;background:#fff;color:#4a5568;font-weight:700;font-size:12px;transition:background .25s,border-color .25s,color .25s;cursor:default}
+.bed-circle.rounded{background:#C6F6D5;border-color:#38A169;color:#22543D}
 /* ── STATUS DROPDOWN ── */
 .sdrop{position:relative;display:inline-block}
 .sdrop-menu{display:none;position:absolute;top:calc(100%+4px);left:0;background:#fff;border:1px solid #e2e8f0;border-radius:9px;box-shadow:0 8px 24px rgba(0,0,0,.18);z-index:500;min-width:150px}
@@ -97,9 +102,11 @@ tr:hover td{background:#fafbfd}
 .sdrop-opt{padding:14px 16px;font-size:14px;cursor:pointer;display:flex;align-items:center;gap:8px;-webkit-tap-highlight-color:transparent}
 .sdrop-opt:active{background:#f0f4f8}
 /* ── MODAL ── */
-.moverlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(10,15,25,.65);z-index:300;align-items:flex-start;justify-content:center;padding:16px;overflow-y:auto}
+.moverlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(10,15,25,.65);z-index:300;align-items:flex-start;justify-content:center;padding:16px;overflow-y:auto;animation:fadeIn .15s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes modalIn{from{opacity:0;transform:translateY(6px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
 .moverlay.open{display:flex}
-.modal{background:#fff;border-radius:16px;border:1px solid #e2e8f0;width:100%;max-width:700px;color:#1a202c;margin:auto}
+.modal{background:#fff;border-radius:16px;border:1px solid #e2e8f0;width:100%;max-width:700px;color:#1a202c;margin:auto;box-shadow:0 20px 60px rgba(15,23,42,.25);animation:modalIn .18s ease}
 .modal.sm{max-width:440px}
 .modal.xs{max-width:380px}
 .mhd{padding:15px 20px;border-bottom:1px solid #f0f4f8;display:flex;align-items:center;justify-content:space-between;border-radius:16px 16px 0 0;position:sticky;top:0;background:#fff;z-index:2}
@@ -144,12 +151,14 @@ tr:hover td{background:#fafbfd}
 .clr{width:22px;height:22px;border-radius:50%;cursor:pointer;border:2px solid transparent}
 .clr.sel{border-color:#1a202c}
 .del-box{background:#FFF5F5;border:1px solid #FEB2B2;border-radius:10px;padding:14px;margin-bottom:16px;display:flex;gap:10px;align-items:flex-start}
-.saving{position:fixed;bottom:20px;right:20px;background:#276749;color:#fff;padding:9px 16px;border-radius:8px;font-size:13px;font-weight:500;z-index:999;display:none;align-items:center;gap:6px}
+.saving{position:fixed;bottom:20px;right:20px;background:#276749;color:#fff;padding:9px 16px;border-radius:8px;font-size:13px;font-weight:500;z-index:999;display:none;align-items:center;gap:6px;box-shadow:0 6px 20px rgba(0,0,0,.18);animation:toastIn .2s ease}
+@keyframes toastIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 .saving.show{display:flex}
 
 /* ── STATS ── */
 .stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:16px}
-.stat-card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:16px}
+.stat-card{background:#fff;border:1px solid #edf1f5;border-radius:12px;padding:16px;box-shadow:0 1px 2px rgba(15,23,42,.04),0 1px 8px rgba(15,23,42,.03);transition:box-shadow .15s}
+.stat-card:hover{box-shadow:0 2px 4px rgba(15,23,42,.06),0 4px 14px rgba(15,23,42,.06)}
 .stat-lbl{font-size:11px;color:#718096;font-weight:600;text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px}
 .stat-val{font-size:26px;font-weight:600;color:#1a202c}
 .stat-sub{font-size:11px;color:#a0aec0;margin-top:3px}
@@ -157,7 +166,8 @@ tr:hover td{background:#fafbfd}
 .stat-row:last-child{border-bottom:none}
 
 /* ── MOBILE CARD LAYOUT ── */
-.pt-card-mobile{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:13px;margin-bottom:8px}
+.pt-card-mobile{background:#fff;border:1px solid #edf1f5;border-radius:12px;padding:13px;margin-bottom:8px;box-shadow:0 1px 2px rgba(15,23,42,.04),0 1px 8px rgba(15,23,42,.03);transition:box-shadow .15s}
+.pt-card-mobile:active{box-shadow:0 1px 2px rgba(15,23,42,.04)}
 .pt-card-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px;gap:8px}
 .pt-card-name{font-size:14px;font-weight:600;color:#1a202c}
 .pt-card-hn{font-family:monospace;font-size:11px;color:#a0aec0;margin-top:1px}
@@ -166,9 +176,10 @@ tr:hover td{background:#fafbfd}
 .pt-card-todos{display:grid;grid-template-columns:1fr 1fr;gap:6px}
 .pt-todo-box{background:#f7fafc;border-radius:8px;padding:7px 9px}
 .pt-todo-lbl{font-size:9px;font-weight:700;color:#a0aec0;text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px}
-.fab{position:fixed;bottom:80px;right:18px;width:52px;height:52px;background:#378ADD;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:24px;box-shadow:0 3px 10px rgba(55,138,221,.4);cursor:pointer;z-index:200;border:none;font-family:inherit}
+.fab{position:fixed;bottom:80px;right:18px;width:52px;height:52px;background:#378ADD;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:24px;box-shadow:0 4px 14px rgba(55,138,221,.45);cursor:pointer;z-index:200;border:none;font-family:inherit;transition:transform .15s,box-shadow .15s}
+.fab:active{transform:scale(.94)}
 .fab:hover{background:#2b6cb0}
-.mobile-tabs{display:none;position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #e2e8f0;height:60px;z-index:100;padding-bottom:env(safe-area-inset-bottom)}
+.mobile-tabs{display:none;position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #e2e8f0;height:60px;z-index:100;padding-bottom:env(safe-area-inset-bottom);box-shadow:0 -2px 10px rgba(15,23,42,.06)}
 .mobile-tabs-inner{display:grid;grid-template-columns:repeat(6,1fr);height:100%;width:100%}
 .mb-tab{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;color:#a0aec0;cursor:pointer;border:none;background:none;font-family:inherit;padding:0;position:relative;-webkit-tap-highlight-color:transparent;width:100%}
 .mb-tab i{font-size:20px;line-height:1}
@@ -267,7 +278,7 @@ tr:hover td{background:#fafbfd}
   <!-- Desktop table -->
   <div class="card desktop-only"><div class="tbl-scroll">
     <table><thead><tr>
-      <th>Adm.</th><th>Ward</th><th>Staff</th><th>Bed</th><th>HN</th><th>Sex</th><th>Name</th><th>Age</th><th>U/D</th><th>⚠ Allergy</th><th>Diagnosis</th><th>Ward work</th><th>Plan</th><th>Status</th>
+      <th>Adm.</th><th>Ward</th><th>Staff</th><th>Bed</th><th>HN</th><th>Sex</th><th>Name</th><th>Age</th><th>U/D</th><th>⚠ Allergy</th><th>Chief Complaint</th><th>Ward work</th><th>Plan</th><th>Status</th>
     </tr></thead><tbody id="main-tb"><tr><td colspan="13"><div class="empty">Loading...</div></td></tr></tbody></table>
   </div></div>
   <!-- Mobile cards -->
@@ -323,7 +334,7 @@ tr:hover td{background:#fafbfd}
   </div>
   <div class="card desktop-only"><div class="tbl-scroll">
     <table><thead><tr>
-      <th>Adm.</th><th>Ward</th><th>Staff</th><th>Bed</th><th>HN</th><th>Sex</th><th>Name</th><th>Age</th><th>U/D</th><th>⚠ Allergy</th><th>Diagnosis</th><th>Ward work</th><th>Plan</th><th>Status</th><th>Transfer</th>
+      <th>Adm.</th><th>Ward</th><th>Staff</th><th>Bed</th><th>HN</th><th>Sex</th><th>Name</th><th>Age</th><th>U/D</th><th>⚠ Allergy</th><th>Chief Complaint</th><th>Ward work</th><th>Plan</th><th>Status</th><th>Transfer</th>
     </tr></thead><tbody id="consult-tb"></tbody></table>
   </div></div>
   <div class="mobile-only" id="consult-mobile-cards"></div>
@@ -355,7 +366,7 @@ tr:hover td{background:#fafbfd}
   <div class="toolbar"><span id="hist-count" style="font-size:12px;color:#718096"></span></div>
   <div class="card"><div class="tbl-scroll">
     <table><thead><tr>
-      <th>D/C date</th><th>Adm.</th><th>Ward</th><th>HN</th><th>Name</th><th>Age</th><th>Sex</th><th>Diagnosis</th><th>Transfer</th><th>D/C checklist</th><th>Med cert</th><th></th>
+      <th>D/C date</th><th>Adm.</th><th>Ward</th><th>HN</th><th>Name</th><th>Age</th><th>Sex</th><th>Chief Complaint</th><th>Transfer</th><th>D/C checklist</th><th>Med cert</th><th></th>
     </tr></thead><tbody id="hist-tb"></tbody></table>
   </div></div>
 </div>
@@ -418,7 +429,8 @@ tr:hover td{background:#fafbfd}
       <div class="fg"><label>Underlying disease</label><input type="text" id="f-ud"></div>
     </div>
     <div class="fg"><label>⚠ Allergy</label><input type="text" id="f-allergy" placeholder="e.g. Penicillin, NSAIDs, Iodine (leave blank if none)"></div>
-    <div class="fg"><label>Diagnosis (brief)</label><input type="text" id="f-diag"></div>
+    <div class="fg"><label>Chief complaint</label><input type="text" id="f-diag" placeholder="e.g. Fever 3 days"></div>
+    <div class="fg"><label>Present illness</label><textarea id="f-pi" rows="3" placeholder="History of present illness..."></textarea></div>
     <div style="display:flex;gap:8px;margin-top:16px">
       <button class="btn pri" onclick="savePt()"><i class="ti ti-device-floppy" style="font-size:14px"></i> Save patient</button>
       <button class="btn" onclick="closeM('addM')">Cancel</button>
@@ -545,9 +557,23 @@ async function loadAll(){
   if(cR.data)consults=cR.data.map(cDbToLocal);
   renderAll();renderConsult();
 }
-function dbToLocal(r){return{id:r.id,adm:r.adm,ward:r.ward,staff:r.staff,bed:r.bed,hn:r.hn,sex:r.sex,name:r.name,age:r.age,ud:r.ud,allergy:r.allergy||'',diag:r.diag,status:r.status,probs:r.probs||[''],probTitles:r.prob_titles||['Problem 1'],ww:r.ww||[],pl:r.pl||[],prog:r.prog||[],tr:r.transferred||false,trType:r.tr_type||'',mc:r.mc||false,dcDate:r.dc_date||'',dcWork:r.dc_work||[]}}
-function localToDB(p){return{adm:p.adm||null,ward:p.ward,staff:p.staff,bed:p.bed,hn:p.hn,sex:p.sex,name:p.name,age:p.age,ud:p.ud,allergy:p.allergy||'',diag:p.diag,status:p.status,probs:p.probs,prob_titles:p.probTitles,ww:p.ww,pl:p.pl,prog:p.prog,transferred:p.tr,tr_type:p.trType,mc:p.mc,dc_date:p.dcDate||null,dc_work:p.dcWork}}
-async function upsertPt(p){const d=localToDB(p);if(p.id){await sb.from('patients').update(d).eq('id',p.id)}else{const{data:r}=await sb.from('patients').insert(d).select().single();if(r)p.id=r.id}showSaved()}
+let hasPiColumn=true;
+function dbToLocal(r){return{id:r.id,adm:r.adm,ward:r.ward,staff:r.staff,bed:r.bed,hn:r.hn,sex:r.sex,name:r.name,age:r.age,ud:r.ud,allergy:r.allergy||'',diag:r.diag,pi:r.pi||'',status:r.status,probs:r.probs||[''],probTitles:r.prob_titles||['Problem 1'],ww:r.ww||[],pl:r.pl||[],prog:r.prog||[],tr:r.transferred||false,trType:r.tr_type||'',mc:r.mc||false,dcDate:r.dc_date||'',dcWork:r.dc_work||[]}}
+function localToDB(p){return{adm:p.adm||null,ward:p.ward,staff:p.staff,bed:p.bed,hn:p.hn,sex:p.sex,name:p.name,age:p.age,ud:p.ud,allergy:p.allergy||'',diag:p.diag,pi:p.pi||'',status:p.status,probs:p.probs,prob_titles:p.probTitles,ww:p.ww,pl:p.pl,prog:p.prog,transferred:p.tr,tr_type:p.trType,mc:p.mc,dc_date:p.dcDate||null,dc_work:p.dcWork}}
+async function upsertPt(p){
+  const d=localToDB(p);
+  const payload=hasPiColumn?d:(({pi,...rest})=>rest)(d);
+  let res;
+  if(p.id){res=await sb.from('patients').update(payload).eq('id',p.id)}else{res=await sb.from('patients').insert(payload).select().single()}
+  if(res.error&&hasPiColumn){
+    hasPiColumn=false;
+    const{pi,...d2}=d;
+    if(p.id){res=await sb.from('patients').update(d2).eq('id',p.id)}else{res=await sb.from('patients').insert(d2).select().single()}
+  }
+  if(!p.id&&res.data)p.id=res.data.id;
+  if(res.error){console.error('patient save failed:',res.error);alert('Could not save: '+(res.error.message||res.error))}
+  else showSaved();
+}
 async function deletePtDB(id){await sb.from('patients').delete().eq('id',id);showSaved()}
 async function upsertWard(w){if(w.id){await sb.from('wards').update({name:w.name,color:w.color,emoji:w.emoji}).eq('id',w.id)}else{const{data:r}=await sb.from('wards').insert({name:w.name,color:w.color,emoji:w.emoji}).select().single();if(r)w.id=r.id}showSaved()}
 async function deleteWardDB(id){await sb.from('wards').delete().eq('id',id);showSaved()}
@@ -573,8 +599,11 @@ function dcWorkFor(t,mc){const i=[];if(t==='dc')i.push('Discharge medication ord
 const fmt=s=>{if(!s)return'';const[y,m,d]=s.split('-');return`${d}/${m}/${y.slice(2)}`};
 const toDay=()=>new Date().toISOString().split('T')[0];
 const todF=()=>fmt(toDay());
-function clkTick(){const n=new Date(),p=x=>String(x).padStart(2,'0');const e=document.getElementById('clk');if(e)e.textContent=`${p(n.getDate())}/${p(n.getMonth()+1)}/${String(n.getFullYear()).slice(2)} ${p(n.getHours())}:${p(n.getMinutes())}`}
+function clkTick(){const n=new Date(),p=x=>String(x).padStart(2,'0');const e=document.getElementById('clk');if(e)e.textContent=`${p(n.getDate())}/${p(n.getMonth()+1)}/${String(n.getFullYear()).slice(2)} ${p(n.getHours())}:${p(n.getMinutes())}`;if(toDay()!==lastDay){lastDay=toDay();renderAll();renderConsult()}}
+let lastDay=toDay();
 clkTick();setInterval(clkTick,30000);
+function roundedToday(p){return(p.prog||[]).some(pr=>pr.date===todF())}
+function bedBadge(p){return`<span class="bed-circle${roundedToday(p)?' rounded':''}" title="${roundedToday(p)?'Rounded today ✓':'Not rounded today yet'}">${p.bed}</span>`}
 function getWard(name){return wards.find(x=>x.name===name)||{name,color:'#718096',emoji:'🏥'}}
 function getStaff(name){return staffList.find(x=>x.name===name)||{name,color:'#718096',emoji:'👨‍⚕️'}}
 function wardPill(name){const w=getWard(name);return`<span class="wpill" style="background:${w.color}">${w.emoji} ${name}</span>`}
@@ -719,7 +748,7 @@ function renderMain(){
   // Desktop table
   const tb=document.getElementById('main-tb');
   if(!ps.length){tb.innerHTML=`<tr><td colspan="13"><div class="empty">No patients — add one to begin</div></td></tr>`}
-  else tb.innerHTML=ps.map(p=>`<tr><td style="white-space:nowrap;color:#718096;font-size:12px">${fmt(p.adm)}</td><td>${wardPill(p.ward)}</td><td>${staffPill(p.staff)}</td><td><b>${p.bed}</b></td><td class="hn">${p.hn}</td><td class="${p.sex==='M'?'sex-m':'sex-f'}">${p.sex==='M'?'♂ M':'♀ F'}</td><td><a class="nlink" onclick="openDet(${p.id})">${p.name}</a></td><td style="text-align:center">${p.age}</td><td style="font-size:12px;color:#718096;max-width:80px">${p.ud}</td><td style="max-width:90px">${p.allergy?`<span style="display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#FED7D7;color:#9B2C2C">⚠ ${p.allergy}</span>`:'<span style="color:#cbd5e0;font-size:12px">—</span>'}</td><td style="font-size:12px;max-width:90px">${p.diag}</td><td>${todoH(p.ww,p.id,'ww')}</td><td>${todoH(p.pl,p.id,'pl')}</td><td>${sbadge(p.status,p.id)}</td></tr>`).join('');
+  else tb.innerHTML=ps.map(p=>`<tr><td style="white-space:nowrap;color:#718096;font-size:12px">${fmt(p.adm)}</td><td>${wardPill(p.ward)}</td><td>${staffPill(p.staff)}</td><td>${bedBadge(p)}</td><td class="hn">${p.hn}</td><td class="${p.sex==='M'?'sex-m':'sex-f'}">${p.sex==='M'?'♂ M':'♀ F'}</td><td><a class="nlink" onclick="openDet(${p.id})">${p.name}</a></td><td style="text-align:center">${p.age}</td><td style="font-size:12px;color:#718096;max-width:80px">${p.ud}</td><td style="max-width:90px">${p.allergy?`<span style="display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#FED7D7;color:#9B2C2C">⚠ ${p.allergy}</span>`:'<span style="color:#cbd5e0;font-size:12px">—</span>'}</td><td style="font-size:12px;max-width:90px">${p.diag}</td><td>${todoH(p.ww,p.id,'ww')}</td><td>${todoH(p.pl,p.id,'pl')}</td><td>${sbadge(p.status,p.id)}</td></tr>`).join('');
   // Mobile cards
   const mc=document.getElementById('mobile-cards');
   if(!ps.length){mc.innerHTML=`<div class="empty">No patients — tap + to begin</div>`}
@@ -737,7 +766,7 @@ function renderMain(){
       </div>
       <div class="pt-card-chips">
         ${wardPill(p.ward)}
-        <span class="ichip">Bed ${p.bed}</span>
+        <span class="ichip">Bed ${bedBadge(p)}</span>
         ${staffPill(p.staff)}
       </div>
       <div class="pt-card-diag">${p.diag}${p.ud?` · U/D: ${p.ud}`:''}${p.allergy?` · <span style="color:#9B2C2C;font-weight:600">⚠ ${p.allergy}</span>`:''}</div>
@@ -763,7 +792,7 @@ function renderWW(){
   // Desktop table
   if(tb){
     if(!rows.length)tb.innerHTML=`<tr><td colspan="5"><div class="empty">All ward work completed</div></td></tr>`;
-    else tb.innerHTML=rows.map(({p,pending})=>`<tr><td><a class="nlink" onclick="openDet(${p.id})">${p.name}</a></td><td class="hn">${p.hn}</td><td><b>${p.bed}</b></td><td>${wardPill(p.ward)}</td><td><div class="tl">${pending.map(it=>`<div class="tr2" onclick="togByT(${p.id},'${it.t.replace(/'/g,"\\'")}')"><input type="checkbox" onclick="event.stopPropagation();togByT(${p.id},'${it.t.replace(/'/g,"\\'")}')"><span class="ttext">${it.t}<span class="td2">(${it.d})</span></span></div>`).join('')}</div></td></tr>`).join('');
+    else tb.innerHTML=rows.map(({p,pending})=>`<tr><td><a class="nlink" onclick="openDet(${p.id})">${p.name}</a></td><td class="hn">${p.hn}</td><td>${bedBadge(p)}</td><td>${wardPill(p.ward)}</td><td><div class="tl">${pending.map(it=>`<div class="tr2" onclick="togByT(${p.id},'${it.t.replace(/'/g,"\\'")}')"><input type="checkbox" onclick="event.stopPropagation();togByT(${p.id},'${it.t.replace(/'/g,"\\'")}')"><span class="ttext">${it.t}<span class="td2">(${it.d})</span></span></div>`).join('')}</div></td></tr>`).join('');
   }
   // Mobile cards
   const mc=document.getElementById('ww-mobile');
@@ -778,7 +807,7 @@ function renderWW(){
           </div>
           ${wardPill(p.ward)}
         </div>
-        <div class="pt-card-chips"><span class="ichip">Bed ${p.bed}</span>${staffPill(p.staff)}</div>
+        <div class="pt-card-chips"><span class="ichip">Bed ${bedBadge(p)}</span>${staffPill(p.staff)}</div>
         <div class="pt-todo-box" style="margin-top:6px">
           <div class="pt-todo-lbl">Pending ward work (${pending.length})</div>
           ${pending.map(it=>`<div class="tr2" onclick="togByT(${p.id},'${it.t.replace(/'/g,"\\'")}')"><input type="checkbox" onclick="event.stopPropagation();togByT(${p.id},'${it.t.replace(/'/g,"\\'")}')"><span class="ttext">${it.t}<span class="td2">(${it.d})</span></span></div>`).join('')}
@@ -881,7 +910,8 @@ function openDet(id){
   const b=document.getElementById('det-body');
   const probBlocks=p.probs.map((pr,i)=>`<div class="prob-block" id="pb-${id}-${i}"><div class="prob-hdr"><input value="${(p.probTitles||[])[i]||'Problem '+(i+1)}" style="border:none;background:transparent;font-size:12px;font-weight:700;color:#4a5568;text-transform:uppercase;letter-spacing:.4px;width:100%;outline:none;font-family:inherit" onchange="updProbTitle(${id},${i},this.value)" placeholder="Problem title..."><button onclick="removeProb(${id},${i})" style="border:none;background:none;cursor:pointer;color:#a0aec0;font-size:16px;padding:0 3px;line-height:1;font-family:inherit">✕</button></div><textarea style="width:100%;padding:10px 12px;font-family:monospace;font-size:13px;border:none;border-radius:0 0 8px 8px;background:#fff;color:#1a202c;resize:none;line-height:1.8;tab-size:4;outline:none;display:block;overflow:hidden" onchange="updProb(${id},${i},this.value)" oninput="autoGrow(this)">${pr}</textarea></div>`).join('');
   b.innerHTML=`
-    <div class="infobar">${sbadge(p.status,p.id+'_det')} ${wardPill(p.ward)} <span class="ichip">Bed ${p.bed}</span> ${staffPill(p.staff)} <span class="ichip">Adm. ${fmt(p.adm)}</span> <span class="ichip hn">${p.hn}</span>${p.allergy?` <span class="ichip" style="background:#FED7D7;border-color:#FC8181;color:#9B2C2C;font-weight:600">⚠ ${p.allergy}</span>`:''}</div>
+    <div class="infobar">${sbadge(p.status,p.id+'_det')} ${wardPill(p.ward)} <span class="ichip">Bed ${bedBadge(p)}</span> ${staffPill(p.staff)} <span class="ichip">Adm. ${fmt(p.adm)}</span> <span class="ichip hn">${p.hn}</span>${p.allergy?` <span class="ichip" style="background:#FED7D7;border-color:#FC8181;color:#9B2C2C;font-weight:600">⚠ ${p.allergy}</span>`:''}</div>
+    <div style="font-size:13px;color:#2d3748;margin-bottom:14px;padding:10px 12px;background:#fafbfd;border:1px solid #f0f4f8;border-radius:8px"><b>CC:</b> ${p.diag||'—'}${p.pi?' · <b>PI:</b> '+p.pi:''}</div>
     <div class="seclbl">Problems / Diagnosis</div>
     <div id="prob-container-${id}">${probBlocks}</div>
     <button class="btn sm" onclick="addProb(${id})" style="margin:4px 0"><i class="ti ti-plus" style="font-size:13px"></i> Add problem</button>
@@ -895,6 +925,7 @@ function openDet(id){
       <button class="btn pri sm" id="cpbtn-${p.id}" onclick="copyPt(${p.id})"><i class="ti ti-copy" style="font-size:14px"></i> Copy as text</button>
       <button class="btn sm" onclick="closeM('detM');openEdit(${p.id})"><i class="ti ti-edit" style="font-size:14px"></i> Edit info</button>
       <button class="btn sm danger" onclick="closeM('detM');openTr(${p.id})"><i class="ti ti-door-exit" style="font-size:14px"></i> Transfer / discharge</button>
+      <button class="btn sm danger" onclick="closeM('detM');openDelete(${p.id})"><i class="ti ti-trash" style="font-size:14px"></i> Delete</button>
     </div>`;
   document.getElementById('detM').classList.add('open');
   setTimeout(()=>document.querySelectorAll('#det-body textarea').forEach(ta=>autoGrow(ta)),10);
@@ -912,15 +943,16 @@ function copyPt(pid){
   const p=pts.find(x=>x.id===pid);if(!p)return;saveDetTA(pid);
   const sep='────────────';
   const probLines=p.probs.map((pr,i)=>{const title=(p.probTitles&&p.probTitles[i])||('Problem '+(i+1));return`${i+1}. ${title}\n${pr.trim()}`}).join('\n\n');
-  let o=`Admission date  : ${fmt(p.adm)}\nWard            : ${p.ward}\nBed             : ${p.bed}\nAttending staff : ${p.staff}\nHN              : ${p.hn}\nName            : ${p.name}\nSex             : ${p.sex==='M'?'Male':'Female'}\nAge             : ${p.age} years\nUnderlying      : ${p.ud}\n`;
+  let o=`Admission date  : ${fmt(p.adm)}\nWard            : ${p.ward}\nBed             : ${p.bed}\nAttending staff : ${p.staff}\nHN              : ${p.hn}\nName            : ${p.name}\nSex             : ${p.sex==='M'?'Male':'Female'}\nAge             : ${p.age} years\nUnderlying      : ${p.ud}\nChief complaint : ${p.diag||'—'}\n`;
+  if(p.pi)o+=`Present illness : ${p.pi}\n`;
   o+=`\n${sep}\nProblems / Diagnosis\n${sep}\n${probLines||'—'}\n`;
   o+=`\n${sep}\nPlan\n${sep}\n${p.pl.length?p.pl.map(x=>`[${x.done?'✓':' '}] ${x.t} (${x.d})`).join('\n'):'—'}`;
   const btn=document.getElementById('cpbtn-'+pid);
   const flash=()=>{if(btn){const orig=btn.innerHTML;btn.innerHTML='✓ Copied!';btn.style.background='#276749';setTimeout(()=>{btn.innerHTML=orig;btn.style.background=''},2000)}};
   try{navigator.clipboard.writeText(o).then(flash)}catch(e){const t2=document.createElement('textarea');t2.value=o;t2.style.cssText='position:fixed;opacity:0;top:0;left:0';document.body.appendChild(t2);t2.select();document.execCommand('copy');document.body.removeChild(t2);flash()}
 }
-function openAdd(){eid=null;document.getElementById('addM-t').textContent='Add new patient';document.getElementById('f-adm').value=toDay();['hn','bed','name','ud','diag','allergy'].forEach(x=>document.getElementById('f-'+x).value='');document.getElementById('f-age').value='';document.getElementById('f-sex').value='';document.getElementById('f-status').value='stable';document.getElementById('csw-ward-v').textContent='— select —';document.getElementById('csw-staff-v').textContent='— select —';document.getElementById('addM').classList.add('open')}
-function openEdit(id){const p=pts.find(x=>x.id===id);if(!p)return;eid=id;document.getElementById('addM-t').textContent='Edit patient';document.getElementById('f-adm').value=p.adm;document.getElementById('f-hn').value=p.hn;document.getElementById('f-bed').value=p.bed;document.getElementById('f-name').value=p.name;document.getElementById('f-sex').value=p.sex;document.getElementById('f-age').value=p.age;document.getElementById('f-ud').value=p.ud;document.getElementById('f-allergy').value=p.allergy||'';document.getElementById('f-diag').value=p.diag;document.getElementById('f-status').value=p.status;document.getElementById('csw-ward-v').textContent=p.ward;document.getElementById('csw-staff-v').textContent=p.staff;document.getElementById('addM').classList.add('open')}
+function openAdd(){eid=null;document.getElementById('addM-t').textContent='Add new patient';document.getElementById('f-adm').value=toDay();['hn','bed','name','ud','diag','allergy'].forEach(x=>document.getElementById('f-'+x).value='');document.getElementById('f-pi').value='';document.getElementById('f-age').value='';document.getElementById('f-sex').value='';document.getElementById('f-status').value='stable';document.getElementById('csw-ward-v').textContent='— select —';document.getElementById('csw-staff-v').textContent='— select —';document.getElementById('addM').classList.add('open')}
+function openEdit(id){const p=pts.find(x=>x.id===id);if(!p)return;eid=id;document.getElementById('addM-t').textContent='Edit patient';document.getElementById('f-adm').value=p.adm;document.getElementById('f-hn').value=p.hn;document.getElementById('f-bed').value=p.bed;document.getElementById('f-name').value=p.name;document.getElementById('f-sex').value=p.sex;document.getElementById('f-age').value=p.age;document.getElementById('f-ud').value=p.ud;document.getElementById('f-allergy').value=p.allergy||'';document.getElementById('f-diag').value=p.diag;document.getElementById('f-pi').value=p.pi||'';document.getElementById('f-status').value=p.status;document.getElementById('csw-ward-v').textContent=p.ward;document.getElementById('csw-staff-v').textContent=p.staff;document.getElementById('addM').classList.add('open')}
 async function savePt(){
   const ward=document.getElementById('csw-ward-v').textContent.trim();
   const stf=document.getElementById('csw-staff-v').textContent.trim();
@@ -929,7 +961,7 @@ async function savePt(){
   if(!name||!hn)return alert('Name and HN are required.');
   if(!ward||ward==='— select —')return alert('Please select a ward.');
   if(!stf||stf==='— select —')return alert('Please select attending staff.');
-  const v={adm:document.getElementById('f-adm').value,ward,staff:stf,bed:document.getElementById('f-bed').value.trim(),hn,sex:document.getElementById('f-sex').value,name,age:parseInt(document.getElementById('f-age').value)||0,ud:document.getElementById('f-ud').value.trim(),allergy:document.getElementById('f-allergy').value.trim(),diag:document.getElementById('f-diag').value.trim(),status:document.getElementById('f-status').value};
+  const v={adm:document.getElementById('f-adm').value,ward,staff:stf,bed:document.getElementById('f-bed').value.trim(),hn,sex:document.getElementById('f-sex').value,name,age:parseInt(document.getElementById('f-age').value)||0,ud:document.getElementById('f-ud').value.trim(),allergy:document.getElementById('f-allergy').value.trim(),diag:document.getElementById('f-diag').value.trim(),pi:document.getElementById('f-pi').value.trim(),status:document.getElementById('f-status').value};
   const mode=document.getElementById('addM').dataset.mode;
   if(mode==='consult'){
     const np={id:null,...v,ww:[],pl:[],prog:[],probs:[''],probTitles:['Problem 1'],tr:false,trType:'',mc:false,dcDate:'',dcWork:[]};
@@ -1003,8 +1035,8 @@ async function mgSaveEdit(i){
 }
 async function addMg(){const v=document.getElementById('mg-inp').value.trim();if(!v)return;const em=document.getElementById('mg-emoji').value.trim();const list=mgType==='ward'?wards:staffList;if(!list.find(x=>x.name===v)){const nw={name:v,color:mgColor,emoji:em||(mgType==='ward'?'🏥':'👨‍⚕️')};list.push(nw);if(mgType==='ward')await upsertWard(nw);else await upsertStaff(nw);}document.getElementById('mg-inp').value='';document.getElementById('mg-emoji').value='';renderMgList()}
 async function rmMg(idx){if(mgType==='ward'){const w=wards[idx];if(w&&w.id)await deleteWardDB(w.id);wards.splice(idx,1);}else{const s=staffList[idx];if(s&&s.id)await deleteStaffDB(s.id);staffList.splice(idx,1);}mgEditIdx=null;renderMgList()}
-function openDelete(id){const p=pts.find(x=>x.id===id);if(!p)return;deleteId=id;const trLabel={dc:'D/C',death:'Death',refer:'Refer'}[p.trType]||p.trType;document.getElementById('del-name').textContent=p.name;document.getElementById('del-sub').textContent=`${p.hn}  ·  D/C: ${fmt(p.dcDate)}  ·  ${trLabel}`;document.getElementById('delM').classList.add('open')}
-async function confirmDelete(){if(deleteId===null)return;await deletePtDB(deleteId);pts=pts.filter(x=>x.id!==deleteId);deleteId=null;closeM('delM');renderAll()}
+function openDelete(id){const p=pts.find(x=>x.id===id);if(!p)return;deleteId=id;document.getElementById('del-name').textContent=p.name;if(p.tr){const trLabel={dc:'D/C',death:'Death',refer:'Refer'}[p.trType]||p.trType;document.getElementById('del-sub').textContent=`${p.hn}  ·  D/C: ${fmt(p.dcDate)}  ·  ${trLabel}`;}else{document.getElementById('del-sub').textContent=`${p.hn}  ·  Active patient  ·  ${p.ward} / Bed ${p.bed}`;}document.getElementById('delM').classList.add('open')}
+async function confirmDelete(){if(deleteId===null)return;await deletePtDB(deleteId);pts=pts.filter(x=>x.id!==deleteId);deleteId=null;closeM('delM');closeM('detM');renderAll()}
 function printAll(){
   const ps=sorted();if(!ps.length){alert('No active patients to print.');return}
   const now=new Date(),p2=x=>String(x).padStart(2,'0');const ds=`${p2(now.getDate())}/${p2(now.getMonth()+1)}/${String(now.getFullYear()).slice(2)} ${p2(now.getHours())}:${p2(now.getMinutes())}`;
@@ -1016,7 +1048,7 @@ function printAll(){
     const plH=plPending.length?plPending.map(x=>`<div style="font-size:9.5px;margin-bottom:2px;display:flex;gap:4px"><span>☐</span><span>${x.t} <span style="color:#a0aec0;font-size:8.5px">(${x.d})</span></span></div>`).join(''):`<span style="color:#a0aec0;font-size:9.5px">All done ✓</span>`;
     const progH=pt.prog.length?pt.prog.map(x=>`<div style="border-left:2px solid #90CDF4;padding:3px 6px;margin-bottom:3px;background:#EBF4FF;border-radius:0 4px 4px 0"><b style="font-size:8.5px;color:#2B6CB0">${x.date}</b><div style="font-size:9.5px;margin-top:1px">${x.txt}</div></div>`).join(''):`<span style="color:#a0aec0;font-size:9.5px">—</span>`;
     const w=getWard(pt.ward);const sf=getStaff(pt.staff);
-    return`<div style="border:1px solid #e2e8f0;border-radius:7px;padding:9px;background:#fff;break-inside:avoid;margin-bottom:8px"><div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:6px;padding-bottom:5px;border-bottom:1px solid #f0f4f8;gap:6px"><div><span style="font-size:12px;font-weight:700">${pt.name}</span><span style="font-size:9px;color:#718096;margin-left:5px;font-family:monospace">${pt.hn}</span><span style="margin-left:5px;font-size:9px;background:${stB[pt.status]};color:${stC[pt.status]};padding:1px 5px;border-radius:10px;font-weight:600">${stL[pt.status]}</span></div><div style="font-size:8.5px;color:#718096;text-align:right;white-space:nowrap;line-height:1.5"><span style="background:${w.color};color:#fff;padding:1px 6px;border-radius:10px;font-size:8.5px">${w.emoji} ${pt.ward}</span><br>Bed ${pt.bed} · Adm ${fmt(pt.adm)}<br><span style="color:${sf.color};font-weight:600">${sf.emoji} ${pt.staff}</span></div></div><div style="display:flex;gap:8px;font-size:9px;margin-bottom:5px;flex-wrap:wrap"><span><span style="color:#718096">Sex:</span> ${pt.sex==='M'?'Male':'Female'}</span><span><span style="color:#718096">Age:</span> ${pt.age} yrs</span><span><span style="color:#718096">U/D:</span> ${pt.ud||'—'}</span><span><span style="color:#718096">Dx:</span> ${pt.diag||'—'}</span></div><div style="font-size:9px;font-weight:700;color:#718096;text-transform:uppercase;margin-bottom:3px">Problems / Diagnosis</div>${probH}<div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:5px"><div><div style="font-size:9px;font-weight:700;color:#718096;text-transform:uppercase;margin-bottom:2px">Ward work (pending)</div>${wwH}</div><div><div style="font-size:9px;font-weight:700;color:#718096;text-transform:uppercase;margin-bottom:2px">Plan (pending)</div>${plH}</div></div><div style="margin-top:5px"><div style="font-size:9px;font-weight:700;color:#718096;text-transform:uppercase;margin-bottom:2px">Progress notes</div>${progH}</div></div>`;
+    return`<div style="border:1px solid #e2e8f0;border-radius:7px;padding:9px;background:#fff;break-inside:avoid;margin-bottom:8px"><div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:6px;padding-bottom:5px;border-bottom:1px solid #f0f4f8;gap:6px"><div><span style="font-size:12px;font-weight:700">${pt.name}</span><span style="font-size:9px;color:#718096;margin-left:5px;font-family:monospace">${pt.hn}</span><span style="margin-left:5px;font-size:9px;background:${stB[pt.status]};color:${stC[pt.status]};padding:1px 5px;border-radius:10px;font-weight:600">${stL[pt.status]}</span></div><div style="font-size:8.5px;color:#718096;text-align:right;white-space:nowrap;line-height:1.5"><span style="background:${w.color};color:#fff;padding:1px 6px;border-radius:10px;font-size:8.5px">${w.emoji} ${pt.ward}</span><br>Bed ${pt.bed} · Adm ${fmt(pt.adm)}<br><span style="color:${sf.color};font-weight:600">${sf.emoji} ${pt.staff}</span></div></div><div style="display:flex;gap:8px;font-size:9px;margin-bottom:5px;flex-wrap:wrap"><span><span style="color:#718096">Sex:</span> ${pt.sex==='M'?'Male':'Female'}</span><span><span style="color:#718096">Age:</span> ${pt.age} yrs</span><span><span style="color:#718096">U/D:</span> ${pt.ud||'—'}</span><span><span style="color:#718096">CC:</span> ${pt.diag||'—'}</span></div>${pt.pi?`<div style="font-size:9px;margin-bottom:5px"><span style="color:#718096;font-weight:700;text-transform:uppercase">PI:</span> ${pt.pi}</div>`:''}<div style="font-size:9px;font-weight:700;color:#718096;text-transform:uppercase;margin-bottom:3px">Problems / Diagnosis</div>${probH}<div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:5px"><div><div style="font-size:9px;font-weight:700;color:#718096;text-transform:uppercase;margin-bottom:2px">Ward work (pending)</div>${wwH}</div><div><div style="font-size:9px;font-weight:700;color:#718096;text-transform:uppercase;margin-bottom:2px">Plan (pending)</div>${plH}</div></div><div style="margin-top:5px"><div style="font-size:9px;font-weight:700;color:#718096;text-transform:uppercase;margin-bottom:2px">Progress notes</div>${progH}</div></div>`;
   }).join('');
   const html=`<!DOCTYPE html><html><head><meta charset="utf-8"><title>Ward Round ${ds}</title><style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#fff;color:#1a202c;padding:10mm}@page{size:A4 portrait;margin:10mm}.grid{columns:2;column-gap:6mm;column-fill:balance}.grid>div{break-inside:avoid;display:inline-block;width:100%}</style></head><body><div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;padding-bottom:7px;border-bottom:2px solid #e2e8f0"><div style="background:#378ADD;color:#fff;border-radius:5px;padding:3px 9px;font-size:11px;font-weight:700">WardBoard</div><div><div style="font-size:11px;font-weight:600">Ward Round Summary</div><div style="font-size:9px;color:#718096">Printed: ${ds} · ${ps.length} patient${ps.length!==1?'s':''} · Saritkeat Rerktanakajorn, M.D.</div></div></div><div class="grid">${cards}</div></body></html>`;
   const w=window.open('','_blank','width=900,height=700');if(w){w.document.write(html);w.document.close();w.onload=()=>{w.focus();w.print()}}else alert('Please allow pop-ups to use Print All.');
@@ -1026,9 +1058,22 @@ function closeM(id){document.getElementById(id).classList.remove('open')}
 // ── CONSULT ──
 let consults=[],csk='ward',csd=1,cFilterWard='',cFilterStaff='',transferConsultId=null,transferWardSel='',ceid=null;
 
-function cDbToLocal(r){return{id:r.id,adm:r.adm,ward:r.ward,staff:r.staff,bed:r.bed,hn:r.hn,sex:r.sex,name:r.name,age:r.age,ud:r.ud,allergy:r.allergy||'',diag:r.diag,status:r.status,probs:r.probs||[''],probTitles:r.prob_titles||['Problem 1'],ww:r.ww||[],pl:r.pl||[],prog:r.prog||[],tr:false,trType:'',mc:false,dcDate:'',dcWork:[]}}
-function cLocalToDB(p){return{adm:p.adm||null,ward:p.ward,staff:p.staff,bed:p.bed,hn:p.hn,sex:p.sex,name:p.name,age:p.age,ud:p.ud,allergy:p.allergy||'',diag:p.diag,status:p.status,probs:p.probs,prob_titles:p.probTitles,ww:p.ww,pl:p.pl,prog:p.prog,transferred:false,tr_type:'',mc:false,dc_date:null,dc_work:[]}}
-async function upsertConsult(p){const d=cLocalToDB(p);if(p.id){await sb.from('consults').update(d).eq('id',p.id)}else{const{data:r}=await sb.from('consults').insert(d).select().single();if(r)p.id=r.id}showSaved()}
+function cDbToLocal(r){return{id:r.id,adm:r.adm,ward:r.ward,staff:r.staff,bed:r.bed,hn:r.hn,sex:r.sex,name:r.name,age:r.age,ud:r.ud,allergy:r.allergy||'',diag:r.diag,pi:r.pi||'',status:r.status,probs:r.probs||[''],probTitles:r.prob_titles||['Problem 1'],ww:r.ww||[],pl:r.pl||[],prog:r.prog||[],tr:false,trType:'',mc:false,dcDate:'',dcWork:[]}}
+function cLocalToDB(p){return{adm:p.adm||null,ward:p.ward,staff:p.staff,bed:p.bed,hn:p.hn,sex:p.sex,name:p.name,age:p.age,ud:p.ud,allergy:p.allergy||'',diag:p.diag,pi:p.pi||'',status:p.status,probs:p.probs,prob_titles:p.probTitles,ww:p.ww,pl:p.pl,prog:p.prog,transferred:false,tr_type:'',mc:false,dc_date:null,dc_work:[]}}
+async function upsertConsult(p){
+  const d=cLocalToDB(p);
+  const payload=hasPiColumn?d:(({pi,...rest})=>rest)(d);
+  let res;
+  if(p.id){res=await sb.from('consults').update(payload).eq('id',p.id)}else{res=await sb.from('consults').insert(payload).select().single()}
+  if(res.error&&hasPiColumn){
+    hasPiColumn=false;
+    const{pi,...d2}=d;
+    if(p.id){res=await sb.from('consults').update(d2).eq('id',p.id)}else{res=await sb.from('consults').insert(d2).select().single()}
+  }
+  if(!p.id&&res.data)p.id=res.data.id;
+  if(res.error){console.error('consult save failed:',res.error);alert('Could not save: '+(res.error.message||res.error))}
+  else showSaved();
+}
 async function deleteConsultDB(id){await sb.from('consults').delete().eq('id',id);showSaved()}
 
 function cSorted(){
@@ -1058,7 +1103,7 @@ function renderConsult(){
     else tb.innerHTML=ps.map(p=>`<tr>
       <td style="white-space:nowrap;color:#718096;font-size:12px">${fmt(p.adm)}</td>
       <td>${wardPill(p.ward)}</td><td>${staffPill(p.staff)}</td>
-      <td><b>${p.bed}</b></td><td class="hn">${p.hn}</td>
+      <td>${bedBadge(p)}</td><td class="hn">${p.hn}</td>
       <td class="${p.sex==='M'?'sex-m':'sex-f'}">${p.sex==='M'?'♂ M':'♀ F'}</td>
       <td><a class="nlink" onclick="openConsultDet(${p.id})">${p.name}</a></td>
       <td style="text-align:center">${p.age}</td>
@@ -1079,7 +1124,7 @@ function renderConsult(){
       const plH=p.pl.map((it,i)=>`<div class="tr2${it.done?' done':''}" style="padding:2px 4px" onclick="togC(${p.id},'cpl',${i})"><input type="checkbox" ${it.done?'checked':''} onclick="event.stopPropagation();togC(${p.id},'cpl',${i})"><span class="ttext" style="font-size:11px">${it.t}</span></div>`).reverse().join('');
       return`<div class="pt-card-mobile">
         <div class="pt-card-top"><div><div class="pt-card-name"><a class="nlink" onclick="openConsultDet(${p.id})">${p.name}</a></div><div class="pt-card-hn">${p.hn} · ${fmt(p.adm)}</div></div>${sbadge(p.status,p.id)}</div>
-        <div class="pt-card-chips">${wardPill(p.ward)}<span class="ichip">Bed ${p.bed}</span>${staffPill(p.staff)}</div>
+        <div class="pt-card-chips">${wardPill(p.ward)}<span class="ichip">Bed ${bedBadge(p)}</span>${staffPill(p.staff)}</div>
         <div class="pt-card-diag">${p.diag}${p.ud?` · U/D: ${p.ud}`:''}${p.allergy?` · <span style="color:#9B2C2C;font-weight:600">⚠ ${p.allergy}</span>`:''}</div>
         <div class="pt-card-todos">
           <div class="pt-todo-box"><div class="pt-todo-lbl">Ward work${wwPending.length?` (${wwPending.length})`:''}</div>${wwH||'<span style="font-size:11px;color:#cbd5e0">—</span>'}</div>
@@ -1105,6 +1150,7 @@ function openEditConsult(id){
   document.getElementById('f-ud').value=p.ud;
   document.getElementById('f-allergy').value=p.allergy||'';
   document.getElementById('f-diag').value=p.diag;
+  document.getElementById('f-pi').value=p.pi||'';
   document.getElementById('f-status').value=p.status;
   document.getElementById('csw-ward-v').textContent=p.ward;
   document.getElementById('csw-staff-v').textContent=p.staff;
@@ -1122,7 +1168,7 @@ function selTransferWard(name,el){transferWardSel=name;document.querySelectorAll
 async function confirmTransferConsult(){
   if(!transferWardSel)return alert('Please select a ward.');
   const c=consults.find(x=>x.id===transferConsultId);if(!c)return;
-  const newPt={id:null,adm:toDay(),ward:transferWardSel,staff:c.staff,bed:c.bed,hn:c.hn,sex:c.sex,name:c.name,age:c.age,ud:c.ud,allergy:c.allergy||'',diag:c.diag,status:c.status,probs:c.probs,probTitles:c.probTitles,ww:c.ww,pl:c.pl,prog:c.prog,tr:false,trType:'',mc:false,dcDate:'',dcWork:[]};
+  const newPt={id:null,adm:toDay(),ward:transferWardSel,staff:c.staff,bed:c.bed,hn:c.hn,sex:c.sex,name:c.name,age:c.age,ud:c.ud,allergy:c.allergy||'',diag:c.diag,pi:c.pi||'',status:c.status,probs:c.probs,probTitles:c.probTitles,ww:c.ww,pl:c.pl,prog:c.prog,tr:false,trType:'',mc:false,dcDate:'',dcWork:[]};
   pts.push(newPt);await upsertPt(newPt);
   await deleteConsultDB(transferConsultId);
   consults=consults.filter(x=>x.id!==transferConsultId);
@@ -1135,6 +1181,7 @@ function openAddConsult(){
   document.getElementById('addM-t').textContent='Add consult patient';
   document.getElementById('f-adm').value=toDay();
   ['hn','bed','name','ud','diag','allergy'].forEach(x=>document.getElementById('f-'+x).value='');
+  document.getElementById('f-pi').value='';
   document.getElementById('f-age').value='';document.getElementById('f-sex').value='';document.getElementById('f-status').value='stable';
   document.getElementById('csw-ward-v').textContent='— select —';document.getElementById('csw-staff-v').textContent='— select —';
   document.getElementById('addM').dataset.mode='consult';
@@ -1148,7 +1195,8 @@ function openConsultDet(id){
   const probBlocks=p.probs.map((pr,i)=>`<div class="prob-block" id="cpb-${id}-${i}"><div class="prob-hdr"><input value="${(p.probTitles||[])[i]||'Problem '+(i+1)}" style="border:none;background:transparent;font-size:12px;font-weight:700;color:#4a5568;text-transform:uppercase;letter-spacing:.4px;width:100%;outline:none;font-family:inherit" onchange="updCProbTitle(${id},${i},this.value)" placeholder="Problem title..."><button onclick="removeCProb(${id},${i})" style="border:none;background:none;cursor:pointer;color:#a0aec0;font-size:16px;padding:0 3px;line-height:1;font-family:inherit">✕</button></div><textarea style="width:100%;padding:10px 12px;font-family:monospace;font-size:13px;border:none;border-radius:0 0 8px 8px;background:#fff;color:#1a202c;resize:none;line-height:1.8;tab-size:4;outline:none;display:block;overflow:hidden" onchange="updCProb(${id},${i},this.value)" oninput="autoGrow(this)">${pr}</textarea></div>`).join('');
   b.innerHTML=`
     <div style="background:#EBF4FF;border:1px solid #90CDF4;border-radius:8px;padding:8px 12px;margin-bottom:12px;font-size:12px;color:#2B6CB0;font-weight:500"><i class="ti ti-stethoscope" style="font-size:13px"></i> Consult patient</div>
-    <div class="infobar">${sbadge(p.status,p.id+'cd')} ${wardPill(p.ward)} <span class="ichip">Bed ${p.bed}</span> ${staffPill(p.staff)} <span class="ichip">Adm. ${fmt(p.adm)}</span> <span class="ichip hn">${p.hn}</span>${p.allergy?` <span class="ichip" style="background:#FED7D7;border-color:#FC8181;color:#9B2C2C;font-weight:600">⚠ ${p.allergy}</span>`:''}</div>
+    <div class="infobar">${sbadge(p.status,p.id+'cd')} ${wardPill(p.ward)} <span class="ichip">Bed ${bedBadge(p)}</span> ${staffPill(p.staff)} <span class="ichip">Adm. ${fmt(p.adm)}</span> <span class="ichip hn">${p.hn}</span>${p.allergy?` <span class="ichip" style="background:#FED7D7;border-color:#FC8181;color:#9B2C2C;font-weight:600">⚠ ${p.allergy}</span>`:''}</div>
+    <div style="font-size:13px;color:#2d3748;margin-bottom:14px;padding:10px 12px;background:#fafbfd;border:1px solid #f0f4f8;border-radius:8px"><b>CC:</b> ${p.diag||'—'}${p.pi?' · <b>PI:</b> '+p.pi:''}</div>
     <div class="seclbl">Problems / Diagnosis</div>
     <div id="cprob-container-${id}">${probBlocks}</div>
     <button class="btn sm" onclick="addCProb(${id})" style="margin:4px 0"><i class="ti ti-plus" style="font-size:13px"></i> Add problem</button>
@@ -1189,7 +1237,8 @@ function copyCPt(pid){
   o+=`Age             : ${p.age} years\n`;
   o+=`Underlying      : ${p.ud||'—'}\n`;
   if(p.allergy)o+=`Allergy         : ${p.allergy}\n`;
-  o+=`Diagnosis       : ${p.diag||'—'}\n`;
+  o+=`Chief complaint : ${p.diag||'—'}\n`;
+  if(p.pi)o+=`Present illness : ${p.pi}\n`;
   o+=`\n${sep}\nProblems / Diagnosis\n${sep}\n${probLines||'—'}\n`;
   o+=`\n${sep}\nPlan\n${sep}\n${p.pl.length?p.pl.map(x=>`[${x.done?'✓':' '}] ${x.t} (${x.d})`).join('\n'):'—'}`;
   const btn=document.getElementById('ccpbtn-'+pid);
