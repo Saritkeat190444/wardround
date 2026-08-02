@@ -974,7 +974,10 @@ function copyPt(pid){
   let o=`Admission date  : ${fmt(p.adm)}\nWard            : ${p.ward}\nBed             : ${p.bed}\nAttending staff : ${p.staff}\nHN              : ${p.hn}\nName            : ${p.name}\nSex             : ${p.sex==='M'?'Male':'Female'}\nAge             : ${p.age} years\nUnderlying      : ${p.ud}\nChief complaint : ${p.diag||'—'}\n`;
   if(p.pi)o+=`Present illness : ${p.pi}\n`;
   o+=`\n${sep}\nProblems / Diagnosis\n${sep}\n${probLines||'—'}\n`;
-  o+=`\n${sep}\nPlan\n${sep}\n${p.pl.length?p.pl.map(x=>`[${x.done?'✓':' '}] ${x.t} (${x.d})`).join('\n'):'—'}`;
+  const wwPending=p.ww.filter(x=>!x.done);const plPending=p.pl.filter(x=>!x.done);
+  o+=`\n${sep}\nWard work (pending)\n${sep}\n${wwPending.length?wwPending.map(x=>`[ ] ${x.t}`).join('\n'):'—'}\n`;
+  o+=`\n${sep}\nPlan (pending)\n${sep}\n${plPending.length?plPending.map(x=>`[ ] ${x.t}`).join('\n'):'—'}\n`;
+  o+=`\n${sep}\nProgress notes\n${sep}\n${p.prog.length?p.prog.map(pr=>`${pr.date}\n${pr.txt}`).join('\n\n'):'—'}`;
   const btn=document.getElementById('cpbtn-'+pid);
   const flash=()=>{if(btn){const orig=btn.innerHTML;btn.innerHTML='✓ Copied!';btn.style.background='#276749';setTimeout(()=>{btn.innerHTML=orig;btn.style.background=''},2000)}};
   try{navigator.clipboard.writeText(o).then(flash)}catch(e){const t2=document.createElement('textarea');t2.value=o;t2.style.cssText='position:fixed;opacity:0;top:0;left:0';document.body.appendChild(t2);t2.select();document.execCommand('copy');document.body.removeChild(t2);flash()}
@@ -1268,7 +1271,10 @@ function copyCPt(pid){
   o+=`Chief complaint : ${p.diag||'—'}\n`;
   if(p.pi)o+=`Present illness : ${p.pi}\n`;
   o+=`\n${sep}\nProblems / Diagnosis\n${sep}\n${probLines||'—'}\n`;
-  o+=`\n${sep}\nPlan\n${sep}\n${p.pl.length?p.pl.map(x=>`[${x.done?'✓':' '}] ${x.t} (${x.d})`).join('\n'):'—'}`;
+  const wwPending=p.ww.filter(x=>!x.done);const plPending=p.pl.filter(x=>!x.done);
+  o+=`\n${sep}\nWard work (pending)\n${sep}\n${wwPending.length?wwPending.map(x=>`[ ] ${x.t}`).join('\n'):'—'}\n`;
+  o+=`\n${sep}\nPlan (pending)\n${sep}\n${plPending.length?plPending.map(x=>`[ ] ${x.t}`).join('\n'):'—'}\n`;
+  o+=`\n${sep}\nProgress notes\n${sep}\n${p.prog.length?p.prog.map(pr=>`${pr.date}\n${pr.txt}`).join('\n\n'):'—'}`;
   const btn=document.getElementById('ccpbtn-'+pid);
   const flash=()=>{if(btn){const orig=btn.innerHTML;btn.innerHTML='✓ Copied!';btn.style.background='#276749';setTimeout(()=>{btn.innerHTML=orig;btn.style.background=''},2000)}};
   try{navigator.clipboard.writeText(o).then(flash)}catch(e){const t2=document.createElement('textarea');t2.value=o;t2.style.cssText='position:fixed;opacity:0;top:0;left:0';document.body.appendChild(t2);t2.select();document.execCommand('copy');document.body.removeChild(t2);flash()}
