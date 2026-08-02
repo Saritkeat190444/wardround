@@ -136,8 +136,12 @@ tr td{transition:background .1s}
 .prob-block{border:1px solid #e2e8f0;border-radius:8px;background:#fff;margin-bottom:8px;overflow:hidden}
 .prob-hdr{padding:7px 11px;background:#f7fafc;border-bottom:1px solid #f0f4f8;display:flex;align-items:center;justify-content:space-between}
 .prog-row{border-left:3px solid #90CDF4;padding:6px 12px;margin-bottom:8px;background:#EBF4FF;border-radius:0 8px 8px 0}
+.prog-row-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.prog-row-top .todo-row-actions{margin-left:0}
+.prog-row-edit{border-left:3px solid #378ADD}
+.prog-edit-ta{width:100%;padding:8px 10px;font-size:13px;border:1px solid #90CDF4;border-radius:6px;background:#fff;color:#1a202c;font-family:inherit;resize:none;margin-top:4px;outline:none;box-shadow:0 0 0 3px rgba(144,205,244,.15)}
 .prog-dt{font-size:11px;font-weight:700;color:#2B6CB0;text-transform:uppercase;letter-spacing:.4px}
-.prog-tx{font-size:13px;margin-top:3px;color:#2d3748}
+.prog-tx{font-size:13px;margin-top:3px;color:#2d3748;white-space:pre-wrap}
 .act-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px;padding-top:16px;border-top:1px solid #f0f4f8}
 .chip{display:inline-flex;align-items:center;gap:5px;padding:8px 15px;border-radius:20px;font-size:13px;background:#f7fafc;border:1px solid #e2e8f0;cursor:pointer;color:#4a5568;font-family:inherit}
 .chip:hover{background:#EBF4FF;border-color:#90CDF4}
@@ -948,7 +952,7 @@ function openDet(id){
     <div class="seclbl">Plan</div>
     <div class="det-card"><div id="dpl">${p.pl.map((it,i)=>todoRowHTML(p.id,'pl',it,i)).join('')}</div><div style="display:flex;gap:6px;margin-top:10px"><input type="text" id="npl" placeholder="New plan item..." style="flex:1;padding:8px 11px;font-size:13px;border:1px solid #e2e8f0;border-radius:8px;background:#fff;color:#1a202c;font-family:inherit"><button class="btn sm" onclick="addT(${p.id},'pl')">Add</button></div></div>
     <div class="seclbl">Progress notes</div>
-    <div class="det-card">${p.prog.length?p.prog.map(pr=>`<div class="prog-row"><div class="prog-dt">${pr.date}</div><div class="prog-tx">${pr.txt}</div></div>`).join(''):'<p style="font-size:12px;color:#a0aec0;margin-bottom:8px">No progress notes yet.</p>'}<div style="margin-top:8px"><div style="font-size:11px;font-weight:700;color:#718096;margin-bottom:4px;text-transform:uppercase;letter-spacing:.4px">${todF()}</div><textarea id="nprog" rows="2" placeholder="Enter progress note..." style="width:100%;padding:8px 11px;font-size:13px;border:1px solid #e2e8f0;border-radius:8px;background:#fff;color:#1a202c;font-family:inherit;resize:none"></textarea><button class="btn sm" onclick="addProg(${p.id})" style="margin-top:6px"><i class="ti ti-plus" style="font-size:13px"></i> Add note</button></div></div>
+    <div class="det-card">${p.prog.length?p.prog.map((pr,i)=>progRowHTML(p.id,'prog',pr,i)).join(''):'<p style="font-size:12px;color:#a0aec0;margin-bottom:8px">No progress notes yet.</p>'}<div style="margin-top:8px"><div style="font-size:11px;font-weight:700;color:#718096;margin-bottom:4px;text-transform:uppercase;letter-spacing:.4px">${todF()}</div><textarea id="nprog" rows="2" placeholder="Enter progress note..." style="width:100%;padding:8px 11px;font-size:13px;border:1px solid #e2e8f0;border-radius:8px;background:#fff;color:#1a202c;font-family:inherit;resize:none"></textarea><button class="btn sm" onclick="addProg(${p.id})" style="margin-top:6px"><i class="ti ti-plus" style="font-size:13px"></i> Add note</button></div></div>
     <div class="act-row">
       <button class="btn pri sm" id="cpbtn-${p.id}" onclick="copyPt(${p.id})"><i class="ti ti-copy" style="font-size:14px"></i> Copy as text</button>
       <button class="btn sm" onclick="closeM('detM');openEdit(${p.id})"><i class="ti ti-edit" style="font-size:14px"></i> Edit info</button>
@@ -967,6 +971,24 @@ function removeProb(id,idx){saveDetTA(id);const p=pts.find(x=>x.id===id);if(!p||
 function rld(id){saveDetTA(id);const scroll=document.getElementById('detM').querySelector('.mscroll');const sy=scroll?scroll.scrollTop:0;renderAll();openDet(id);if(scroll)setTimeout(()=>scroll.scrollTop=sy,20)}
 function addT(pid,type){const p=pts.find(x=>x.id===pid);const el=document.getElementById(type==='ww'?'nww':'npl');const txt=el?el.value.trim():'';if(!txt||!p)return;(type==='ww'?p.ww:p.pl).push({t:txt,done:false,d:todF()});upsertPt(p);rld(pid)}
 function addProg(pid){const p=pts.find(x=>x.id===pid);const ta=document.getElementById('nprog');const txt=ta?ta.value.trim():'';if(!txt||!p)return;p.prog.push({date:todF(),txt});upsertPt(p);rld(pid)}
+
+// ── Progress note edit & delete (used in both patient and consult detail modals) ──
+let progEdit=null;
+function pgOwner(type){return type==='cprog'?'consult':'pt'}
+function pgObj(pid,type){return pgOwner(type)==='pt'?pts.find(x=>x.id===pid):consults.find(x=>x.id===pid)}
+function pgSave(pid,type){const o=pgObj(pid,type);if(!o)return;pgOwner(type)==='pt'?upsertPt(o):upsertConsult(o)}
+function pgReload(pid,type){pgOwner(type)==='pt'?rld(pid):rldC(pid)}
+function startProgEdit(pid,type,idx){progEdit={pid,type,idx};pgReload(pid,type)}
+function cancelProgEdit(pid,type){progEdit=null;pgReload(pid,type)}
+function saveProgEdit(pid,type,idx){const ta=document.getElementById(`pei-${pid}-${type}-${idx}`);if(!ta)return;const v=ta.value.trim();if(!v)return;const o=pgObj(pid,type);if(!o||!o.prog[idx])return;o.prog[idx].txt=v;progEdit=null;pgSave(pid,type);pgReload(pid,type)}
+function deleteProgItem(pid,type,idx){const o=pgObj(pid,type);if(!o)return;o.prog.splice(idx,1);progEdit=null;pgSave(pid,type);pgReload(pid,type)}
+function progRowHTML(pid,type,pr,idx){
+  const editing=progEdit&&progEdit.pid===pid&&progEdit.type===type&&progEdit.idx===idx;
+  if(editing){
+    return`<div class="prog-row prog-row-edit"><div class="prog-dt">${pr.date}</div><textarea id="pei-${pid}-${type}-${idx}" class="prog-edit-ta" rows="2">${pr.txt}</textarea><div style="display:flex;gap:6px;margin-top:6px"><button class="btn sm pri" onclick="saveProgEdit(${pid},'${type}',${idx})"><i class="ti ti-check" style="font-size:12px"></i> Save</button><button class="btn sm" onclick="cancelProgEdit(${pid},'${type}')">Cancel</button></div></div>`;
+  }
+  return`<div class="prog-row"><div class="prog-row-top"><div class="prog-dt">${pr.date}</div><span class="todo-row-actions"><button class="todo-act" onclick="startProgEdit(${pid},'${type}',${idx})" title="Edit"><i class="ti ti-pencil"></i></button><button class="todo-act danger" onclick="deleteProgItem(${pid},'${type}',${idx})" title="Delete"><i class="ti ti-trash"></i></button></span></div><div class="prog-tx">${pr.txt}</div></div>`;
+}
 function copyPt(pid){
   const p=pts.find(x=>x.id===pid);if(!p)return;saveDetTA(pid);
   const sep='────────────';
@@ -1236,7 +1258,7 @@ function openConsultDet(id){
     <div class="seclbl">Plan</div>
     <div class="det-card"><div>${p.pl.map((it,i)=>todoRowHTML(p.id,'cpl',it,i)).join('')}</div><div style="display:flex;gap:6px;margin-top:10px"><input type="text" id="cnpl" placeholder="New plan item..." style="flex:1;padding:8px 11px;font-size:13px;border:1px solid #e2e8f0;border-radius:8px;background:#fff;color:#1a202c;font-family:inherit"><button class="btn sm" onclick="addCT(${p.id},'cpl')">Add</button></div></div>
     <div class="seclbl">Progress notes</div>
-    <div class="det-card">${p.prog.length?p.prog.map(pr=>`<div class="prog-row"><div class="prog-dt">${pr.date}</div><div class="prog-tx">${pr.txt}</div></div>`).join(''):'<p style="font-size:12px;color:#a0aec0;margin-bottom:8px">No progress notes yet.</p>'}<div style="margin-top:8px"><div style="font-size:11px;font-weight:700;color:#718096;margin-bottom:4px;text-transform:uppercase;letter-spacing:.4px">${todF()}</div><textarea id="cnprog" rows="2" placeholder="Enter progress note..." style="width:100%;padding:8px 11px;font-size:13px;border:1px solid #e2e8f0;border-radius:8px;background:#fff;color:#1a202c;font-family:inherit;resize:none"></textarea><button class="btn sm" onclick="addCProg(${p.id})" style="margin-top:6px"><i class="ti ti-plus" style="font-size:13px"></i> Add note</button></div></div>
+    <div class="det-card">${p.prog.length?p.prog.map((pr,i)=>progRowHTML(p.id,'cprog',pr,i)).join(''):'<p style="font-size:12px;color:#a0aec0;margin-bottom:8px">No progress notes yet.</p>'}<div style="margin-top:8px"><div style="font-size:11px;font-weight:700;color:#718096;margin-bottom:4px;text-transform:uppercase;letter-spacing:.4px">${todF()}</div><textarea id="cnprog" rows="2" placeholder="Enter progress note..." style="width:100%;padding:8px 11px;font-size:13px;border:1px solid #e2e8f0;border-radius:8px;background:#fff;color:#1a202c;font-family:inherit;resize:none"></textarea><button class="btn sm" onclick="addCProg(${p.id})" style="margin-top:6px"><i class="ti ti-plus" style="font-size:13px"></i> Add note</button></div></div>
     <div class="act-row">
       <button class="btn" style="background:#E9982A;color:#fff;border-color:#E9982A;font-weight:500" onclick="openTransferConsult(${p.id});closeM('detM')"><i class="ti ti-transfer" style="font-size:14px"></i> Transfer to ward</button>
       <button class="btn pri sm" id="ccpbtn-${p.id}" onclick="copyCPt(${p.id})"><i class="ti ti-copy" style="font-size:14px"></i> Copy as text</button>
